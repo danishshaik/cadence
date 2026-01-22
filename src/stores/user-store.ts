@@ -1,12 +1,12 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as Crypto from "expo-crypto";
 
 interface UserStore {
   userId: string | null;
   pushToken: string | null;
-  initializeUser: () => Promise<string>;
+  initializeUser: () => Promise<string | null>;
+  setUserId: (userId: string) => void;
   setPushToken: (token: string) => void;
   clearUser: () => void;
 }
@@ -17,16 +17,9 @@ export const useUserStore = create<UserStore>()(
       userId: null,
       pushToken: null,
 
-      initializeUser: async () => {
-        let { userId } = get();
+      initializeUser: async () => get().userId,
 
-        if (!userId) {
-          userId = Crypto.randomUUID();
-          set({ userId });
-        }
-
-        return userId;
-      },
+      setUserId: (userId) => set({ userId }),
 
       setPushToken: (pushToken) => set({ pushToken }),
 

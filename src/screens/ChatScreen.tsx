@@ -1,14 +1,14 @@
-import React, { useEffect } from "react";
-import { KeyboardAvoidingView, View, useWindowDimensions } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useHeaderHeight } from "@react-navigation/elements";
-import { MessageList, ChatInput, ChatMessage, QuickReplyMessage } from "@components/chat";
-import { CheckinWidget, CheckinSummary } from "@components/checkin";
-import { useMessages } from "@hooks/use-messages";
+import { ChatInput, ChatMessage, MessageList, QuickReplyMessage } from "@components/chat";
+import { CheckinSummary, CheckinWidget } from "@components/checkin";
 import { useCheckin } from "@hooks/use-checkin";
+import { useMessages } from "@hooks/use-messages";
+import { useHeaderHeight } from "@react-navigation/elements";
 import { useActiveThread } from "@stores/thread-store";
 import { useUserStore } from "@stores/user-store";
 import { spacing } from "@theme";
+import React, { useEffect, useState } from "react";
+import { KeyboardAvoidingView, View, useWindowDimensions } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const isIOS = process.env.EXPO_OS === "ios";
 const CLAUDE_BG = "#F9F6F2";
@@ -19,6 +19,8 @@ export function ChatScreen() {
   const headerHeight = useHeaderHeight();
   const activeThread = useActiveThread();
   const initializeUser = useUserStore((state) => state.initializeUser);
+  const defaultInset = insets.bottom + 112;
+  const [inputHeight, setInputHeight] = useState(defaultInset);
 
   useEffect(() => {
     initializeUser();
@@ -104,7 +106,7 @@ export function ChatScreen() {
     return null;
   };
 
-  const inputInset = insets.bottom + 112;
+  const inputInset = Math.max(inputHeight, defaultInset);
   const topInset = headerHeight + spacing.sm;
 
   return (
@@ -147,7 +149,12 @@ export function ChatScreen() {
           topInset={topInset}
         />
         <View
+          onLayout={(event) => setInputHeight(event.nativeEvent.layout.height)}
           style={{
+            position: "absolute",
+            left: 0,
+            right: 0,
+            bottom: 0,
             paddingHorizontal: spacing.md,
             paddingBottom: spacing.md + insets.bottom,
             paddingTop: spacing.sm,

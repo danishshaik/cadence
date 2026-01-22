@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import { View, TextInput, TouchableOpacity, Keyboard, Text } from "react-native";
-import { SymbolView } from "expo-symbols";
+import { typography } from "@theme";
 import { GlassView, isLiquidGlassAvailable } from "expo-glass-effect";
-import { colors, spacing, typography } from "@theme";
+import { SymbolView } from "expo-symbols";
+import React, { useState } from "react";
+import { Keyboard, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 interface ChatInputProps {
   onSend: (message: string) => void;
@@ -13,7 +13,7 @@ interface ChatInputProps {
 const isIOS = process.env.EXPO_OS === "ios";
 
 // Claude-style colors
-const CLAUDE_INPUT_BG = "#EBE6DF";
+const CLAUDE_INPUT_BG = "rgba(235, 230, 223, 0.86)";
 const CLAUDE_ICON_COLOR = "#7C7C7C";
 const CLAUDE_TEXT_COLOR = "#3D3929";
 const CLAUDE_PLACEHOLDER = "#9B9B8E";
@@ -41,14 +41,23 @@ export function ChatInput({
 
   return (
     <Container
-      {...(isGlass ? { glassEffectStyle: "regular" } : {})}
-      style={{
-        borderRadius: 26,
-        paddingHorizontal: 16,
-        paddingTop: 14,
-        paddingBottom: 12,
-        backgroundColor: isGlass ? undefined : CLAUDE_INPUT_BG,
-      }}
+      {...(isGlass ? { glassEffectStyle: "regular", tintColor: "white" } : {})}
+      style={[
+        {
+          borderRadius: 26,
+          borderCurve: "continuous",
+          paddingHorizontal: 16,
+          paddingTop: 14,
+          paddingBottom: 12,
+          backgroundColor: isGlass ? "transparent" : CLAUDE_INPUT_BG,
+          overflow: "hidden",
+        },
+        !isGlass && {
+          borderWidth: 1,
+          borderColor: "rgba(61, 57, 41, 0.08)",
+          boxShadow: "0 12px 30px rgba(61, 57, 41, 0.12)",
+        },
+      ]}
     >
       {/* Top row: Text Input */}
       <TextInput

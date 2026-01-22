@@ -13,7 +13,7 @@ import type {
   APIError,
 } from "@/types/api";
 
-class ApiError extends Error {
+export class ApiError extends Error {
   status: number;
   code?: string;
   details?: Array<{ path: string; message: string }>;
@@ -49,21 +49,49 @@ const toApiError = async (response: Response) => {
   return new ApiError(message, response.status, code, data?.details);
 };
 
-const apiFetch = async <T>(path: string, options: RequestInit = {}): Promise<T> => {
-  const { userId: storedUserId, initializeUser } = useUserStore.getState();
-  const userId = storedUserId ?? (await initializeUser().catch(() => null));
+const apiFetch = async <T>(
+  path: string,
+  options: RequestInit = {},
+  retryUnauthorized = true
+): Promise<T> => {
+  const { userId } = useUserStore.getState();
   const headers = {
     ...baseHeaders,
     ...(options.headers || {}),
     ...(userId ? { "X-User-Id": userId } : {}),
   };
 
-  const response = await fetch(`${config.apiUrl}${path}`, {
-    ...options,
-    headers,
-  });
+  if (__DEV__) {
+    const method = options.method ?? "GET";
+    const body = typeof options.body === "string" ? options.body : undefined;
+    console.log("apiFetch request", {
+      url: `${config.apiUrl}${path}`,
+      method,
+      headers,
+      body,
+    });
+  }
+
+  let response: Response;
+  try {
+    response = await fetch(`${config.apiUrl}${path}`, {
+      ...options,
+      headers,
+    });
+  } catch {
+    throw new ApiError("Network error", 0, "NETWORK_ERROR");
+  }
+
+  const issuedUserId = response.headers.get("x-user-id");
+  if (!useUserStore.getState().userId && issuedUserId) {
+    useUserStore.getState().setUserId(issuedUserId);
+  }
 
   if (!response.ok) {
+    if (response.status === 401 && retryUnauthorized) {
+      useUserStore.getState().clearUser();
+      return apiFetch<T>(path, options, false);
+    }
     throw await toApiError(response);
   }
 
@@ -122,4 +150,3 @@ export const cadenceApi = {
 };
 
 export default cadenceApi;
-export type { ApiError };
