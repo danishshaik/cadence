@@ -27,10 +27,12 @@ const initialFormData: RespiratoryFormData = {
   constriction: 3,
   constrictionLabel: "Slightly Tight",
   symptoms: [],
+  breathingSound: "silent",
   triggers: [],
   impact: "none",
   rescueInhalerPuffs: 0,
   medications: [],
+  peakFlow: null,
   notes: "",
   loggedAt: new Date(),
 };

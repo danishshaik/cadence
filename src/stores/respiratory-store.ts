@@ -7,18 +7,21 @@ import {
   RespiratoryTriggerId,
   RespiratoryMedicationId,
   ImpactLevelId,
+  BreathingSoundId,
   getBreathingLabel,
-  RESPIRATORY_SYMPTOMS,
-  RESPIRATORY_TRIGGERS,
 } from "@/types/respiratory";
 
 interface RespiratoryStore {
   logs: RespiratoryLog[];
+  personalBestPeakFlow: number | null;
 
   // CRUD
   addLog: (log: Omit<RespiratoryLog, "id" | "createdAt" | "constrictionLabel">) => void;
   updateLog: (id: string, updates: Partial<RespiratoryLog>) => void;
   deleteLog: (id: string) => void;
+
+  // Preferences
+  setPersonalBestPeakFlow: (value: number | null) => void;
 
   // Queries
   getLogsForWeek: () => RespiratoryLog[];
@@ -43,6 +46,7 @@ function generateSampleData(): RespiratoryLog[] {
   const triggerOptions: RespiratoryTriggerId[] = ["pollen", "dust", "cold_air", "exercise"];
   const impactOptions: ImpactLevelId[] = ["none", "mild", "moderate"];
   const medOptions: RespiratoryMedicationId[] = ["controller_meds", "antihistamine"];
+  const soundOptions: BreathingSoundId[] = ["silent", "wheeze", "rattle"];
 
   for (let i = 13; i >= 0; i--) {
     // 60% chance of logging on each day
@@ -54,6 +58,15 @@ function generateSampleData(): RespiratoryLog[] {
 
     const constriction = Math.floor(Math.random() * 5) + 2; // 2-6 range mostly
     const rescuePuffs = constriction > 5 ? Math.floor(Math.random() * 3) + 1 : 0;
+    const breathingSound = rescuePuffs > 0
+      ? soundOptions[Math.floor(Math.random() * (soundOptions.length - 1)) + 1]
+      : "silent";
+    const peakFlow = Math.random() > 0.5 ? Math.floor(Math.random() * 180) + 380 : undefined;
+    const airQualityIndex = Math.random() > 0.6 ? Math.floor(Math.random() * 90) + 20 : undefined;
+    const pollenLevels: RespiratoryLog["pollenLevel"][] = ["low", "moderate", "high", "very_high"];
+    const pollenLevel = Math.random() > 0.7
+      ? pollenLevels[Math.floor(Math.random() * pollenLevels.length)]
+      : undefined;
 
     logs.push({
       id: `sample-respiratory-${i}`,
@@ -61,10 +74,14 @@ function generateSampleData(): RespiratoryLog[] {
       constriction,
       constrictionLabel: getBreathingLabel(constriction),
       symptoms: symptomOptions.filter(() => Math.random() > 0.6).slice(0, 2),
+      breathingSound,
       triggers: triggerOptions.filter(() => Math.random() > 0.7).slice(0, 2),
       impact: impactOptions[Math.floor(Math.random() * impactOptions.length)],
       rescueInhalerPuffs: rescuePuffs,
       medications: rescuePuffs > 0 ? ["rescue_inhaler", ...medOptions.filter(() => Math.random() > 0.5)] : medOptions.filter(() => Math.random() > 0.6),
+      peakFlow,
+      airQualityIndex,
+      pollenLevel,
     });
   }
 
@@ -75,6 +92,7 @@ export const useRespiratoryStore = create<RespiratoryStore>()(
   persist(
     (set, get) => ({
       logs: generateSampleData(),
+      personalBestPeakFlow: null,
 
       addLog: (logData) => {
         const newLog: RespiratoryLog = {
@@ -105,6 +123,10 @@ export const useRespiratoryStore = create<RespiratoryStore>()(
 
       deleteLog: (id) => {
         set((state) => ({ logs: state.logs.filter((log) => log.id !== id) }));
+      },
+
+      setPersonalBestPeakFlow: (value) => {
+        set({ personalBestPeakFlow: value });
       },
 
       getLogsForWeek: () => {

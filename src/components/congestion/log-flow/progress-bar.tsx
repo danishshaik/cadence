@@ -26,13 +26,13 @@ const styles = StyleSheet.create({
   },
   track: {
     height: 3,
-    backgroundColor: colors.respiratoryIndigoLight,
-    borderRadius: 1.5,
+    backgroundColor: "rgba(136, 216, 176, 0.25)",
+    borderRadius: 2,
     overflow: "hidden",
   },
   fill: {
     height: "100%",
-    backgroundColor: colors.respiratoryIndigo,
-    borderRadius: 1.5,
+    backgroundColor: colors.restorativeSage,
+    borderRadius: 2,
   },
 });

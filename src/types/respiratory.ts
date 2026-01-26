@@ -12,6 +12,15 @@ export const RESPIRATORY_SYMPTOMS = [
 
 export type RespiratorySymptomId = (typeof RESPIRATORY_SYMPTOMS)[number]["id"];
 
+// Breathing Sounds
+export const BREATHING_SOUNDS = [
+  { id: "silent", label: "Silent", description: "Normal breathing" },
+  { id: "wheeze", label: "Whistle/Wheeze", description: "High-pitched exhale" },
+  { id: "rattle", label: "Rattle", description: "Wet/mucus sound" },
+] as const;
+
+export type BreathingSoundId = (typeof BREATHING_SOUNDS)[number]["id"];
+
 // Environmental Triggers
 export const RESPIRATORY_TRIGGERS = [
   { id: "pollen", label: "High Pollen/Nature", icon: "flower" },
@@ -68,6 +77,9 @@ export interface RespiratoryLog {
   // Symptoms
   symptoms: RespiratorySymptomId[];
 
+  // Breathing sound
+  breathingSound?: BreathingSoundId;
+
   // Triggers
   triggers: RespiratoryTriggerId[];
 
@@ -82,6 +94,9 @@ export interface RespiratoryLog {
   airQualityIndex?: number;
   pollenLevel?: "low" | "moderate" | "high" | "very_high";
 
+  // Optional peak flow reading
+  peakFlow?: number;
+
   // Optional notes
   notes?: string;
 }
@@ -91,10 +106,12 @@ export interface RespiratoryFormData {
   constriction: number;
   constrictionLabel: string;
   symptoms: RespiratorySymptomId[];
+  breathingSound: BreathingSoundId;
   triggers: RespiratoryTriggerId[];
   impact: ImpactLevelId;
   rescueInhalerPuffs: number;
   medications: RespiratoryMedicationId[];
+  peakFlow: number | null;
   notes: string;
   loggedAt: Date;
 }

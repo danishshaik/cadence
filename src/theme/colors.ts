@@ -53,9 +53,30 @@ export const colors = {
   respiratory: "#4FC3F7", // Oxygen Blue - clear, open breathing
   respiratoryLight: "#E1F5FE",
   respiratoryMuted: "#81D4FA",
+  respiratoryIndigo: "#5C6BC0", // Calm Indigo - active/selected
+  respiratoryIndigoLight: "#E8EAF6",
   respiratoryAlert: "#FFB74D", // Alert Amber - constriction/warning
   respiratoryAlertLight: "#FFF3E0",
   respiratorySevere: "#EF5350", // For severe/emergency states
+
+  // Congestion/Recovery theme (Resonance)
+  restorativeSage: "#88D8B0",
+  honeyAmber: "#FFC107",
+  midnightBlue: "#2C3E50",
+  vaporWhite: "#F0F4F8",
+  coughDry: "#CBD5E1",
+  coughGlass: "rgba(255, 255, 255, 0.7)",
+
+  // Arthritis/Musculoskeletal theme (Sage)
+  arthritis: "#77DD77", // Sage Green - primary, natural relief
+  arthritisLight: "#F9F9F9", // Soft Cloud White - background
+  arthritisMuted: "#CFF6CF", // Light sage for gradients
+  arthritisText: "#2F3A34", // Dark sage-gray for text
+  arthritisTextSecondary: "#6C7A72", // Muted sage for labels
+  arthritisAlert: "#E6A86A", // Muted orange for stiff/painful states
+  arthritisAlertLight: "#FFF5EB",
+  arthritisSurface: "#E7F6E7", // Very light sage for surfaces
+  arthritisBorder: "#D6DED6", // Subtle border
 
   // Borders
   border: "#E5E7EB",

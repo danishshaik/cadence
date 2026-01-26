@@ -3,7 +3,11 @@ import { CheckinSummary, CheckinWidget } from "@components/checkin";
 import { GIAnalyticsWidget } from "@components/gi";
 import { MigraineAnalyticsWidget } from "@components/migraine";
 import { MoodAnalyticsWidget } from "@components/mood";
+import { CongestionAnalyticsWidget } from "@components/congestion";
+import { RespiratoryAnalyticsWidget } from "@components/respiratory";
 import { SkinAnalyticsWidget } from "@components/skin";
+import { ArthritisAnalyticsWidget } from "@components/arthritis";
+import { PinnedWidgetShowcase } from "@components/sample-widgets";
 import { useCheckin } from "@hooks/use-checkin";
 import { useMessages } from "@hooks/use-messages";
 import { useHeaderHeight } from "@react-navigation/elements";
@@ -153,10 +157,14 @@ export function ChatScreen() {
           topInset={topInset}
           ListHeaderComponent={
             <>
+              <PinnedWidgetShowcase />
               <MoodAnalyticsWidget />
               <MigraineAnalyticsWidget />
               <GIAnalyticsWidget />
               <SkinAnalyticsWidget />
+              <RespiratoryAnalyticsWidget />
+              <CongestionAnalyticsWidget />
+              <ArthritisAnalyticsWidget />
             </>
           }
         />

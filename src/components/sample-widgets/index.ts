@@ -7,6 +7,8 @@
 
 export { MigraineCrisisWidget } from "./migraine-crisis-widget";
 export type { MigraineMetrics } from "./migraine-crisis-widget";
+export { BreatheDashboardWidget } from "./breathe-dashboard-widget";
+export { ArthritisDashboardWidget } from "../arthritis/arthritis-dashboard-widget";
 
 export {
   SAMPLE_WIDGETS,

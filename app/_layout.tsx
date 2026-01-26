@@ -40,6 +40,36 @@ export default function RootLayout() {
               animation: "slide_from_bottom",
             }}
           />
+          <Stack.Screen
+            name="log-respiratory"
+            options={{
+              presentation: "modal",
+              animation: "slide_from_bottom",
+              headerShown: true,
+              headerTitle: "",
+              headerShadowVisible: false,
+            }}
+          />
+          <Stack.Screen
+            name="log-congestion"
+            options={{
+              presentation: "modal",
+              animation: "slide_from_bottom",
+              headerShown: true,
+              headerTitle: "",
+              headerShadowVisible: false,
+            }}
+          />
+          <Stack.Screen
+            name="log-arthritis"
+            options={{
+              presentation: "modal",
+              animation: "slide_from_bottom",
+              headerShown: true,
+              headerTitle: "",
+              headerShadowVisible: false,
+            }}
+          />
         </Stack>
       </QueryClientProvider>
     </GestureHandlerRootView>
