@@ -4,16 +4,6 @@
 
 Connect the React Native app to the Cadence backend API. This includes setting up the HTTP client, React Query hooks, and handling authentication.
 
-## UI + Data Fetching Notes (Override)
-
-Follow the Expo UI and native-data-fetching skills for this task:
-- **Use fetch**, not axios (avoid axios entirely).
-- **Use kebab-case filenames** for hooks and stores (e.g. `use-threads.ts`, `user-store.ts`).
-- **Inline styles only** (no `StyleSheet.create`) unless reuse is clearly faster.
-- **Avoid `SafeAreaView`**; use `ScrollView`/`FlatList` with `contentInsetAdjustmentBehavior="automatic"` where needed.
-- Use `process.env.EXPO_OS` instead of `Platform.OS`.
-- Prefer **EXPO_PUBLIC_** env vars for API base URL (with `.env` files).
-
 ## Why This Task
 
 API integration is critical because:
@@ -28,7 +18,7 @@ API integration is critical because:
 
 | Component | Description |
 |-----------|-------------|
-| `api.ts` | Fetch client with auth header + error handling |
+| `api.ts` | Axios instance with auth interceptor |
 | `useThreads` | Hook to fetch and manage threads |
 | `useMessages` | Hook to send and receive messages |
 | `useCheckin` | Hook to submit check-ins |
@@ -47,13 +37,13 @@ src/
 │   ├── api.ts
 │   └── config.ts
 ├── hooks/
-│   ├── use-threads.ts
-│   ├── use-messages.ts
-│   ├── use-checkin.ts
-│   └── use-insights.ts
+│   ├── useThreads.ts
+│   ├── useMessages.ts
+│   ├── useCheckin.ts
+│   └── useInsights.ts
 ├── stores/
-│   ├── thread-store.ts
-│   └── user-store.ts
+│   ├── threadStore.ts
+│   └── userStore.ts
 └── types/
     └── api.ts
 ```
@@ -230,20 +220,26 @@ export interface APIError {
 - `nudgePlan` is **camelCase** in `POST /api/message` but **snake_case** in `GET /api/thread/:threadId`. Normalize to a single shape in `services/api.ts`.
 - `clarificationQuestions.answerType` values are `free_text`, `yes_no`, `single_select`.
 
+**Auth behavior (important):**
+- All routes except `GET /health` run the auth preHandler.
+- The backend reads `X-User-Id` from headers.
+- If `X-User-Id` is missing, the backend creates an anonymous user for that request.
+- If `X-User-Id` is present but not found in the DB, the backend returns `401 { error: "Invalid user ID" }`.
+
 ### 3. User Store (`src/stores/userStore.ts`)
 
 ```typescript
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as Crypto from 'expo-crypto';
 
 interface UserStore {
   userId: string | null;
   pushToken: string | null;
 
   // Actions
-  initializeUser: () => Promise<string>;
+  initializeUser: () => Promise<string | null>;
+  setUserId: (userId: string) => void;
   setPushToken: (token: string) => void;
   clearUser: () => void;
 }
@@ -254,18 +250,11 @@ export const useUserStore = create<UserStore>()(
       userId: null,
       pushToken: null,
 
-      initializeUser: async () => {
-        let { userId } = get();
+      // Loads persisted userId if it exists; otherwise returns null.
+      // The backend must issue userId for anonymous sessions (see below).
+      initializeUser: async () => get().userId,
 
-        if (!userId) {
-          // Generate a random UUID for anonymous user
-          userId = Crypto.randomUUID();
-          set({ userId });
-        }
-
-        return userId;
-      },
-
+      setUserId: (userId) => set({ userId }),
       setPushToken: (pushToken) => set({ pushToken }),
 
       clearUser: () => set({ userId: null, pushToken: null }),
@@ -276,6 +265,52 @@ export const useUserStore = create<UserStore>()(
     }
   )
 );
+```
+
+**Important:** Do **not** generate a client-side UUID for anonymous users. The backend
+expects `X-User-Id` to already exist in the database, otherwise it returns 401.
+The backend should return a server-issued `userId` for anonymous sessions
+(for example via a response header or a dedicated endpoint). Persist that value
+using `setUserId`.
+
+### 3.1 Anonymous bootstrap flow (required for unsigned-in users)
+
+**Goal:** Persist the server-issued `userId` once, then send it on every request.
+
+**Backend support required (pick one):**
+- **Response header:** When the backend creates an anonymous user, it includes `X-User-Id` on the response.
+- **Endpoint:** `POST /api/auth/anonymous` returns `{ userId }`.
+
+**Client flow:**
+1. On app start, load any stored `userId`.
+2. If it exists, attach `X-User-Id` to all requests.
+3. If it does not exist, make a bootstrap request without `X-User-Id` and persist the server-issued id.
+
+Example helper (header-based):
+```typescript
+import { useUserStore } from '@stores/userStore';
+import api from '@services/api';
+
+export async function ensureAnonymousUser(): Promise<string | null> {
+  const { userId, setUserId } = useUserStore.getState();
+  if (userId) return userId;
+
+  // Trigger any auth-protected request without X-User-Id
+  const response = await api.post('/api/message', { message: 'hello' });
+  const issued = response.headers['x-user-id'];
+  if (issued) {
+    setUserId(issued);
+    return issued;
+  }
+
+  return null;
+}
+```
+
+If you choose a dedicated endpoint:
+```typescript
+const response = await api.post<{ userId: string }>('/api/auth/anonymous');
+useUserStore.getState().setUserId(response.data.userId);
 ```
 
 ### 4. API Client (`src/services/api.ts`)
@@ -320,7 +355,16 @@ api.interceptors.request.use(
 
 // Response interceptor for error handling
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    // If backend issues X-User-Id for anonymous bootstrap, persist it here
+    const currentUserId = useUserStore.getState().userId;
+    const issuedUserId = response.headers['x-user-id'] as string | undefined;
+    if (!currentUserId && issuedUserId) {
+      useUserStore.getState().setUserId(issuedUserId);
+    }
+
+    return response;
+  },
   (error: AxiosError<APIError>) => {
     // Log error for debugging
     console.error('API Error:', error.response?.data || error.message);
@@ -330,6 +374,11 @@ api.interceptors.response.use(
       error: error.message || 'Network error',
       code: 'NETWORK_ERROR',
     };
+
+    // If userId is invalid, clear it so the app can bootstrap again
+    if (apiError.code === 'UNAUTHORIZED') {
+      useUserStore.getState().clearUser();
+    }
 
     return Promise.reject(apiError);
   }

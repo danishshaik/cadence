@@ -14,6 +14,7 @@ interface MessageListProps {
   bottomInset?: number;
   backgroundColor?: string;
   topInset?: number;
+  ListHeaderComponent?: React.ComponentType | React.ReactElement | null;
 }
 
 export function MessageList({
@@ -23,6 +24,7 @@ export function MessageList({
   bottomInset = spacing.lg,
   backgroundColor = colors.background,
   topInset = spacing.md,
+  ListHeaderComponent,
 }: MessageListProps) {
   const flatListRef = useRef<FlatList<ChatMessage>>(null);
 
@@ -81,6 +83,7 @@ export function MessageList({
       keyExtractor={(item) => item.id}
       style={{ flex: 1, backgroundColor }}
       contentContainerStyle={{ paddingTop: topInset, flexGrow: 1 }}
+      ListHeaderComponent={ListHeaderComponent}
       ListFooterComponent={ListFooter}
       showsVerticalScrollIndicator={false}
       keyboardShouldPersistTaps="handled"

@@ -1,5 +1,9 @@
 import { ChatInput, ChatMessage, MessageList, QuickReplyMessage } from "@components/chat";
 import { CheckinSummary, CheckinWidget } from "@components/checkin";
+import { GIAnalyticsWidget } from "@components/gi";
+import { MigraineAnalyticsWidget } from "@components/migraine";
+import { MoodAnalyticsWidget } from "@components/mood";
+import { SkinAnalyticsWidget } from "@components/skin";
 import { useCheckin } from "@hooks/use-checkin";
 import { useMessages } from "@hooks/use-messages";
 import { useHeaderHeight } from "@react-navigation/elements";
@@ -147,6 +151,14 @@ export function ChatScreen() {
           bottomInset={inputInset}
           backgroundColor={CLAUDE_BG}
           topInset={topInset}
+          ListHeaderComponent={
+            <>
+              <MoodAnalyticsWidget />
+              <MigraineAnalyticsWidget />
+              <GIAnalyticsWidget />
+              <SkinAnalyticsWidget />
+            </>
+          }
         />
         <View
           onLayout={(event) => setInputHeight(event.nativeEvent.layout.height)}

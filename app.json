@@ -11,7 +11,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.cadence.mobile"
@@ -31,7 +33,8 @@
           "icon": "./assets/images/icon.png",
           "color": "#3B82F6"
         }
-      ]
+      ],
+      "@react-native-community/datetimepicker"
     ],
     "scheme": "cadence"
   }
