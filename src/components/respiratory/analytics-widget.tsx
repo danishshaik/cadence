@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { View, Text, Pressable, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon } from "@components/ui";
 import * as Haptics from "expo-haptics";
 import { colors, shadows } from "@theme";
 import { useRespiratoryStore } from "@stores/respiratory-store";
@@ -65,11 +65,11 @@ export function RespiratoryAnalyticsWidget() {
     <View style={styles.container}>
       <View style={styles.header}>
         <View style={styles.titleRow}>
-          <Ionicons name="pulse" size={18} color={colors.respiratoryIndigo} />
+          <Icon name="pulse" size={18} color={colors.respiratoryIndigo} />
           <Text style={styles.title}>Asthma · Chest Tightness</Text>
         </View>
         <Pressable onPress={handleLog} style={({ pressed }) => [styles.logPill, pressed && styles.logPillPressed]}>
-          <Ionicons name="add" size={14} color="#FFFFFF" />
+          <Icon name="add" size={14} color="#FFFFFF" />
           <Text style={styles.logPillText}>Log</Text>
         </Pressable>
       </View>

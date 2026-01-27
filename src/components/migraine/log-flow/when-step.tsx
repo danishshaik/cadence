@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { View, Text, Pressable, StyleSheet, Platform } from "react-native";
-import DateTimePicker from "@react-native-community/datetimepicker";
+import { ExpoDateTimePicker } from "@components/ui";
 import { colors } from "@theme";
 import { TIME_OF_DAY_OPTIONS, TimeOfDay } from "@/types/migraine";
 import { useLogMigraine } from "./log-migraine-provider";
+
+const isIOS = process.env.EXPO_OS === "ios";
 
 export function WhenStep() {
   const { formData, updateFormData } = useLogMigraine();
@@ -27,13 +29,11 @@ export function WhenStep() {
     }
   };
 
-  const handleDateChange = (_event: any, selectedDate?: Date) => {
-    if (Platform.OS === "android") {
+  const handleDateChange = (selectedDate: Date) => {
+    if (!isIOS) {
       setShowDatePicker(false);
     }
-    if (selectedDate) {
-      updateFormData("startedAt", selectedDate);
-    }
+    updateFormData("startedAt", selectedDate);
   };
 
   return (
@@ -52,10 +52,10 @@ export function WhenStep() {
       </View>
 
       {showDatePicker && (
-        <DateTimePicker
+        <ExpoDateTimePicker
           value={formData.startedAt}
           mode="date"
-          display={Platform.OS === "ios" ? "inline" : "default"}
+          display={isIOS ? "inline" : "default"}
           onChange={handleDateChange}
           maximumDate={new Date()}
           accentColor={colors.migraine}

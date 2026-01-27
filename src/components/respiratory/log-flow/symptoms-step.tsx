@@ -7,14 +7,14 @@ import {
   Platform,
   ScrollView,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon } from "@components/ui";
 import * as Haptics from "expo-haptics";
 import { colors } from "@theme";
 import { useLogRespiratory } from "./log-respiratory-provider";
 import { RESPIRATORY_SYMPTOMS, RespiratorySymptomId } from "@/types/respiratory";
 
-// Map symptom icons to Ionicons
-const ICON_MAP: Record<string, keyof typeof Ionicons.glyphMap> = {
+// Map symptom icons to Icon
+const ICON_MAP: Record<string, string> = {
   wind: "leaf-outline",
   cough: "volume-high-outline",
   droplet: "water-outline",
@@ -56,7 +56,7 @@ export function SymptomsStep() {
               style={[styles.pill, isSelected && styles.pillSelected]}
             >
               <View style={styles.pillContent}>
-                <Ionicons
+                <Icon
                   name={iconName}
                   size={22}
                   color={isSelected ? "#FFFFFF" : colors.textSecondary}

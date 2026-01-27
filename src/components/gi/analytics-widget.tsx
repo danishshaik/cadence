@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { View, Text, Pressable, StyleSheet, Platform } from "react-native";
 import { useRouter } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon } from "@components/ui";
 import * as Haptics from "expo-haptics";
 import Svg, { Path, Circle } from "react-native-svg";
 import { colors } from "@theme";
@@ -139,7 +139,7 @@ export function GIAnalyticsWidget() {
     <View style={styles.container}>
       <View style={styles.header}>
         <View style={styles.titleRow}>
-          <Ionicons name="leaf" size={20} color={colors.gi} />
+          <Icon name="leaf" size={20} color={colors.gi} />
           <Text style={styles.title}>Digestive Health</Text>
         </View>
       </View>
@@ -167,7 +167,7 @@ export function GIAnalyticsWidget() {
         onPress={handleLogSymptom}
         style={({ pressed }) => [styles.logButton, pressed && styles.logButtonPressed]}
       >
-        <Ionicons name="add" size={20} color="#FFFFFF" />
+        <Icon name="add" size={20} color="#FFFFFF" />
         <Text style={styles.logButtonText}>Log Symptoms</Text>
       </Pressable>
     </View>

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, Pressable, StyleSheet, Platform, Modal } from "react-native";
-import DateTimePicker from "@react-native-community/datetimepicker";
+import { ExpoDateTimePicker } from "@components/ui";
 import * as Haptics from "expo-haptics";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { colors } from "@theme";
@@ -17,10 +17,8 @@ export function TimingStep() {
     updateFormData({ context });
   };
 
-  const handleTimeChange = (_event: unknown, selectedDate?: Date) => {
-    if (selectedDate) {
-      updateFormData({ startedAt: selectedDate });
-    }
+  const handleTimeChange = (selectedDate: Date) => {
+    updateFormData({ startedAt: selectedDate });
   };
 
   const formatTime = (date: Date) => {
@@ -80,7 +78,7 @@ export function TimingStep() {
                 <Text style={styles.modalDoneText}>Done</Text>
               </Pressable>
             </View>
-            <DateTimePicker
+            <ExpoDateTimePicker
               value={formData.startedAt}
               mode="time"
               display="spinner"

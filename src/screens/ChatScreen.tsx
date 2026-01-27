@@ -7,6 +7,7 @@ import { CongestionAnalyticsWidget } from "@components/congestion";
 import { RespiratoryAnalyticsWidget } from "@components/respiratory";
 import { SkinAnalyticsWidget } from "@components/skin";
 import { ArthritisAnalyticsWidget } from "@components/arthritis";
+import { OrthostaticAnalyticsWidget } from "@components/orthostatic";
 import { PinnedWidgetShowcase } from "@components/sample-widgets";
 import { useCheckin } from "@hooks/use-checkin";
 import { useMessages } from "@hooks/use-messages";
@@ -165,6 +166,7 @@ export function ChatScreen() {
               <RespiratoryAnalyticsWidget />
               <CongestionAnalyticsWidget />
               <ArthritisAnalyticsWidget />
+              <OrthostaticAnalyticsWidget />
             </>
           }
         />

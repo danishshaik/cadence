@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, Pressable, StyleSheet, Platform } from "react-native";
 import { useRouter } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon } from "@components/ui";
 import * as Haptics from "expo-haptics";
 import { colors } from "@theme";
 import { useMigraineStore } from "@stores/migraine-store";
@@ -33,7 +33,7 @@ export function MigraineAnalyticsWidget() {
     <View style={styles.container}>
       <View style={styles.header}>
         <View style={styles.titleRow}>
-          <Ionicons name="pulse" size={20} color={colors.migraine} />
+          <Icon name="pulse" size={20} color={colors.migraine} />
           <Text style={styles.title}>Migraine Tracker</Text>
         </View>
       </View>
@@ -61,7 +61,7 @@ export function MigraineAnalyticsWidget() {
         onPress={handleLogAttack}
         style={({ pressed }) => [styles.logButton, pressed && styles.logButtonPressed]}
       >
-        <Ionicons name="add" size={20} color="#FFFFFF" />
+        <Icon name="add" size={20} color="#FFFFFF" />
         <Text style={styles.logButtonText}>Log Attack</Text>
       </Pressable>
     </View>

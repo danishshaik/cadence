@@ -18,7 +18,7 @@ import Animated, {
 } from "react-native-reanimated";
 import Svg, { Defs, ClipPath, Ellipse, Rect } from "react-native-svg";
 import * as Haptics from "expo-haptics";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon } from "@components/ui";
 import { colors } from "@theme";
 import { useLogSkin } from "./log-skin-provider";
 import { useSkinStore } from "@stores/skin-store";
@@ -125,7 +125,7 @@ export function PhotoStep() {
         </View>
 
         <Pressable onPress={handleRetake} style={styles.retakeButton}>
-          <Ionicons name="camera-reverse-outline" size={20} color={colors.skin} />
+          <Icon name="camera-reverse-outline" size={20} color={colors.skin} />
           <Text style={styles.retakeText}>Retake</Text>
         </Pressable>
       </View>

@@ -13,7 +13,7 @@ import Animated, {
 } from "react-native-reanimated";
 import Svg, { Path, Defs, LinearGradient, Stop } from "react-native-svg";
 import { LinearGradient as ExpoLinearGradient } from "expo-linear-gradient";
-import { Feather } from "@expo/vector-icons";
+import { Icon } from "@components/ui";
 import * as Haptics from "expo-haptics";
 import { colors, shadows } from "@theme";
 import { useLogCongestion } from "./log-congestion-provider";
@@ -85,7 +85,7 @@ export function SleepStep() {
 
       <View style={[styles.sleepCard, { width: cardWidth, height: cardHeight }]}>
         <View style={styles.moonContainer}>
-          <Feather name="moon" size={20} color="#FFC107" style={{ opacity: 0.8 }} />
+          <Icon name="moon" size={20} color="#FFC107" style={{ opacity: 0.8 }} />
         </View>
         
         {/* Stars */}

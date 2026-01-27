@@ -67,6 +67,18 @@ export const colors = {
   coughDry: "#CBD5E1",
   coughGlass: "rgba(255, 255, 255, 0.7)",
 
+  // Orthostatic Hypotension theme (Stability & Calm)
+  orthostatic: "#667EEA",
+  orthostaticLight: "#F9F9F9",
+  orthostaticMuted: "#C9D4FF",
+  orthostaticAlert: "#F7C1B5",
+  orthostaticIndigo300: "#A5B4FC",
+  orthostaticIndigo600: "#4F46E5",
+  orthostaticIndigo: "#6366F1",
+  orthostaticSlate: "#64748B",
+  orthostaticGreyBlue: "#F1F5F9",
+  orthostaticTrack: "#C7D2FE",
+
   // Arthritis/Musculoskeletal theme (Sage)
   arthritis: "#77DD77", // Sage Green - primary, natural relief
   arthritisLight: "#F9F9F9", // Soft Cloud White - background

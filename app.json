@@ -16,7 +16,10 @@
     ],
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.cadence.mobile"
+      "bundleIdentifier": "com.cadence.mobile",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -33,9 +36,14 @@
           "icon": "./assets/images/icon.png",
           "color": "#3B82F6"
         }
-      ],
-      "@react-native-community/datetimepicker"
+      ]
     ],
-    "scheme": "cadence"
+    "scheme": "cadence",
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "374eaa55-71c7-4cd4-b995-f061f6bd5dcb"
+      }
+    }
   }
 }

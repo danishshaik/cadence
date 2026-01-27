@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { View, Text, Pressable, StyleSheet, Platform } from "react-native";
 import { useRouter } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon } from "@components/ui";
 import * as Haptics from "expo-haptics";
 import Svg, { Path, Defs, LinearGradient, Stop, Circle, G } from "react-native-svg";
 import { colors } from "@theme";
@@ -138,7 +138,7 @@ export function MoodAnalyticsWidget() {
     <View style={styles.container}>
       <View style={styles.header}>
         <View style={styles.titleRow}>
-          <Ionicons name="cloudy" size={20} color={colors.mood} />
+          <Icon name="cloudy" size={20} color={colors.mood} />
           <Text style={styles.title}>Mental Weather</Text>
         </View>
       </View>
@@ -164,7 +164,7 @@ export function MoodAnalyticsWidget() {
         onPress={handleLogMood}
         style={({ pressed }) => [styles.logButton, pressed && styles.logButtonPressed]}
       >
-        <Ionicons name="add" size={20} color="#FFFFFF" />
+        <Icon name="add" size={20} color="#FFFFFF" />
         <Text style={styles.logButtonText}>Check In</Text>
       </Pressable>
     </View>

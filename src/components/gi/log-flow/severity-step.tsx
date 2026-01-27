@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet, Platform, useWindowDimensions } from "react-native";
-import Slider from "@react-native-community/slider";
+import { ExpoSlider } from "@components/ui";
 import Svg, { Path, G, Defs, LinearGradient, Stop } from "react-native-svg";
 import * as Haptics from "expo-haptics";
 import { colors } from "@theme";
@@ -108,7 +108,7 @@ export function SeverityStep() {
           <Text style={[styles.sliderLabel, { color: colors.giSevere }]}>Severe</Text>
         </View>
 
-        <Slider
+        <ExpoSlider
           style={styles.slider}
           minimumValue={0}
           maximumValue={10}

@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { View, Text, Pressable, StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon } from "@components/ui";
 import * as Haptics from "expo-haptics";
 import { colors, shadows } from "@theme";
 import { useArthritisStore } from "@stores/arthritis-store";
@@ -80,11 +80,11 @@ export function ArthritisAnalyticsWidget() {
     <View style={styles.container}>
       <View style={styles.header}>
         <View style={styles.titleRow}>
-          <Ionicons name="body" size={18} color={colors.arthritis} />
+          <Icon name="body" size={18} color={colors.arthritis} />
           <Text style={styles.title}>Arthritis · Joint Pain</Text>
         </View>
         <Pressable onPress={handleLog} style={({ pressed }) => [styles.logPill, pressed && styles.logPillPressed]}>
-          <Ionicons name="add" size={14} color="#FFFFFF" />
+          <Icon name="add" size={14} color="#FFFFFF" />
           <Text style={styles.logPillText}>Log</Text>
         </Pressable>
       </View>
@@ -98,7 +98,7 @@ export function ArthritisAnalyticsWidget() {
         <View style={styles.metricBottom}>
           <View style={styles.insightRow}>
             <View style={styles.insightIcon}>
-              <Ionicons
+              <Icon
                 name={weatherInsight.hasCorrelation ? "rainy" : "sunny"}
                 size={14}
                 color={weatherInsight.hasCorrelation ? colors.arthritisTextSecondary : colors.arthritis}

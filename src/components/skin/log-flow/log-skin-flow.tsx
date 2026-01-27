@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, Pressable, StyleSheet, Platform } from "react-native";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon } from "@components/ui";
 import { colors } from "@theme";
 import { useSkinStore } from "@stores/skin-store";
 import { useLogSkin, LogSkinProvider } from "./log-skin-provider";
@@ -108,7 +108,7 @@ function LogSkinFlowContent() {
           >
             {isLastStep ? (
               <View style={styles.logItContent}>
-                <Ionicons name="checkmark-circle" size={22} color="#FFFFFF" />
+                <Icon name="checkmark-circle" size={22} color="#FFFFFF" />
                 <Text style={styles.continueText}>Log It</Text>
               </View>
             ) : (

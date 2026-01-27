@@ -59,6 +59,6 @@ const styles = StyleSheet.create({
   cancelText: {
     fontFamily: Platform.OS === "ios" ? "SF Pro Text" : "sans-serif",
     fontSize: 16,
-    color: colors.gi,
+    color: colors.orthostatic,
   },
 });

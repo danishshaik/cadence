@@ -9,7 +9,7 @@ import {
   ScrollView,
   KeyboardAvoidingView,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon } from "@components/ui";
 import * as Haptics from "expo-haptics";
 import { colors } from "@theme";
 import { useLogMigraine } from "./log-migraine-provider";
@@ -99,7 +99,7 @@ export function MedicationStep() {
                     onPress={() => handleRemoveMedication(index)}
                     style={styles.removeButton}
                   >
-                    <Ionicons name="close-circle" size={24} color={colors.textTertiary} />
+                    <Icon name="close-circle" size={24} color={colors.textTertiary} />
                   </Pressable>
                 </View>
               ))}
@@ -159,7 +159,7 @@ export function MedicationStep() {
                 onPress={() => setShowInput(true)}
                 style={styles.addCustomButton}
               >
-                <Ionicons name="add" size={20} color={colors.migraine} />
+                <Icon name="add" size={20} color={colors.migraine} />
                 <Text style={styles.addCustomText}>Add other medication</Text>
               </Pressable>
             </>

@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, Pressable, StyleSheet, Platform } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon } from "@components/ui";
 import * as Haptics from "expo-haptics";
 import { colors } from "@theme";
 
@@ -26,7 +26,7 @@ export function StepHeader({ onBack, onCancel, showBack = true }: StepHeaderProp
       <View style={styles.leftSection}>
         {showBack && onBack && (
           <Pressable onPress={handleBack} style={styles.backButton}>
-            <Ionicons name="chevron-back" size={22} color={colors.textPrimary} />
+            <Icon name="chevron-back" size={22} color={colors.textPrimary} />
           </Pressable>
         )}
       </View>

@@ -7,14 +7,14 @@ import {
   Platform,
   ScrollView,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon } from "@components/ui";
 import * as Haptics from "expo-haptics";
 import { colors } from "@theme";
 import { useLogSkin } from "./log-skin-provider";
 import { SKIN_TRIGGERS, SkinTriggerId } from "@/types/skin";
 
-// Map trigger icons to Ionicons names
-const ICON_MAP: Record<string, keyof typeof Ionicons.glyphMap> = {
+// Map trigger icons to Icon names
+const ICON_MAP: Record<string, string> = {
   droplet: "water-outline",
   "alert-circle": "alert-circle-outline",
   moon: "moon-outline",
@@ -58,7 +58,7 @@ export function TriggersStep() {
               onPress={() => handleToggle(trigger.id)}
               style={[styles.pill, isSelected && styles.pillSelected]}
             >
-              <Ionicons
+              <Icon
                 name={iconName}
                 size={18}
                 color={isSelected ? "#FFFFFF" : colors.textSecondary}

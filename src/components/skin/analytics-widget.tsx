@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { View, Text, Pressable, StyleSheet, Platform } from "react-native";
 import { useRouter } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon } from "@components/ui";
 import * as Haptics from "expo-haptics";
 import Svg, { Path, Defs, LinearGradient, Stop, Circle } from "react-native-svg";
 import { colors } from "@theme";
@@ -113,7 +113,7 @@ export function SkinAnalyticsWidget() {
     <View style={styles.container}>
       <View style={styles.header}>
         <View style={styles.titleRow}>
-          <Ionicons name="sparkles" size={20} color={colors.skin} />
+          <Icon name="sparkles" size={20} color={colors.skin} />
           <Text style={styles.title}>Skin Clarity</Text>
         </View>
       </View>
@@ -143,7 +143,7 @@ export function SkinAnalyticsWidget() {
         onPress={handleLogSkin}
         style={({ pressed }) => [styles.logButton, pressed && styles.logButtonPressed]}
       >
-        <Ionicons name="add" size={20} color="#FFFFFF" />
+        <Icon name="add" size={20} color="#FFFFFF" />
         <Text style={styles.logButtonText}>Log Skin</Text>
       </Pressable>
     </View>

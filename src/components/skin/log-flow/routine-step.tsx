@@ -7,7 +7,7 @@ import {
   Platform,
   ScrollView,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { Icon } from "@components/ui";
 import Animated, {
   useAnimatedStyle,
   withTiming,
@@ -88,7 +88,7 @@ export function RoutineStep() {
           onPress={() => handleTimeToggle("am")}
           style={[styles.timeButton, formData.routineTime === "am" && styles.timeButtonSelected]}
         >
-          <Ionicons
+          <Icon
             name="sunny-outline"
             size={18}
             color={formData.routineTime === "am" ? "#FFFFFF" : colors.textSecondary}
@@ -103,7 +103,7 @@ export function RoutineStep() {
           onPress={() => handleTimeToggle("pm")}
           style={[styles.timeButton, formData.routineTime === "pm" && styles.timeButtonSelected]}
         >
-          <Ionicons
+          <Icon
             name="moon-outline"
             size={18}
             color={formData.routineTime === "pm" ? "#FFFFFF" : colors.textSecondary}
@@ -130,13 +130,13 @@ export function RoutineStep() {
                   style={[styles.checklistItem, index === 0 && styles.checklistItemFirst]}
                 >
                   <View style={[styles.checkbox, isSelected && styles.checkboxSelected]}>
-                    {isSelected && <Ionicons name="checkmark" size={16} color="#FFFFFF" />}
+                    {isSelected && <Icon name="checkmark" size={16} color="#FFFFFF" />}
                   </View>
                   <Text style={[styles.checklistText, isSelected && styles.checklistTextSelected]}>
                     {step.label}
                   </Text>
                   {isTreatment && isSelected && (
-                    <Ionicons
+                    <Icon
                       name={expandTreatment ? "chevron-up" : "chevron-down"}
                       size={18}
                       color={colors.textSecondary}

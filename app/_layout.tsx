@@ -70,6 +70,16 @@ export default function RootLayout() {
               headerShadowVisible: false,
             }}
           />
+          <Stack.Screen
+            name="log-orthostatic"
+            options={{
+              presentation: "modal",
+              animation: "slide_from_bottom",
+              headerShown: true,
+              headerTitle: "",
+              headerShadowVisible: false,
+            }}
+          />
         </Stack>
       </QueryClientProvider>
     </GestureHandlerRootView>

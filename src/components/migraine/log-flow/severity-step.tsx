@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet, Platform } from "react-native";
-import Slider from "@react-native-community/slider";
+import { ExpoSlider } from "@components/ui";
 import { colors } from "@theme";
 import { useLogMigraine } from "./log-migraine-provider";
 import { SeverityCircle } from "../severity-circle";
@@ -29,7 +29,7 @@ export function SeverityStep() {
 
       <View style={styles.sliderContainer}>
         <Text style={styles.sliderLabel}>MILD</Text>
-        <Slider
+        <ExpoSlider
           style={styles.slider}
           minimumValue={0}
           maximumValue={10}
