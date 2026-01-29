@@ -90,7 +90,7 @@ This document breaks the refactor into commit-sized steps. Each step includes ve
 **Goal:** Replace step internals for a single tracker while keeping flow logic intact.
 
 **Work**
-- Choose a pilot tracker (Migraine recommended).
+- Choose a pilot tracker (Arthritis recommended).
 - Convert each step to use field primitives + variants.
 - Keep flow navigation, validation, and save logic unchanged.
 
@@ -103,7 +103,7 @@ This document breaks the refactor into commit-sized steps. Each step includes ve
 - Compare payload shape with Step 0 snapshot.
 
 **Commit suggestion**
-- `feat: migrate migraine tracker steps to primitives`.
+- `feat: migrate arthritis tracker steps to primitives`.
 
 ## Step 6: JSON Schema + Renderer (Single Tracker)
 **Goal:** Define minimal JSON schema and render one tracker from config.
@@ -119,7 +119,7 @@ This document breaks the refactor into commit-sized steps. Each step includes ve
 - Verify conditional logic and validation are respected.
 
 **Commit suggestion**
-- `feat: add json flow renderer + pilot config`.
+- `feat: add json flow renderer + pilot config (arthritis)`.
 
 ## Step 7: Migrate Remaining Trackers in Batches
 **Goal:** Move the rest of the trackers to primitives and/or JSON configs.

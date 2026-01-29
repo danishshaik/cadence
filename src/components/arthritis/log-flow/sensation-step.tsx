@@ -1,13 +1,12 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { View, Text, StyleSheet, useWindowDimensions, Switch } from "react-native";
-import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import Slider from "@react-native-community/slider";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withTiming,
   withRepeat,
   withSequence,
-  runOnJS,
   interpolate,
   interpolateColor,
   Easing,
@@ -27,10 +26,9 @@ export function SensationStep() {
   const normalizedValue = useSharedValue(
     (formData.stiffness - MIN_STIFFNESS) / (MAX_STIFFNESS - MIN_STIFFNESS)
   );
-  const isDragging = useSharedValue(false);
   const pulseScale = useSharedValue(1);
   const tremor = useSharedValue(0);
-  const lastStiffness = useSharedValue(formData.stiffness);
+  const lastStiffnessRef = useRef(formData.stiffness);
 
   // Check if it's morning (before 10 AM)
   const isMorningTime = new Date().getHours() < 10;
@@ -67,8 +65,7 @@ export function SensationStep() {
     Haptics.impactAsync(style);
   };
 
-  const updateStiffness = (value: number) => {
-    const stiffness = Math.round(value * (MAX_STIFFNESS - MIN_STIFFNESS) + MIN_STIFFNESS);
+  const updateStiffness = (stiffness: number) => {
     updateFormData({ stiffness });
   };
 
@@ -78,40 +75,10 @@ export function SensationStep() {
   const maxBallSize = Math.min(stageWidth * 0.6, stageHeight * 0.85, 180);
   const minBallSize = Math.max(80, stageHeight * 0.4);
 
-  const panGesture = Gesture.Pan()
-    .onStart(() => {
-      isDragging.value = true;
-    })
-    .onUpdate((e) => {
-      const newValue = Math.max(0, Math.min(1, e.x / sliderWidth));
-      const newStiffness = Math.round(
-        newValue * (MAX_STIFFNESS - MIN_STIFFNESS) + MIN_STIFFNESS
-      );
-
-      if (lastStiffness.value !== newStiffness) {
-        lastStiffness.value = newStiffness;
-        const intensity = newStiffness > 7 ? "heavy" : newStiffness > 4 ? "medium" : "light";
-        runOnJS(triggerHaptic)(intensity);
-        runOnJS(updateStiffness)(newValue);
-      }
-
-      normalizedValue.value = newValue;
-    })
-    .onEnd(() => {
-      isDragging.value = false;
-      runOnJS(updateStiffness)(normalizedValue.value);
-    });
-
-  const tapGesture = Gesture.Tap().onEnd((e) => {
-    const newValue = Math.max(0, Math.min(1, e.x / sliderWidth));
-    normalizedValue.value = withTiming(newValue, { duration: 200 });
-    const stiffness = Math.round(newValue * (MAX_STIFFNESS - MIN_STIFFNESS) + MIN_STIFFNESS);
-    const intensity = stiffness > 7 ? "heavy" : stiffness > 4 ? "medium" : "light";
-    runOnJS(triggerHaptic)(intensity);
-    runOnJS(updateStiffness)(newValue);
-  });
-
-  const gesture = Gesture.Race(panGesture, tapGesture);
+  useEffect(() => {
+    normalizedValue.value =
+      (formData.stiffness - MIN_STIFFNESS) / (MAX_STIFFNESS - MIN_STIFFNESS);
+  }, [formData.stiffness, normalizedValue]);
 
   // Joint ball animation - smooth when flexible, spiky/vibrating when stiff
   const ballStyle = useAnimatedStyle(() => {
@@ -148,25 +115,6 @@ export function SensationStep() {
     };
   });
 
-  const fillStyle = useAnimatedStyle(() => ({
-    width: `${normalizedValue.value * 100}%`,
-    backgroundColor: interpolateColor(
-      normalizedValue.value,
-      [0, 0.5, 1],
-      [colors.arthritis, colors.arthritis, colors.arthritisAlert]
-    ),
-  }));
-
-  const thumbStyle = useAnimatedStyle(() => ({
-    left: normalizedValue.value * sliderWidth - 14,
-    transform: [{ scale: isDragging.value ? 1.15 : 1 }],
-    backgroundColor: interpolateColor(
-      normalizedValue.value,
-      [0, 0.6, 1],
-      [colors.arthritis, colors.arthritis, colors.arthritisAlert]
-    ),
-  }));
-
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -185,12 +133,27 @@ export function SensationStep() {
         </View>
 
         <View style={styles.sliderWrapper}>
-          <GestureDetector gesture={gesture}>
-            <View style={[styles.sliderTrack, { width: sliderWidth }]}>
-              <Animated.View style={[styles.sliderFill, fillStyle]} />
-              <Animated.View style={[styles.sliderThumb, thumbStyle]} />
-            </View>
-          </GestureDetector>
+          <Slider
+            style={[styles.sliderTrack, { width: sliderWidth }]}
+            minimumValue={MIN_STIFFNESS}
+            maximumValue={MAX_STIFFNESS}
+            step={1}
+            value={formData.stiffness}
+            onValueChange={(value) => {
+              const stiffness = Math.round(value);
+              if (lastStiffnessRef.current !== stiffness) {
+                lastStiffnessRef.current = stiffness;
+                const intensity = stiffness > 7 ? "heavy" : stiffness > 4 ? "medium" : "light";
+                triggerHaptic(intensity);
+                updateStiffness(stiffness);
+              }
+              normalizedValue.value =
+                (stiffness - MIN_STIFFNESS) / (MAX_STIFFNESS - MIN_STIFFNESS);
+            }}
+            minimumTrackTintColor={colors.arthritis}
+            maximumTrackTintColor={colors.arthritisSurface}
+            thumbTintColor={colors.arthritis}
+          />
 
           <View style={[styles.sliderLabels, { width: sliderWidth }]}>
             <Text style={styles.sliderLabelText}>Fluid & Flexible</Text>
@@ -280,27 +243,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   sliderTrack: {
-    height: 8,
-    backgroundColor: "rgba(119, 221, 119, 0.2)",
-    borderRadius: 8,
-    borderCurve: "continuous",
-    overflow: "visible",
-  },
-  sliderFill: {
-    height: "100%",
-    borderRadius: 8,
-    borderCurve: "continuous",
-  },
-  sliderThumb: {
-    position: "absolute",
-    top: -10,
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    borderCurve: "continuous",
-    borderWidth: 3,
-    borderColor: "#FFFFFF",
-    ...shadows.sm,
+    height: 32,
   },
   sliderLabels: {
     flexDirection: "row",

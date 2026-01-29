@@ -1,10 +1,7 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, { ReactNode, useCallback, useMemo } from "react";
+import { TrackerFlowProvider, useTrackerFlow } from "@components/tracking/tracker-flow-provider";
 import {
   ArthritisFormData,
-  JointLocationId,
-  ActivityTypeId,
-  ManagementMethodId,
-  WeatherConfirmationId,
   getStiffnessLabel,
 } from "@/types/arthritis";
 
@@ -18,8 +15,6 @@ interface LogArthritisContextType {
   canGoBack: boolean;
   isLastStep: boolean;
 }
-
-const LogArthritisContext = createContext<LogArthritisContextType | null>(null);
 
 const TOTAL_STEPS = 5;
 
@@ -39,55 +34,67 @@ const initialFormData: ArthritisFormData = {
   loggedAt: new Date(),
 };
 
+function normalizeFormData(data: ArthritisFormData): ArthritisFormData {
+  const stiffnessLabel = getStiffnessLabel(data.stiffness);
+  if (stiffnessLabel === data.stiffnessLabel) {
+    return data;
+  }
+  return { ...data, stiffnessLabel };
+}
+
 export function LogArthritisProvider({ children }: { children: ReactNode }) {
-  const [formData, setFormData] = useState<ArthritisFormData>(initialFormData);
-  const [currentStep, setCurrentStep] = useState(1);
-
-  const updateFormData = (updates: Partial<ArthritisFormData>) => {
-    setFormData((prev) => {
-      const updated = { ...prev, ...updates };
-      // Auto-update stiffness label when stiffness changes
-      if ("stiffness" in updates) {
-        updated.stiffnessLabel = getStiffnessLabel(updated.stiffness);
-      }
-      return updated;
-    });
-  };
-
-  const goToNextStep = () => {
-    if (currentStep < TOTAL_STEPS) {
-      setCurrentStep((prev) => prev + 1);
-    }
-  };
-
-  const goToPreviousStep = () => {
-    if (currentStep > 1) {
-      setCurrentStep((prev) => prev - 1);
-    }
-  };
-
   return (
-    <LogArthritisContext.Provider
-      value={{
-        formData,
-        updateFormData,
-        currentStep,
-        totalSteps: TOTAL_STEPS,
-        goToNextStep,
-        goToPreviousStep,
-        canGoBack: currentStep > 1,
-        isLastStep: currentStep === TOTAL_STEPS,
-      }}
+    <TrackerFlowProvider
+      initialData={initialFormData}
+      totalSteps={TOTAL_STEPS}
+      onSave={() => {}}
+      onCancel={() => {}}
+      onFormDataChange={normalizeFormData}
     >
       {children}
-    </LogArthritisContext.Provider>
+    </TrackerFlowProvider>
   );
 }
 
-export function useLogArthritis() {
-  const context = useContext(LogArthritisContext);
-  if (!context) {
-    throw new Error("useLogArthritis must be used within a LogArthritisProvider");
-  }
-  return context;
+export function useLogArthritis(): LogArthritisContextType {
+  const {
+    formData,
+    setFormData,
+    currentStep,
+    totalSteps,
+    goToNextStep,
+    goToPreviousStep,
+    canGoBack,
+    isLastStep,
+  } = useTrackerFlow<ArthritisFormData>();
+
+  const updateFormData = useCallback(
+    (updates: Partial<ArthritisFormData>) => {
+      setFormData((prev) => ({ ...prev, ...updates }));
+    },
+    [setFormData]
+  );
+
+  return useMemo(
+    () => ({
+      formData,
+      updateFormData,
+      currentStep,
+      totalSteps,
+      goToNextStep,
+      goToPreviousStep,
+      canGoBack,
+      isLastStep,
+    }),
+    [
+      formData,
+      updateFormData,
+      currentStep,
+      totalSteps,
+      goToNextStep,
+      goToPreviousStep,
+      canGoBack,
+      isLastStep,
+    ]
+  );
 }

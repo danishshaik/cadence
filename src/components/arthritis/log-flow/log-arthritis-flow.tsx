@@ -1,8 +1,7 @@
 import React from "react";
-import { PlatformColor, View, Text, Pressable, StyleSheet } from "react-native";
+import { PlatformColor, Pressable, StyleSheet, Text } from "react-native";
 import { useNavigation, useRouter } from "expo-router";
 import { SymbolView } from "expo-symbols";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as Haptics from "expo-haptics";
 import { colors, shadows } from "@theme";
 import { useArthritisStore } from "@stores/arthritis-store";
@@ -12,29 +11,13 @@ import { LocationStep } from "./location-step";
 import { ContextStep } from "./context-step";
 import { ActivityStep } from "./activity-step";
 import { ManagementStep } from "./management-step";
+import { FlowFooter, FlowScaffold, ProgressIndicator, StepLayout } from "@components/tracking";
 
 const isIOS = process.env.EXPO_OS === "ios";
-
-function HeaderDots({ currentStep, totalSteps }: { currentStep: number; totalSteps: number }) {
-  return (
-    <View style={styles.headerDots}>
-      {Array.from({ length: totalSteps }).map((_, index) => {
-        const isActive = index + 1 === currentStep;
-        return (
-          <View
-            key={index}
-            style={[styles.headerDot, isActive ? styles.headerDotActive : styles.headerDotInactive]}
-          />
-        );
-      })}
-    </View>
-  );
-}
 
 function LogArthritisFlowContent() {
   const router = useRouter();
   const navigation = useNavigation();
-  const insets = useSafeAreaInsets();
   const addLog = useArthritisStore((state) => state.addLog);
 
   const {
@@ -65,7 +48,15 @@ function LogArthritisFlowContent() {
     navigation.setOptions({
       headerShown: true,
       headerTitleAlign: "center",
-      headerTitle: () => <HeaderDots currentStep={currentStep} totalSteps={totalSteps} />,
+      headerTitle: () => (
+        <ProgressIndicator
+          variant="dots"
+          currentStep={currentStep}
+          totalSteps={totalSteps}
+          activeColor={colors.arthritis}
+          inactiveColor={colors.arthritisSurface}
+        />
+      ),
       headerShadowVisible: false,
       headerStyle: { backgroundColor: colors.arthritisLight, height: 96 },
       headerTitleContainerStyle: { paddingTop: 6 },
@@ -138,33 +129,34 @@ function LogArthritisFlowContent() {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.stepContainer}>{renderStep()}</View>
-
-      <View style={[styles.footer, { paddingBottom: insets.bottom + 12 }]}>
-        <View style={styles.buttonRow}>
-          {currentStep > 1 && (
-            <Pressable
-              onPress={handleSave}
-              style={({ pressed }) => [styles.saveButton, pressed && styles.saveButtonPressed]}
-            >
-              <Text style={styles.saveButtonText}>Save</Text>
-            </Pressable>
-          )}
-
-          <Pressable
-            onPress={handleContinue}
-            style={({ pressed }) => [
-              styles.continueButton,
-              currentStep === 1 && styles.continueButtonFull,
-              pressed && styles.continuePressed,
-            ]}
-          >
-            <Text style={styles.continueText}>{isLastStep ? "Log It" : "Continue"}</Text>
-          </Pressable>
-        </View>
-      </View>
-    </View>
+    <FlowScaffold
+      backgroundColor={colors.arthritisLight}
+      footer={
+        <FlowFooter
+          primaryAction={{
+            label: isLastStep ? "Log It" : "Continue",
+            onPress: handleContinue,
+          }}
+          secondaryAction={
+            currentStep > 1
+              ? {
+                  label: "Save",
+                  onPress: handleSave,
+                }
+              : undefined
+          }
+          primaryButtonStyle={styles.continueButton}
+          primaryPressedStyle={styles.continuePressed}
+          primaryTextStyle={styles.continueText}
+          secondaryButtonStyle={styles.saveButton}
+          secondaryPressedStyle={styles.saveButtonPressed}
+          secondaryTextStyle={styles.saveButtonText}
+          fullWidthPrimaryWhenSolo={currentStep === 1}
+        />
+      }
+    >
+      <StepLayout>{renderStep()}</StepLayout>
+    </FlowScaffold>
   );
 }
 
@@ -177,19 +169,6 @@ export function LogArthritisFlow() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.arthritisLight,
-  },
-  stepContainer: {
-    flex: 1,
-    paddingHorizontal: 20,
-    paddingTop: 16,
-  },
-  footer: {
-    paddingHorizontal: 20,
-    paddingTop: 12,
-  },
   headerIconButton: {
     padding: 8,
     borderRadius: 16,
@@ -197,29 +176,6 @@ const styles = StyleSheet.create({
   headerIconFallback: {
     fontSize: 20,
     color: colors.arthritisText,
-  },
-  headerDots: {
-    flexDirection: "row",
-    gap: 6,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  headerDot: {
-    borderRadius: 4,
-  },
-  headerDotActive: {
-    width: 8,
-    height: 8,
-    backgroundColor: colors.arthritis,
-  },
-  headerDotInactive: {
-    width: 6,
-    height: 6,
-    backgroundColor: colors.arthritisSurface,
-  },
-  buttonRow: {
-    flexDirection: "row",
-    gap: 10,
   },
   saveButton: {
     flex: 1,
@@ -243,15 +199,11 @@ const styles = StyleSheet.create({
     color: colors.arthritisText,
   },
   continueButton: {
-    flex: 2,
     backgroundColor: colors.arthritis,
     borderRadius: 16,
     borderCurve: "continuous",
     paddingVertical: 16,
     alignItems: "center",
-  },
-  continueButtonFull: {
-    flex: 1,
   },
   continuePressed: {
     opacity: 0.9,
