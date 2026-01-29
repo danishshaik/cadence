@@ -59,26 +59,15 @@ function LogMigraineFlowContent() {
     }
   };
 
-  const renderStep = () => {
-    switch (currentStep) {
-      case 1:
-        return <SeverityStep />;
-      case 2:
-        return <WhenStep />;
-      case 3:
-        return <DurationStep />;
-      case 4:
-        return <LocationStep />;
-      case 5:
-        return <TriggersStep />;
-      case 6:
-        return <MedicationStep />;
-      case 7:
-        return <NotesStep />;
-      default:
-        return null;
-    }
-  };
+  const steps = [
+    { key: "severity", node: <SeverityStep /> },
+    { key: "when", node: <WhenStep /> },
+    { key: "duration", node: <DurationStep /> },
+    { key: "location", node: <LocationStep /> },
+    { key: "triggers", node: <TriggersStep /> },
+    { key: "medication", node: <MedicationStep /> },
+    { key: "notes", node: <NotesStep /> },
+  ];
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
@@ -90,7 +79,9 @@ function LogMigraineFlowContent() {
 
       <ProgressBar currentStep={currentStep} totalSteps={totalSteps} />
 
-      <View style={styles.stepContainer}>{renderStep()}</View>
+      <View style={styles.stepContainer}>
+        {steps[currentStep - 1]?.node}
+      </View>
 
       <View style={[styles.footer, { paddingBottom: insets.bottom + 12 }]}>
         <View style={styles.buttonRow}>

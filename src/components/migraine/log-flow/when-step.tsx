@@ -51,7 +51,10 @@ export function WhenStep() {
         </Pressable>
       </View>
 
-      {showDatePicker && (
+      <View
+        style={[styles.datePickerContainer, !showDatePicker && styles.datePickerHidden]}
+        pointerEvents={showDatePicker ? "auto" : "none"}
+      >
         <ExpoDateTimePicker
           value={formData.startedAt}
           mode="date"
@@ -60,7 +63,7 @@ export function WhenStep() {
           maximumDate={new Date()}
           accentColor={colors.migraine}
         />
-      )}
+      </View>
 
       <View style={styles.section}>
         <Text style={styles.sectionLabel}>TIME OF DAY</Text>
@@ -157,6 +160,12 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: colors.textPrimary,
     marginBottom: 4,
+  },
+  datePickerContainer: {
+    marginBottom: 16,
+  },
+  datePickerHidden: {
+    display: "none",
   },
   chipLabelSelected: {
     color: colors.migraine,

@@ -30,6 +30,10 @@ yarn-error.*
 .DS_Store
 *.pem
 
+# local build artifacts
+Cadence.app/
+build-*
+
 # local env files
 .env*.local
 
