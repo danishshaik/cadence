@@ -13,6 +13,7 @@ export function StepLayout({ children, style }: StepLayoutProps) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    minHeight: 0,
     paddingHorizontal: 20,
     paddingTop: 16,
   },

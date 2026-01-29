@@ -14,6 +14,7 @@ interface FlowScaffoldProps {
   backgroundColor?: string;
   contentContainerStyle?: StyleProp<ViewStyle>;
   scrollViewProps?: ScrollViewProps;
+  scrollEnabled?: boolean;
 }
 
 export function FlowScaffold({
@@ -22,18 +23,23 @@ export function FlowScaffold({
   backgroundColor,
   contentContainerStyle,
   scrollViewProps,
+  scrollEnabled = true,
 }: FlowScaffoldProps) {
   return (
     <View style={[styles.container, backgroundColor && { backgroundColor }]}>
-      <ScrollView
-        style={styles.scroll}
-        contentInsetAdjustmentBehavior="automatic"
-        keyboardShouldPersistTaps="handled"
-        contentContainerStyle={[styles.contentContainer, contentContainerStyle]}
-        {...scrollViewProps}
-      >
-        {children}
-      </ScrollView>
+      {scrollEnabled ? (
+        <ScrollView
+          style={styles.scroll}
+          contentInsetAdjustmentBehavior="automatic"
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={[styles.contentContainer, contentContainerStyle]}
+          {...scrollViewProps}
+        >
+          {children}
+        </ScrollView>
+      ) : (
+        <View style={[styles.contentContainer, contentContainerStyle]}>{children}</View>
+      )}
       {footer}
     </View>
   );
@@ -45,6 +51,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flexGrow: 1,
+    flex: 1,
   },
   scroll: {
     flex: 1,

@@ -131,6 +131,7 @@ function LogArthritisFlowContent() {
   return (
     <FlowScaffold
       backgroundColor={colors.arthritisLight}
+      scrollEnabled={false}
       footer={
         <FlowFooter
           primaryAction={{
