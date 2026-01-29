@@ -1,12 +1,19 @@
 import React, { useState } from "react";
 import { ScrollView, Text, View } from "react-native";
 import { colors } from "@theme";
-import { ChoiceField, FlowHeader, LinearScaleField, SelectionField } from "@components/tracking";
+import {
+  ChoiceField,
+  FlowHeader,
+  LinearScaleField,
+  SelectionField,
+  getVisualization,
+} from "@components/tracking";
 
 export default function DevFieldsScreen() {
   const [selection, setSelection] = useState<string | null>("morning");
   const [choices, setChoices] = useState<string[]>(["heat"]);
   const [scale, setScale] = useState<number>(4);
+  const selectionViz = getVisualization("selection.compact");
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.arthritisLight }}>
@@ -45,6 +52,7 @@ export default function DevFieldsScreen() {
         description="Pick a single option"
         value={selection}
         onChange={setSelection}
+        variant={selectionViz.variant}
         options={[
           { value: "morning", label: "Morning", description: "After waking up" },
           { value: "afternoon", label: "Afternoon", description: "Mid-day" },

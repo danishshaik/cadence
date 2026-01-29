@@ -1,10 +1,11 @@
 import React, { useEffect } from "react";
-import { View, Text, Pressable, StyleSheet, useWindowDimensions } from "react-native";
+import { View, Text, Pressable, StyleSheet } from "react-native";
 import { SymbolView } from "expo-symbols";
 import * as Haptics from "expo-haptics";
 import { colors, shadows } from "@theme";
 import { useLogArthritis } from "./log-arthritis-provider";
 import { WeatherConfirmationId, WEATHER_CONFIRMATIONS } from "@/types/arthritis";
+import { SelectionField } from "@components/tracking";
 
 const isIOS = process.env.EXPO_OS === "ios";
 
@@ -63,7 +64,6 @@ function ConfirmationPill({
 
 export function ContextStep() {
   const { formData, updateFormData } = useLogArthritis();
-  const { width } = useWindowDimensions();
 
   // Initialize weather data on mount
   useEffect(() => {
@@ -108,18 +108,23 @@ export function ContextStep() {
 
       <View style={styles.questionSection}>
         <Text style={styles.questionText}>Does the weather match your pain?</Text>
-
-        <View style={styles.pillsRow}>
-          {WEATHER_CONFIRMATIONS.map((option) => (
+        <SelectionField
+          value={formData.weatherConfirmation}
+          onChange={(value) => handleConfirmationPress(value as WeatherConfirmationId)}
+          options={WEATHER_CONFIRMATIONS.map((option) => ({
+            value: option.id,
+            label: option.label,
+          }))}
+          listStyle={styles.pillsRow}
+          renderOption={({ option, selected, onPress }) => (
             <ConfirmationPill
-              key={option.id}
-              id={option.id}
+              id={option.value as WeatherConfirmationId}
               label={option.label}
-              selected={formData.weatherConfirmation === option.id}
-              onPress={handleConfirmationPress}
+              selected={selected}
+              onPress={() => onPress()}
             />
-          ))}
-        </View>
+          )}
+        />
       </View>
 
       <Text style={styles.footerNote}>

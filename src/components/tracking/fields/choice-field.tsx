@@ -1,5 +1,5 @@
 import React from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleProp, StyleSheet, Text, View, ViewStyle } from "react-native";
 import * as Haptics from "expo-haptics";
 import { colors, shadows } from "@theme";
 import { FieldPropsWithVariant } from "../types";
@@ -17,6 +17,13 @@ interface ChoiceFieldProps extends FieldPropsWithVariant<string[]> {
   options: ChoiceOption[];
   minSelections?: number;
   maxSelections?: number;
+  listStyle?: StyleProp<ViewStyle>;
+  renderOption?: (params: {
+    option: ChoiceOption;
+    selected: boolean;
+    onPress: () => void;
+    disabled?: boolean;
+  }) => React.ReactNode;
 }
 
 export function ChoiceField({
@@ -30,6 +37,8 @@ export function ChoiceField({
   error,
   label,
   description,
+  listStyle,
+  renderOption,
 }: ChoiceFieldProps) {
   const selectedValues = value ?? [];
 
@@ -60,9 +69,21 @@ export function ChoiceField({
       error={error}
       disabled={disabled}
     >
-      <View style={styles.list}>
+      <View style={[styles.list, listStyle]}>
         {options.map((option) => {
           const selected = selectedValues.includes(option.value);
+          if (renderOption) {
+            return (
+              <React.Fragment key={option.value}>
+                {renderOption({
+                  option,
+                  selected,
+                  onPress: () => toggleValue(option.value),
+                  disabled,
+                })}
+              </React.Fragment>
+            );
+          }
           return (
             <Pressable
               key={option.value}

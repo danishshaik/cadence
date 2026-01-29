@@ -10,7 +10,13 @@ import { LocationStep } from "./location-step";
 import { ContextStep } from "./context-step";
 import { ActivityStep } from "./activity-step";
 import { ManagementStep } from "./management-step";
-import { FlowFooter, FlowScaffold, StepLayout, useNativeFlowHeader } from "@components/tracking";
+import {
+  FlowFooter,
+  FlowScaffold,
+  StepLayout,
+  getAction,
+  useNativeFlowHeader,
+} from "@components/tracking";
 
 const isIOS = process.env.EXPO_OS === "ios";
 
@@ -54,20 +60,11 @@ function LogArthritisFlowContent() {
   });
 
   const handleSave = () => {
-    addLog({
-      stiffness: formData.stiffness,
-      morningStiffness: formData.morningStiffness,
-      affectedJoints: formData.affectedJoints,
-      bilateralSymmetry: formData.bilateralSymmetry,
-      barometricPressure: formData.barometricPressure ?? undefined,
-      temperature: formData.temperature ?? undefined,
-      humidity: formData.humidity ?? undefined,
-      weatherConfirmation: formData.weatherConfirmation ?? undefined,
-      activities: formData.activities,
-      managementMethods: formData.managementMethods,
-      notes: formData.notes,
+    const saveAction = getAction("arthritis.save");
+    saveAction(formData, {
+      addLog,
+      onComplete: () => router.back(),
     });
-    router.back();
   };
 
   const handleContinue = () => {

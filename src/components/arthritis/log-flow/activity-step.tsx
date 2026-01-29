@@ -5,6 +5,7 @@ import * as Haptics from "expo-haptics";
 import { colors, shadows } from "@theme";
 import { useLogArthritis } from "./log-arthritis-provider";
 import { ActivityTypeId, ACTIVITY_TYPES } from "@/types/arthritis";
+import { ChoiceField } from "@components/tracking";
 
 const isIOS = process.env.EXPO_OS === "ios";
 
@@ -58,15 +59,6 @@ function ActivityPill({
 export function ActivityStep() {
   const { formData, updateFormData } = useLogArthritis();
 
-  const handleActivityPress = (id: ActivityTypeId) => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    const current = formData.activities;
-    const updated = current.includes(id)
-      ? current.filter((a) => a !== id)
-      : [...current, id];
-    updateFormData({ activities: updated });
-  };
-
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -79,16 +71,28 @@ export function ActivityStep() {
         contentContainerStyle={styles.pillsContainer}
         showsVerticalScrollIndicator={false}
       >
-        {ACTIVITY_TYPES.map((activity) => (
-          <ActivityPill
-            key={activity.id}
-            id={activity.id}
-            label={activity.label}
-            icon={activity.icon}
-            selected={formData.activities.includes(activity.id)}
-            onPress={handleActivityPress}
-          />
-        ))}
+        <ChoiceField
+          value={formData.activities}
+          onChange={(next) => updateFormData({ activities: next as ActivityTypeId[] })}
+          options={ACTIVITY_TYPES.map((activity) => ({
+            value: activity.id,
+            label: activity.label,
+            description: activity.icon,
+          }))}
+          renderOption={({ option, selected, onPress }) => (
+            <ActivityPill
+              key={option.value}
+              id={option.value as ActivityTypeId}
+              label={option.label}
+              icon={option.description ?? "circle.fill"}
+              selected={selected}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                onPress();
+              }}
+            />
+          )}
+        />
       </ScrollView>
 
       <Text style={styles.footerNote}>

@@ -1,5 +1,5 @@
 import React from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleProp, StyleSheet, Text, View, ViewStyle } from "react-native";
 import * as Haptics from "expo-haptics";
 import { colors, shadows } from "@theme";
 import { FieldPropsWithVariant } from "../types";
@@ -13,19 +13,29 @@ export interface SelectionOption {
   description?: string;
 }
 
-interface SelectionFieldProps extends FieldPropsWithVariant<string | null> {
+interface SelectionFieldProps extends FieldPropsWithVariant<string | null, "default" | "compact"> {
   options: SelectionOption[];
+  listStyle?: StyleProp<ViewStyle>;
+  renderOption?: (params: {
+    option: SelectionOption;
+    selected: boolean;
+    onPress: () => void;
+    disabled?: boolean;
+  }) => React.ReactNode;
 }
 
 export function SelectionField({
   value,
   onChange,
   options,
+  variant = "default",
   disabled,
   required,
   error,
   label,
   description,
+  listStyle,
+  renderOption,
 }: SelectionFieldProps) {
   return (
     <FieldWrapper
@@ -35,19 +45,35 @@ export function SelectionField({
       error={error}
       disabled={disabled}
     >
-      <View style={styles.list}>
+      <View style={[styles.list, listStyle]}>
         {options.map((option) => {
           const selected = option.value === value;
+          const handlePress = () => {
+            if (disabled) return;
+            Haptics.selectionAsync();
+            onChange(option.value);
+          };
+
+          if (renderOption) {
+            return (
+              <React.Fragment key={option.value}>
+                {renderOption({
+                  option,
+                  selected,
+                  onPress: handlePress,
+                  disabled,
+                })}
+              </React.Fragment>
+            );
+          }
+
           return (
             <Pressable
               key={option.value}
-              onPress={() => {
-                if (disabled) return;
-                Haptics.selectionAsync();
-                onChange(option.value);
-              }}
+              onPress={handlePress}
               style={({ pressed }) => [
                 styles.card,
+                variant === "compact" && styles.cardCompact,
                 selected && styles.cardSelected,
                 pressed && styles.cardPressed,
               ]}
@@ -87,6 +113,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.border ?? colors.arthritisBorder,
     ...shadows.sm,
+  },
+  cardCompact: {
+    paddingVertical: 12,
   },
   cardSelected: {
     borderColor: colors.arthritis,
