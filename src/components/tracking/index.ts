@@ -16,3 +16,4 @@ export { useNativeFlowHeader } from "./native-flow-header";
 export { getAction } from "./registries/action-registry";
 export { getValidation } from "./registries/validation-registry";
 export { getVisualization } from "./registries/visualization-registry";
+export { TrackerFlowRenderer } from "./tracker-flow-renderer";

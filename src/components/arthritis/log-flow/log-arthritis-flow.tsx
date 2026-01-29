@@ -4,19 +4,21 @@ import { useRouter } from "expo-router";
 import * as Haptics from "expo-haptics";
 import { colors, shadows } from "@theme";
 import { useArthritisStore } from "@stores/arthritis-store";
-import { LogArthritisProvider, useLogArthritis } from "./log-arthritis-provider";
-import { SensationStep } from "./sensation-step";
-import { LocationStep } from "./location-step";
-import { ContextStep } from "./context-step";
-import { ActivityStep } from "./activity-step";
-import { ManagementStep } from "./management-step";
+import { TrackerFlowProvider, useTrackerFlow } from "@components/tracking/tracker-flow-provider";
 import {
   FlowFooter,
   FlowScaffold,
   StepLayout,
   getAction,
+  getValidation,
   useNativeFlowHeader,
 } from "@components/tracking";
+import { TrackerFlowRenderer } from "@components/tracking/tracker-flow-renderer";
+import {
+  arthritisFlowConfig,
+  normalizeArthritisFormData,
+} from "./arthritis-flow-config";
+import { ArthritisFormData } from "@/types/arthritis";
 
 const isIOS = process.env.EXPO_OS === "ios";
 
@@ -32,7 +34,9 @@ function LogArthritisFlowContent() {
     goToPreviousStep,
     canGoBack,
     isLastStep,
-  } = useLogArthritis();
+    validateStep,
+    save,
+  } = useTrackerFlow<ArthritisFormData>();
 
   const handleCancel = () => {
     router.back();
@@ -69,26 +73,12 @@ function LogArthritisFlowContent() {
 
   const handleContinue = () => {
     if (isLastStep) {
-      handleSave();
-    } else {
-      goToNextStep();
+      save();
+      return;
     }
-  };
-
-  const renderStep = () => {
-    switch (currentStep) {
-      case 1:
-        return <SensationStep />;
-      case 2:
-        return <LocationStep />;
-      case 3:
-        return <ContextStep />;
-      case 4:
-        return <ActivityStep />;
-      case 5:
-        return <ManagementStep />;
-      default:
-        return null;
+    const validation = validateStep();
+    if (validation.isValid) {
+      goToNextStep();
     }
   };
 
@@ -120,16 +110,40 @@ function LogArthritisFlowContent() {
         />
       }
     >
-      <StepLayout>{renderStep()}</StepLayout>
+      <StepLayout>
+        <TrackerFlowRenderer config={arthritisFlowConfig} />
+      </StepLayout>
     </FlowScaffold>
   );
 }
 
 export function LogArthritisFlow() {
+  const router = useRouter();
+  const addLog = useArthritisStore((state) => state.addLog);
+
   return (
-    <LogArthritisProvider>
+    <TrackerFlowProvider
+      initialData={arthritisFlowConfig.initialData}
+      totalSteps={arthritisFlowConfig.steps.length}
+      onSave={(data) => {
+        const saveAction = getAction("arthritis.save");
+        saveAction(data, {
+          addLog,
+          onComplete: () => router.back(),
+        });
+      }}
+      onCancel={() => router.back()}
+      onFormDataChange={normalizeArthritisFormData}
+      validator={(data, stepIndex) => {
+        const step = arthritisFlowConfig.steps[stepIndex];
+        if (step?.validationKey) {
+          return getValidation(step.validationKey)(data as any);
+        }
+        return { isValid: true, errors: {} };
+      }}
+    >
       <LogArthritisFlowContent />
-    </LogArthritisProvider>
+    </TrackerFlowProvider>
   );
 }
 

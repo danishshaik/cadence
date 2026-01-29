@@ -167,6 +167,7 @@ export function JointMapField({
   bilateralSymmetry = false,
   onBilateralChange,
   disabled,
+  error,
 }: JointMapFieldProps) {
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
@@ -267,6 +268,7 @@ export function JointMapField({
           </Pressable>
         </View>
       ) : null}
+      {error ? <Text style={styles.error}>{error}</Text> : null}
     </View>
   );
 }
@@ -333,5 +335,10 @@ const styles = StyleSheet.create({
   },
   bilateralTextActive: {
     color: colors.arthritisText,
+  },
+  error: {
+    fontFamily: isIOS ? "SF Pro Text" : "sans-serif",
+    fontSize: 13,
+    color: colors.error ?? "#DC2626",
   },
 });
