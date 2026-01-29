@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { ScrollView, Text, View } from "react-native";
 import { colors } from "@theme";
-import { ChoiceField, LinearScaleField, SelectionField } from "@components/tracking";
+import { ChoiceField, FlowHeader, LinearScaleField, SelectionField } from "@components/tracking";
 
 export default function DevFieldsScreen() {
   const [selection, setSelection] = useState<string | null>("morning");
@@ -9,24 +9,36 @@ export default function DevFieldsScreen() {
   const [scale, setScale] = useState<number>(4);
 
   return (
-    <ScrollView
-      contentInsetAdjustmentBehavior="automatic"
-      contentContainerStyle={{
-        paddingHorizontal: 20,
-        paddingBottom: 40,
-        paddingTop: 20,
-        gap: 28,
-      }}
-      style={{ flex: 1, backgroundColor: colors.arthritisLight }}
-    >
-      <View style={{ gap: 12 }}>
-        <Text selectable style={{ fontSize: 20, fontWeight: "700", color: colors.arthritisText }}>
-          Field Primitives
-        </Text>
-        <Text selectable style={{ fontSize: 13, color: colors.arthritisTextSecondary }}>
-          Dev-only screen for validating the new tracking fields.
-        </Text>
-      </View>
+    <View style={{ flex: 1, backgroundColor: colors.arthritisLight }}>
+      <FlowHeader
+        currentStep={2}
+        totalSteps={5}
+        progressVariant="dots"
+        showBack={true}
+        onBack={() => {}}
+        onCancel={() => {}}
+        backgroundColor={colors.arthritisLight}
+        activeColor={colors.arthritis}
+        inactiveColor={colors.arthritisSurface}
+      />
+      <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
+        contentContainerStyle={{
+          paddingHorizontal: 20,
+          paddingBottom: 40,
+          paddingTop: 20,
+          gap: 28,
+        }}
+        style={{ flex: 1 }}
+      >
+        <View style={{ gap: 12 }}>
+          <Text selectable style={{ fontSize: 20, fontWeight: "700", color: colors.arthritisText }}>
+            Field Primitives
+          </Text>
+          <Text selectable style={{ fontSize: 13, color: colors.arthritisTextSecondary }}>
+            Dev-only screen for validating the new tracking fields.
+          </Text>
+        </View>
 
       <SelectionField
         label="When do you feel it most?"
@@ -52,17 +64,18 @@ export default function DevFieldsScreen() {
         ]}
       />
 
-      <LinearScaleField
-        label="Stiffness right now"
-        description="0 = flexible, 10 = locked"
-        value={scale}
-        onChange={setScale}
-        min={0}
-        max={10}
-        step={1}
-        leftLabel="Flexible"
-        rightLabel="Rigid"
-      />
-    </ScrollView>
+        <LinearScaleField
+          label="Stiffness right now"
+          description="0 = flexible, 10 = locked"
+          value={scale}
+          onChange={setScale}
+          min={0}
+          max={10}
+          step={1}
+          leftLabel="Flexible"
+          rightLabel="Rigid"
+        />
+      </ScrollView>
+    </View>
   );
 }

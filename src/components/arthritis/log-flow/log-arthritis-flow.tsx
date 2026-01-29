@@ -1,7 +1,6 @@
 import React from "react";
-import { PlatformColor, Pressable, StyleSheet, Text } from "react-native";
-import { useNavigation, useRouter } from "expo-router";
-import { SymbolView } from "expo-symbols";
+import { StyleSheet } from "react-native";
+import { useRouter } from "expo-router";
 import * as Haptics from "expo-haptics";
 import { colors, shadows } from "@theme";
 import { useArthritisStore } from "@stores/arthritis-store";
@@ -11,13 +10,12 @@ import { LocationStep } from "./location-step";
 import { ContextStep } from "./context-step";
 import { ActivityStep } from "./activity-step";
 import { ManagementStep } from "./management-step";
-import { FlowFooter, FlowScaffold, ProgressIndicator, StepLayout } from "@components/tracking";
+import { FlowFooter, FlowScaffold, StepLayout, useNativeFlowHeader } from "@components/tracking";
 
 const isIOS = process.env.EXPO_OS === "ios";
 
 function LogArthritisFlowContent() {
   const router = useRouter();
-  const navigation = useNavigation();
   const addLog = useArthritisStore((state) => state.addLog);
 
   const {
@@ -44,47 +42,16 @@ function LogArthritisFlowContent() {
     handleCancel();
   }, [handleCancel]);
 
-  React.useLayoutEffect(() => {
-    navigation.setOptions({
-      headerShown: true,
-      headerTitleAlign: "center",
-      headerTitle: () => (
-        <ProgressIndicator
-          variant="dots"
-          currentStep={currentStep}
-          totalSteps={totalSteps}
-          activeColor={colors.arthritis}
-          inactiveColor={colors.arthritisSurface}
-        />
-      ),
-      headerShadowVisible: false,
-      headerStyle: { backgroundColor: colors.arthritisLight, height: 96 },
-      headerTitleContainerStyle: { paddingTop: 6 },
-      headerLeftContainerStyle: { paddingLeft: 16, paddingTop: 6 },
-      headerRightContainerStyle: { paddingRight: 16, paddingTop: 6 },
-      headerLeft: () =>
-        canGoBack ? (
-          <Pressable onPress={handleHeaderBack} style={styles.headerIconButton}>
-            <SymbolView
-              name="chevron.left"
-              size={20}
-              tintColor={PlatformColor("label")}
-              fallback={<Text style={styles.headerIconFallback}>‹</Text>}
-            />
-          </Pressable>
-        ) : null,
-      headerRight: () => (
-        <Pressable onPress={handleHeaderCancel} style={styles.headerIconButton}>
-          <SymbolView
-            name="xmark"
-            size={18}
-            tintColor={PlatformColor("label")}
-            fallback={<Text style={styles.headerIconFallback}>×</Text>}
-          />
-        </Pressable>
-      ),
-    });
-  }, [canGoBack, currentStep, handleHeaderBack, handleHeaderCancel, navigation, totalSteps]);
+  useNativeFlowHeader({
+    currentStep,
+    totalSteps,
+    canGoBack,
+    onBack: handleHeaderBack,
+    onCancel: handleHeaderCancel,
+    backgroundColor: colors.arthritisLight,
+    activeColor: colors.arthritis,
+    inactiveColor: colors.arthritisSurface,
+  });
 
   const handleSave = () => {
     addLog({
@@ -170,14 +137,6 @@ export function LogArthritisFlow() {
 }
 
 const styles = StyleSheet.create({
-  headerIconButton: {
-    padding: 8,
-    borderRadius: 16,
-  },
-  headerIconFallback: {
-    fontSize: 20,
-    color: colors.arthritisText,
-  },
   saveButton: {
     flex: 1,
     backgroundColor: "#FFFFFF",

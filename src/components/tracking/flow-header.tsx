@@ -9,6 +9,7 @@ import {
   ViewStyle,
 } from "react-native";
 import { SymbolView } from "expo-symbols";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ProgressIndicator, ProgressVariant } from "./progress-indicator";
 
 const isIOS = process.env.EXPO_OS === "ios";
@@ -26,6 +27,7 @@ interface FlowHeaderProps {
   iconColor?: string;
   containerStyle?: StyleProp<ViewStyle>;
   height?: number;
+  includeSafeArea?: boolean;
 }
 
 export function FlowHeader({
@@ -41,17 +43,21 @@ export function FlowHeader({
   iconColor,
   containerStyle,
   height = 96,
+  includeSafeArea = true,
 }: FlowHeaderProps) {
+  const insets = useSafeAreaInsets();
+  const topInset = includeSafeArea ? insets.top : 0;
+
   return (
     <View
       style={[
         styles.container,
-        { height },
+        { height: height + topInset },
         backgroundColor && { backgroundColor },
         containerStyle,
       ]}
     >
-      <View style={styles.content}>
+      <View style={[styles.content, { paddingTop: 6 + topInset }]}>
         <View style={styles.side}>
           {showBack && onBack && (
             <Pressable onPress={onBack} style={styles.iconButton}>

@@ -9,6 +9,7 @@ import {
 } from "react-native";
 
 interface FlowScaffoldProps {
+  header?: ReactNode;
   children: ReactNode;
   footer?: ReactNode;
   backgroundColor?: string;
@@ -18,6 +19,7 @@ interface FlowScaffoldProps {
 }
 
 export function FlowScaffold({
+  header,
   children,
   footer,
   backgroundColor,
@@ -27,6 +29,7 @@ export function FlowScaffold({
 }: FlowScaffoldProps) {
   return (
     <View style={[styles.container, backgroundColor && { backgroundColor }]}>
+      {header}
       {scrollEnabled ? (
         <ScrollView
           style={styles.scroll}
