@@ -47,6 +47,8 @@ export interface ValidationResult {
   isValid: boolean;
   /** Error messages keyed by field name */
   errors: Record<string, string>;
+  /** Optional 1-based step index for the first failing step */
+  stepIndex?: number;
 }
 
 /**
@@ -118,6 +120,8 @@ export interface FlowValidation {
   isStepValid: boolean;
   /** Validate current step and return result */
   validateStep: () => ValidationResult;
+  /** Validate all steps and return the first failure */
+  validateAllSteps: () => ValidationResult;
   /** Clear all validation errors */
   clearErrors: () => void;
   /** Set error for a specific field */

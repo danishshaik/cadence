@@ -32,9 +32,11 @@ function LogArthritisFlowContent() {
     totalSteps,
     goToNextStep,
     goToPreviousStep,
+    goToStep,
     canGoBack,
     isLastStep,
     validateStep,
+    validateAllSteps,
     save,
   } = useTrackerFlow<ArthritisFormData>();
 
@@ -64,6 +66,13 @@ function LogArthritisFlowContent() {
   });
 
   const handleSave = () => {
+    const validation = validateAllSteps();
+    if (!validation.isValid) {
+      if (validation.stepIndex) {
+        goToStep(validation.stepIndex);
+      }
+      return;
+    }
     const saveAction = getAction("arthritis.save");
     saveAction(formData, {
       addLog,

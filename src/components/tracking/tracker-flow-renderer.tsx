@@ -6,6 +6,7 @@ import { FormDataConstraint } from "./types";
 import {
   ChoiceField,
   JointMapField,
+  LinearScaleField,
   SelectionField,
   StiffnessField,
   ToggleField,
@@ -135,6 +136,25 @@ export function TrackerFlowRenderer<TFormData extends FormDataConstraint>({
           description={field.description}
           required={field.required}
           error={error}
+        />
+      );
+    }
+
+    if (field.type === "linear_scale") {
+      return (
+        <LinearScaleField
+          key={field.id}
+          value={(formData as any)[field.fieldKey] as number}
+          onChange={(next) => updateField(field.fieldKey as any, next as any)}
+          label={field.label}
+          description={field.description}
+          required={field.required}
+          error={error}
+          min={field.min ?? 0}
+          max={field.max ?? 10}
+          step={field.step ?? 1}
+          leftLabel={field.leftLabel}
+          rightLabel={field.rightLabel}
         />
       );
     }

@@ -119,6 +119,21 @@ export function TrackerFlowProvider<TFormData extends FormDataConstraint>({
     return result;
   }, [validator, formData, currentStep]);
 
+  const validateAllSteps = useCallback((): ValidationResult => {
+    if (!validator) {
+      return { isValid: true, errors: {} };
+    }
+    for (let stepIndex = 0; stepIndex < totalSteps; stepIndex += 1) {
+      const result = validator(formData, stepIndex);
+      if (!result.isValid) {
+        setErrors(result.errors);
+        return { ...result, stepIndex: stepIndex + 1 };
+      }
+    }
+    setErrors({});
+    return { isValid: true, errors: {} };
+  }, [validator, formData, totalSteps]);
+
   const clearErrors = useCallback(() => {
     setErrors({});
   }, []);
@@ -187,6 +202,7 @@ export function TrackerFlowProvider<TFormData extends FormDataConstraint>({
       errors,
       isStepValid,
       validateStep,
+      validateAllSteps,
       clearErrors,
       setFieldError,
       // Actions
@@ -211,6 +227,7 @@ export function TrackerFlowProvider<TFormData extends FormDataConstraint>({
       errors,
       isStepValid,
       validateStep,
+      validateAllSteps,
       clearErrors,
       setFieldError,
       save,
@@ -282,6 +299,7 @@ export function useFlowValidation() {
     errors,
     isStepValid,
     validateStep,
+    validateAllSteps,
     clearErrors,
     setFieldError,
   } = useTrackerFlow();
@@ -290,6 +308,7 @@ export function useFlowValidation() {
     errors,
     isStepValid,
     validateStep,
+    validateAllSteps,
     clearErrors,
     setFieldError,
   };

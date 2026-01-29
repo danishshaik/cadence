@@ -15,6 +15,7 @@ export interface FlowOption {
 
 export type TrackerFieldType =
   | "stiffness"
+  | "linear_scale"
   | "toggle"
   | "joint_map"
   | "selection"
@@ -28,6 +29,11 @@ export interface TrackerFieldConfig {
   description?: string;
   required?: boolean;
   allowDeselect?: boolean;
+  min?: number;
+  max?: number;
+  step?: number;
+  leftLabel?: string;
+  rightLabel?: string;
   options?: FlowOption[];
   visualizationKey?: VisualizationKey;
   bilateralKey?: string;
