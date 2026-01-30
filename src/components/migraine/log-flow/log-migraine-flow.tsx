@@ -5,8 +5,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { colors } from "@theme";
 import { useMigraineStore } from "@stores/migraine-store";
 import { useLogMigraine, LogMigraineProvider } from "./log-migraine-provider";
-import { ProgressBar } from "./progress-bar";
-import { StepHeader } from "./step-header";
 import { SeverityStep } from "./severity-step";
 import { WhenStep } from "./when-step";
 import { DurationStep } from "./duration-step";
@@ -14,6 +12,7 @@ import { LocationStep } from "./location-step";
 import { TriggersStep } from "./triggers-step";
 import { MedicationStep } from "./medication-step";
 import { NotesStep } from "./notes-step";
+import { useNativeFlowHeader } from "@components/tracking";
 
 function LogMigraineFlowContent() {
   const router = useRouter();
@@ -33,6 +32,25 @@ function LogMigraineFlowContent() {
   const handleCancel = () => {
     router.back();
   };
+
+  const handleHeaderBack = React.useCallback(() => {
+    goToPreviousStep();
+  }, [goToPreviousStep]);
+
+  const handleHeaderCancel = React.useCallback(() => {
+    handleCancel();
+  }, [handleCancel]);
+
+  useNativeFlowHeader({
+    currentStep,
+    totalSteps,
+    canGoBack,
+    onBack: handleHeaderBack,
+    onCancel: handleHeaderCancel,
+    backgroundColor: colors.background,
+    activeColor: colors.migraine,
+    inactiveColor: colors.border,
+  });
 
   const handleSave = () => {
     addLog({
@@ -70,18 +88,8 @@ function LogMigraineFlowContent() {
   ];
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
-      <StepHeader
-        onBack={canGoBack ? goToPreviousStep : undefined}
-        onCancel={handleCancel}
-        showBack={canGoBack}
-      />
-
-      <ProgressBar currentStep={currentStep} totalSteps={totalSteps} />
-
-      <View style={styles.stepContainer}>
-        {steps[currentStep - 1]?.node}
-      </View>
+    <View style={styles.container}>
+      <View style={styles.stepContainer}>{steps[currentStep - 1]?.node}</View>
 
       <View style={[styles.footer, { paddingBottom: insets.bottom + 12 }]}>
         <View style={styles.buttonRow}>

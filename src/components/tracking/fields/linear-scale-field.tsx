@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import Slider from "@react-native-community/slider";
 import { colors } from "@theme";
+import { ExpoSlider } from "@/components/ui";
 import { FieldPropsWithVariant } from "../types";
 import { FieldWrapper } from "./field-wrapper";
 
@@ -42,7 +42,7 @@ export function LinearScaleField({
           {value}
         </Text>
       </View>
-      <Slider
+      <ExpoSlider
         minimumValue={min}
         maximumValue={max}
         step={step}
@@ -51,7 +51,7 @@ export function LinearScaleField({
         minimumTrackTintColor={colors.arthritis}
         maximumTrackTintColor={colors.arthritisSurface}
         thumbTintColor={colors.arthritis}
-        disabled={disabled}
+        style={styles.slider}
       />
       {(leftLabel || rightLabel) && (
         <View style={styles.scaleLabels}>
@@ -77,6 +77,10 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: colors.textPrimary ?? colors.arthritisText,
     fontVariant: ["tabular-nums"],
+  },
+  slider: {
+    width: "100%",
+    height: 40,
   },
   scaleLabels: {
     flexDirection: "row",

@@ -8551,20 +8551,67 @@
                   "children": [
                     {
                       "type": "frame",
-                      "id": "MU5FC",
-                      "name": "Bed",
-                      "width": 90,
-                      "height": 40,
-                      "fill": "#E7E9FF",
-                      "cornerRadius": 10
-                    },
-                    {
-                      "type": "ellipse",
-                      "id": "JsYJD",
-                      "name": "Person",
-                      "fill": "#667EEA",
-                      "width": 18,
-                      "height": 18
+                      "id": "Z8rpl",
+                      "name": "Supine Illustration",
+                      "width": 110,
+                      "height": 60,
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "Mjufj",
+                          "x": 0,
+                          "y": 42,
+                          "name": "Bed",
+                          "width": 110,
+                          "height": 16,
+                          "fill": "#E0E7FF",
+                          "cornerRadius": 8
+                        },
+                        {
+                          "type": "ellipse",
+                          "id": "dczAo",
+                          "x": 8,
+                          "y": 24,
+                          "name": "Head",
+                          "fill": "#667EEA",
+                          "width": 16,
+                          "height": 16
+                        },
+                        {
+                          "type": "frame",
+                          "id": "MLBzg",
+                          "x": 24,
+                          "y": 27,
+                          "name": "Torso",
+                          "width": 44,
+                          "height": 10,
+                          "fill": "#667EEA",
+                          "cornerRadius": 5
+                        },
+                        {
+                          "type": "frame",
+                          "id": "RvaaS",
+                          "x": 62,
+                          "y": 29,
+                          "name": "Legs",
+                          "width": 36,
+                          "height": 8,
+                          "fill": "#667EEA",
+                          "cornerRadius": 4
+                        },
+                        {
+                          "type": "frame",
+                          "id": "vL5wW",
+                          "x": 32,
+                          "y": 21,
+                          "name": "Arm",
+                          "width": 20,
+                          "height": 6,
+                          "fill": "#818CF8",
+                          "cornerRadius": 3
+                        }
+                      ]
                     },
                     {
                       "type": "text",
@@ -8602,20 +8649,111 @@
                   "children": [
                     {
                       "type": "frame",
-                      "id": "nepEF",
-                      "name": "Chair",
-                      "width": 60,
-                      "height": 70,
-                      "fill": "#E7E9FF",
-                      "cornerRadius": 14
-                    },
-                    {
-                      "type": "ellipse",
-                      "id": "G1qDo",
-                      "name": "Person",
-                      "fill": "#667EEA",
-                      "width": 18,
-                      "height": 18
+                      "id": "ZoVv2",
+                      "name": "Sitting Illustration",
+                      "width": 80,
+                      "height": 84,
+                      "layout": "none",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "ckMCV",
+                          "x": 8,
+                          "y": 16,
+                          "name": "Chair Back",
+                          "width": 10,
+                          "height": 48,
+                          "fill": "#E0E7FF",
+                          "cornerRadius": 5
+                        },
+                        {
+                          "type": "frame",
+                          "id": "JnyfJ",
+                          "x": 8,
+                          "y": 52,
+                          "name": "Chair Seat",
+                          "width": 40,
+                          "height": 10,
+                          "fill": "#E0E7FF",
+                          "cornerRadius": 5
+                        },
+                        {
+                          "type": "frame",
+                          "id": "qwi16",
+                          "x": 10,
+                          "y": 62,
+                          "name": "Chair Leg L",
+                          "width": 6,
+                          "height": 16,
+                          "fill": "#C7D2FE",
+                          "cornerRadius": 3
+                        },
+                        {
+                          "type": "frame",
+                          "id": "qibBR",
+                          "x": 40,
+                          "y": 62,
+                          "name": "Chair Leg R",
+                          "width": 6,
+                          "height": 16,
+                          "fill": "#C7D2FE",
+                          "cornerRadius": 3
+                        },
+                        {
+                          "type": "ellipse",
+                          "id": "5TEER",
+                          "x": 30,
+                          "y": 2,
+                          "name": "Head",
+                          "fill": "#667EEA",
+                          "width": 16,
+                          "height": 16
+                        },
+                        {
+                          "type": "frame",
+                          "id": "1gb4m",
+                          "x": 34,
+                          "y": 18,
+                          "name": "Torso",
+                          "width": 10,
+                          "height": 34,
+                          "fill": "#667EEA",
+                          "cornerRadius": 5
+                        },
+                        {
+                          "type": "frame",
+                          "id": "eak6p",
+                          "x": 34,
+                          "y": 50,
+                          "name": "Thighs",
+                          "width": 28,
+                          "height": 8,
+                          "fill": "#667EEA",
+                          "cornerRadius": 4
+                        },
+                        {
+                          "type": "frame",
+                          "id": "ECT66",
+                          "x": 54,
+                          "y": 56,
+                          "name": "Lower Legs",
+                          "width": 8,
+                          "height": 22,
+                          "fill": "#667EEA",
+                          "cornerRadius": 4
+                        },
+                        {
+                          "type": "frame",
+                          "id": "Cj6Yl",
+                          "x": 44,
+                          "y": 26,
+                          "name": "Arm",
+                          "width": 6,
+                          "height": 18,
+                          "fill": "#818CF8",
+                          "cornerRadius": 3
+                        }
+                      ]
                     },
                     {
                       "type": "text",
@@ -9314,7 +9452,8 @@
               "content": "Rate your pain from 0 to 10",
               "textAlign": "center",
               "fontFamily": "Outfit",
-              "fontSize": 14
+              "fontSize": 14,
+              "fontWeight": "normal"
             },
             {
               "type": "ellipse",
@@ -9608,7 +9747,8 @@
               "content": "Rate your pain from 0 to 10",
               "textAlign": "center",
               "fontFamily": "Outfit",
-              "fontSize": 16
+              "fontSize": 16,
+              "fontWeight": "normal"
             },
             {
               "type": "ellipse",
@@ -10387,11 +10527,16 @@
           "width": "fill_container",
           "height": "fill_container",
           "layout": "vertical",
-          "gap": 20,
+          "gap": 8,
+          "padding": [
+            0,
+            8
+          ],
+          "alignItems": "center",
           "children": [
             {
               "type": "frame",
-              "id": "mcaAq",
+              "id": "xsOM8",
               "name": "TitleArea",
               "width": "fill_container",
               "layout": "vertical",
@@ -10400,7 +10545,7 @@
               "children": [
                 {
                   "type": "text",
-                  "id": "md0we",
+                  "id": "LAXol",
                   "name": "title",
                   "fill": "#2F3A34",
                   "content": "What triggered it?",
@@ -10411,10 +10556,11 @@
                 },
                 {
                   "type": "text",
-                  "id": "0SzjZ",
+                  "id": "35cqM",
                   "name": "subtitle",
                   "fill": "#7B857F",
-                  "content": "Select all that apply",
+                  "content": "Tap bubbles to select",
+                  "textAlign": "center",
                   "fontFamily": "Outfit",
                   "fontSize": 14,
                   "fontWeight": "normal"
@@ -10423,525 +10569,585 @@
             },
             {
               "type": "frame",
-              "id": "yGqei",
-              "name": "ChipGrid",
+              "id": "WldwM",
+              "name": "Bubbles Area",
               "width": "fill_container",
-              "layout": "vertical",
-              "gap": 12,
+              "height": "fill_container",
+              "layout": "none",
               "children": [
                 {
                   "type": "frame",
-                  "id": "ISDr0",
-                  "name": "Row1",
-                  "width": "fill_container",
-                  "gap": 10,
+                  "id": "Do1zL",
+                  "x": 8,
+                  "y": 5,
+                  "name": "Stress",
+                  "width": 100,
+                  "height": 100,
+                  "fill": "#E91E8C",
+                  "cornerRadius": 100,
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "#E91E8C30",
+                    "offset": {
+                      "x": 0,
+                      "y": 4
+                    },
+                    "blur": 16
+                  },
+                  "layout": "vertical",
+                  "gap": 4,
+                  "justifyContent": "center",
+                  "alignItems": "center",
                   "children": [
                     {
-                      "type": "frame",
-                      "id": "pRCJs",
-                      "name": "Stress",
-                      "width": "fill_container",
-                      "fill": "#FCE7F3",
-                      "cornerRadius": 14,
-                      "stroke": {
-                        "thickness": 2,
-                        "fill": "#E91E8C"
-                      },
-                      "layout": "vertical",
-                      "gap": 4,
-                      "padding": [
-                        14,
-                        8
-                      ],
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "Hqwti",
-                          "name": "c1e",
-                          "content": "😰",
-                          "fontFamily": "Outfit",
-                          "fontSize": 24,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "IC1Qa",
-                          "name": "c1t",
-                          "fill": "#E91E8C",
-                          "content": "Stress",
-                          "fontFamily": "Outfit",
-                          "fontSize": 13,
-                          "fontWeight": "600"
-                        }
-                      ]
+                      "type": "icon_font",
+                      "id": "5bvxw",
+                      "name": "b1i",
+                      "width": 24,
+                      "height": 24,
+                      "iconFontName": "brain",
+                      "iconFontFamily": "lucide",
+                      "fill": "#FFFFFF"
                     },
                     {
-                      "type": "frame",
-                      "id": "RWN6J",
-                      "name": "LackSleep",
-                      "width": "fill_container",
+                      "type": "text",
+                      "id": "gOHxE",
+                      "name": "b1t",
                       "fill": "#FFFFFF",
-                      "cornerRadius": 14,
-                      "stroke": {
-                        "thickness": 1,
-                        "fill": "#E5E7EB"
-                      },
-                      "layout": "vertical",
-                      "gap": 4,
-                      "padding": [
-                        14,
-                        8
-                      ],
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "M5aeJ",
-                          "name": "c2e",
-                          "content": "😴",
-                          "fontFamily": "Outfit",
-                          "fontSize": 24,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "coMrw",
-                          "name": "c2t",
-                          "fill": "#2F3A34",
-                          "content": "Lack of sleep",
-                          "fontFamily": "Outfit",
-                          "fontSize": 13,
-                          "fontWeight": "600"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "SYSwO",
-                      "name": "BrightLight",
-                      "width": "fill_container",
-                      "fill": "#FCE7F3",
-                      "cornerRadius": 14,
-                      "stroke": {
-                        "thickness": 2,
-                        "fill": "#E91E8C"
-                      },
-                      "layout": "vertical",
-                      "gap": 4,
-                      "padding": [
-                        14,
-                        8
-                      ],
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "SMqot",
-                          "name": "c3e",
-                          "content": "☀️",
-                          "fontFamily": "Outfit",
-                          "fontSize": 24,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "WeYoh",
-                          "name": "c3t",
-                          "fill": "#E91E8C",
-                          "content": "Bright light",
-                          "fontFamily": "Outfit",
-                          "fontSize": 13,
-                          "fontWeight": "600"
-                        }
-                      ]
+                      "content": "Stress",
+                      "textAlign": "center",
+                      "fontFamily": "Outfit",
+                      "fontSize": 11,
+                      "fontWeight": "500"
                     }
                   ]
                 },
                 {
                   "type": "frame",
-                  "id": "jMUko",
-                  "name": "Row2",
-                  "width": "fill_container",
-                  "gap": 10,
+                  "id": "J3FPI",
+                  "x": 132,
+                  "y": 18,
+                  "name": "LackSleep",
+                  "width": 86,
+                  "height": 86,
+                  "fill": "#FFFFFF",
+                  "cornerRadius": 100,
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "#E91E8C10",
+                    "offset": {
+                      "x": 0,
+                      "y": 4
+                    },
+                    "blur": 16
+                  },
+                  "layout": "vertical",
+                  "gap": 4,
+                  "justifyContent": "center",
+                  "alignItems": "center",
                   "children": [
                     {
-                      "type": "frame",
-                      "id": "dY3tz",
-                      "name": "LoudNoise",
-                      "width": "fill_container",
-                      "fill": "#FFFFFF",
-                      "cornerRadius": 14,
-                      "stroke": {
-                        "thickness": 1,
-                        "fill": "#E5E7EB"
-                      },
-                      "layout": "vertical",
-                      "gap": 4,
-                      "padding": [
-                        14,
-                        8
-                      ],
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "F22CS",
-                          "name": "c4e",
-                          "content": "🔊",
-                          "fontFamily": "Outfit",
-                          "fontSize": 24,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "T2IAm",
-                          "name": "c4t",
-                          "fill": "#2F3A34",
-                          "content": "Loud noise",
-                          "fontFamily": "Outfit",
-                          "fontSize": 13,
-                          "fontWeight": "600"
-                        }
-                      ]
+                      "type": "icon_font",
+                      "id": "gm0yr",
+                      "name": "b2i",
+                      "width": 24,
+                      "height": 24,
+                      "iconFontName": "moon",
+                      "iconFontFamily": "lucide",
+                      "fill": "#E91E8C"
                     },
                     {
-                      "type": "frame",
-                      "id": "DOhkM",
-                      "name": "StrongSmell",
-                      "width": "fill_container",
-                      "fill": "#FFFFFF",
-                      "cornerRadius": 14,
-                      "stroke": {
-                        "thickness": 1,
-                        "fill": "#E5E7EB"
-                      },
-                      "layout": "vertical",
-                      "gap": 4,
-                      "padding": [
-                        14,
-                        8
-                      ],
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "7ag5I",
-                          "name": "c5e",
-                          "content": "👃",
-                          "fontFamily": "Outfit",
-                          "fontSize": 24,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "quT3g",
-                          "name": "c5t",
-                          "fill": "#2F3A34",
-                          "content": "Strong smell",
-                          "fontFamily": "Outfit",
-                          "fontSize": 13,
-                          "fontWeight": "600"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "e0UJ5",
-                      "name": "Weather",
-                      "width": "fill_container",
-                      "fill": "#FFFFFF",
-                      "cornerRadius": 14,
-                      "stroke": {
-                        "thickness": 1,
-                        "fill": "#E5E7EB"
-                      },
-                      "layout": "vertical",
-                      "gap": 4,
-                      "padding": [
-                        14,
-                        8
-                      ],
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "0PnUt",
-                          "name": "c6e",
-                          "content": "🌦️",
-                          "fontFamily": "Outfit",
-                          "fontSize": 24,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "ARWkc",
-                          "name": "c6t",
-                          "fill": "#2F3A34",
-                          "content": "Weather",
-                          "fontFamily": "Outfit",
-                          "fontSize": 13,
-                          "fontWeight": "600"
-                        }
-                      ]
+                      "type": "text",
+                      "id": "ELKbo",
+                      "name": "b2t",
+                      "fill": "#4A5A52",
+                      "content": "Sleep",
+                      "textAlign": "center",
+                      "fontFamily": "Outfit",
+                      "fontSize": 11,
+                      "fontWeight": "500"
                     }
                   ]
                 },
                 {
                   "type": "frame",
-                  "id": "eo6pv",
-                  "name": "Row3",
-                  "width": "fill_container",
-                  "gap": 10,
+                  "id": "CYVL7",
+                  "x": 242,
+                  "y": 40,
+                  "name": "BrightLight",
+                  "width": 94,
+                  "height": 94,
+                  "fill": "#E91E8C",
+                  "cornerRadius": 100,
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "#E91E8C30",
+                    "offset": {
+                      "x": 0,
+                      "y": 4
+                    },
+                    "blur": 16
+                  },
+                  "layout": "vertical",
+                  "gap": 4,
+                  "justifyContent": "center",
+                  "alignItems": "center",
                   "children": [
                     {
-                      "type": "frame",
-                      "id": "20niP",
-                      "name": "SkippedMeal",
-                      "width": "fill_container",
-                      "fill": "#FFFFFF",
-                      "cornerRadius": 14,
-                      "stroke": {
-                        "thickness": 1,
-                        "fill": "#E5E7EB"
-                      },
-                      "layout": "vertical",
-                      "gap": 4,
-                      "padding": [
-                        14,
-                        8
-                      ],
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "0BJBW",
-                          "name": "c7e",
-                          "content": "🍽️",
-                          "fontFamily": "Outfit",
-                          "fontSize": 24,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "T2cbA",
-                          "name": "c7t",
-                          "fill": "#2F3A34",
-                          "content": "Skipped meal",
-                          "fontFamily": "Outfit",
-                          "fontSize": 13,
-                          "fontWeight": "600"
-                        }
-                      ]
+                      "type": "icon_font",
+                      "id": "pvF0C",
+                      "name": "b3i",
+                      "width": 24,
+                      "height": 24,
+                      "iconFontName": "sun",
+                      "iconFontFamily": "lucide",
+                      "fill": "#FFFFFF"
                     },
                     {
-                      "type": "frame",
-                      "id": "CPGHk",
-                      "name": "Dehydration",
-                      "width": "fill_container",
+                      "type": "text",
+                      "id": "ZFgwC",
+                      "name": "b3t",
                       "fill": "#FFFFFF",
-                      "cornerRadius": 14,
-                      "stroke": {
-                        "thickness": 1,
-                        "fill": "#E5E7EB"
-                      },
-                      "layout": "vertical",
-                      "gap": 4,
-                      "padding": [
-                        14,
-                        8
-                      ],
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "noPNY",
-                          "name": "c8e",
-                          "content": "💧",
-                          "fontFamily": "Outfit",
-                          "fontSize": 24,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "kc4b4",
-                          "name": "c8t",
-                          "fill": "#2F3A34",
-                          "content": "Dehydration",
-                          "fontFamily": "Outfit",
-                          "fontSize": 13,
-                          "fontWeight": "600"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "edLJn",
-                      "name": "Alcohol",
-                      "width": "fill_container",
-                      "fill": "#FFFFFF",
-                      "cornerRadius": 14,
-                      "stroke": {
-                        "thickness": 1,
-                        "fill": "#E5E7EB"
-                      },
-                      "layout": "vertical",
-                      "gap": 4,
-                      "padding": [
-                        14,
-                        8
-                      ],
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "MwfCn",
-                          "name": "c9e",
-                          "content": "🍷",
-                          "fontFamily": "Outfit",
-                          "fontSize": 24,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "twuFh",
-                          "name": "c9t",
-                          "fill": "#2F3A34",
-                          "content": "Alcohol",
-                          "fontFamily": "Outfit",
-                          "fontSize": 13,
-                          "fontWeight": "600"
-                        }
-                      ]
+                      "content": "Light",
+                      "textAlign": "center",
+                      "fontFamily": "Outfit",
+                      "fontSize": 11,
+                      "fontWeight": "500"
                     }
                   ]
                 },
                 {
                   "type": "frame",
-                  "id": "KW7EH",
-                  "name": "Row4",
-                  "width": "fill_container",
-                  "gap": 10,
+                  "id": "jWwT8",
+                  "x": 52,
+                  "y": 122,
+                  "name": "LoudNoise",
+                  "width": 80,
+                  "height": 80,
+                  "fill": "#FFFFFF",
+                  "cornerRadius": 100,
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "#E91E8C10",
+                    "offset": {
+                      "x": 0,
+                      "y": 4
+                    },
+                    "blur": 16
+                  },
+                  "layout": "vertical",
+                  "gap": 4,
+                  "justifyContent": "center",
+                  "alignItems": "center",
                   "children": [
                     {
-                      "type": "frame",
-                      "id": "MHJ7O",
-                      "name": "Caffeine",
-                      "width": "fill_container",
-                      "fill": "#FFFFFF",
-                      "cornerRadius": 14,
-                      "stroke": {
-                        "thickness": 1,
-                        "fill": "#E5E7EB"
-                      },
-                      "layout": "vertical",
-                      "gap": 4,
-                      "padding": [
-                        14,
-                        8
-                      ],
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "UjtAu",
-                          "name": "c10e",
-                          "content": "☕",
-                          "fontFamily": "Outfit",
-                          "fontSize": 24,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "AArvq",
-                          "name": "c10t",
-                          "fill": "#2F3A34",
-                          "content": "Caffeine",
-                          "fontFamily": "Outfit",
-                          "fontSize": 13,
-                          "fontWeight": "600"
-                        }
-                      ]
+                      "type": "icon_font",
+                      "id": "VYvpL",
+                      "name": "b4i",
+                      "width": 24,
+                      "height": 24,
+                      "iconFontName": "volume-2",
+                      "iconFontFamily": "lucide",
+                      "fill": "#E91E8C"
                     },
                     {
-                      "type": "frame",
-                      "id": "Ikudl",
-                      "name": "Hormonal",
-                      "width": "fill_container",
-                      "fill": "#FFFFFF",
-                      "cornerRadius": 14,
-                      "stroke": {
-                        "thickness": 1,
-                        "fill": "#E5E7EB"
-                      },
-                      "layout": "vertical",
-                      "gap": 4,
-                      "padding": [
-                        14,
-                        8
-                      ],
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "GHpTy",
-                          "name": "c11e",
-                          "content": "🔄",
-                          "fontFamily": "Outfit",
-                          "fontSize": 24,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "gnWMl",
-                          "name": "c11t",
-                          "fill": "#2F3A34",
-                          "content": "Hormonal",
-                          "fontFamily": "Outfit",
-                          "fontSize": 13,
-                          "fontWeight": "600"
-                        }
-                      ]
+                      "type": "text",
+                      "id": "RkIwL",
+                      "name": "b4t",
+                      "fill": "#4A5A52",
+                      "content": "Noise",
+                      "textAlign": "center",
+                      "fontFamily": "Outfit",
+                      "fontSize": 11,
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "8Qh7N",
+                  "x": 162,
+                  "y": 130,
+                  "name": "StrongSmell",
+                  "width": 76,
+                  "height": 76,
+                  "fill": "#FFFFFF",
+                  "cornerRadius": 100,
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "#E91E8C10",
+                    "offset": {
+                      "x": 0,
+                      "y": 4
+                    },
+                    "blur": 16
+                  },
+                  "layout": "vertical",
+                  "gap": 4,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon_font",
+                      "id": "HDpQS",
+                      "name": "b5i",
+                      "width": 24,
+                      "height": 24,
+                      "iconFontName": "wind",
+                      "iconFontFamily": "lucide",
+                      "fill": "#E91E8C"
                     },
                     {
-                      "type": "frame",
-                      "id": "pg8BD",
-                      "name": "ScreenTime",
-                      "width": "fill_container",
-                      "fill": "#FFFFFF",
-                      "cornerRadius": 14,
-                      "stroke": {
-                        "thickness": 1,
-                        "fill": "#E5E7EB"
-                      },
-                      "layout": "vertical",
-                      "gap": 4,
-                      "padding": [
-                        14,
-                        8
-                      ],
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "SaXY6",
-                          "name": "c12e",
-                          "content": "📱",
-                          "fontFamily": "Outfit",
-                          "fontSize": 24,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "text",
-                          "id": "pXUTs",
-                          "name": "c12t",
-                          "fill": "#2F3A34",
-                          "content": "Screen time",
-                          "fontFamily": "Outfit",
-                          "fontSize": 13,
-                          "fontWeight": "600"
-                        }
-                      ]
+                      "type": "text",
+                      "id": "OtnmW",
+                      "name": "b5t",
+                      "fill": "#4A5A52",
+                      "content": "Smell",
+                      "textAlign": "center",
+                      "fontFamily": "Outfit",
+                      "fontSize": 11,
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "LBY8V",
+                  "x": 255,
+                  "y": 160,
+                  "name": "Weather",
+                  "width": 82,
+                  "height": 82,
+                  "fill": "#FFFFFF",
+                  "cornerRadius": 100,
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "#E91E8C10",
+                    "offset": {
+                      "x": 0,
+                      "y": 4
+                    },
+                    "blur": 16
+                  },
+                  "layout": "vertical",
+                  "gap": 4,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon_font",
+                      "id": "90xex",
+                      "name": "b6i",
+                      "width": 24,
+                      "height": 24,
+                      "iconFontName": "cloud-rain",
+                      "iconFontFamily": "lucide",
+                      "fill": "#E91E8C"
+                    },
+                    {
+                      "type": "text",
+                      "id": "P7KS4",
+                      "name": "b6t",
+                      "fill": "#4A5A52",
+                      "content": "Weather",
+                      "textAlign": "center",
+                      "fontFamily": "Outfit",
+                      "fontSize": 11,
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "gNp5U",
+                  "x": 0,
+                  "y": 225,
+                  "name": "SkippedMeal",
+                  "width": 92,
+                  "height": 92,
+                  "fill": "#FFFFFF",
+                  "cornerRadius": 100,
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "#E91E8C10",
+                    "offset": {
+                      "x": 0,
+                      "y": 4
+                    },
+                    "blur": 16
+                  },
+                  "layout": "vertical",
+                  "gap": 4,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon_font",
+                      "id": "rVEIz",
+                      "name": "b7i",
+                      "width": 24,
+                      "height": 24,
+                      "iconFontName": "utensils-crossed",
+                      "iconFontFamily": "lucide",
+                      "fill": "#E91E8C"
+                    },
+                    {
+                      "type": "text",
+                      "id": "RGOcI",
+                      "name": "b7t",
+                      "fill": "#4A5A52",
+                      "content": "Meals",
+                      "textAlign": "center",
+                      "fontFamily": "Outfit",
+                      "fontSize": 11,
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "8cwb8",
+                  "x": 115,
+                  "y": 240,
+                  "name": "Dehydration",
+                  "width": 82,
+                  "height": 82,
+                  "fill": "#FFFFFF",
+                  "cornerRadius": 100,
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "#E91E8C10",
+                    "offset": {
+                      "x": 0,
+                      "y": 4
+                    },
+                    "blur": 16
+                  },
+                  "layout": "vertical",
+                  "gap": 4,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon_font",
+                      "id": "nbDdG",
+                      "name": "b8i",
+                      "width": 24,
+                      "height": 24,
+                      "iconFontName": "droplets",
+                      "iconFontFamily": "lucide",
+                      "fill": "#E91E8C"
+                    },
+                    {
+                      "type": "text",
+                      "id": "dNnpg",
+                      "name": "b8t",
+                      "fill": "#4A5A52",
+                      "content": "Water",
+                      "textAlign": "center",
+                      "fontFamily": "Outfit",
+                      "fontSize": 11,
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "CxYjt",
+                  "x": 220,
+                  "y": 265,
+                  "name": "Alcohol",
+                  "width": 78,
+                  "height": 78,
+                  "fill": "#FFFFFF",
+                  "cornerRadius": 100,
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "#E91E8C10",
+                    "offset": {
+                      "x": 0,
+                      "y": 4
+                    },
+                    "blur": 16
+                  },
+                  "layout": "vertical",
+                  "gap": 4,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon_font",
+                      "id": "p8Hcb",
+                      "name": "b9i",
+                      "width": 24,
+                      "height": 24,
+                      "iconFontName": "wine",
+                      "iconFontFamily": "lucide",
+                      "fill": "#E91E8C"
+                    },
+                    {
+                      "type": "text",
+                      "id": "ZSEMO",
+                      "name": "b9t",
+                      "fill": "#4A5A52",
+                      "content": "Alcohol",
+                      "textAlign": "center",
+                      "fontFamily": "Outfit",
+                      "fontSize": 11,
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "BIA43",
+                  "x": 40,
+                  "y": 340,
+                  "name": "Caffeine",
+                  "width": 80,
+                  "height": 80,
+                  "fill": "#FFFFFF",
+                  "cornerRadius": 100,
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "#E91E8C10",
+                    "offset": {
+                      "x": 0,
+                      "y": 4
+                    },
+                    "blur": 16
+                  },
+                  "layout": "vertical",
+                  "gap": 4,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon_font",
+                      "id": "p7ljb",
+                      "name": "b10i",
+                      "width": 24,
+                      "height": 24,
+                      "iconFontName": "coffee",
+                      "iconFontFamily": "lucide",
+                      "fill": "#E91E8C"
+                    },
+                    {
+                      "type": "text",
+                      "id": "gC53a",
+                      "name": "b10t",
+                      "fill": "#4A5A52",
+                      "content": "Caffeine",
+                      "textAlign": "center",
+                      "fontFamily": "Outfit",
+                      "fontSize": 11,
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "w3WxA",
+                  "x": 145,
+                  "y": 350,
+                  "name": "Hormonal",
+                  "width": 88,
+                  "height": 88,
+                  "fill": "#FFFFFF",
+                  "cornerRadius": 100,
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "#E91E8C10",
+                    "offset": {
+                      "x": 0,
+                      "y": 4
+                    },
+                    "blur": 16
+                  },
+                  "layout": "vertical",
+                  "gap": 4,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon_font",
+                      "id": "EM71q",
+                      "name": "b11i",
+                      "width": 24,
+                      "height": 24,
+                      "iconFontName": "heart-pulse",
+                      "iconFontFamily": "lucide",
+                      "fill": "#E91E8C"
+                    },
+                    {
+                      "type": "text",
+                      "id": "0Yh4V",
+                      "name": "b11t",
+                      "fill": "#4A5A52",
+                      "content": "Hormonal",
+                      "textAlign": "center",
+                      "fontFamily": "Outfit",
+                      "fontSize": 10,
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "NMScz",
+                  "x": 255,
+                  "y": 368,
+                  "name": "ScreenTime",
+                  "width": 80,
+                  "height": 80,
+                  "fill": "#FFFFFF",
+                  "cornerRadius": 100,
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "#E91E8C10",
+                    "offset": {
+                      "x": 0,
+                      "y": 4
+                    },
+                    "blur": 16
+                  },
+                  "layout": "vertical",
+                  "gap": 4,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon_font",
+                      "id": "TXUZd",
+                      "name": "b12i",
+                      "width": 24,
+                      "height": 24,
+                      "iconFontName": "monitor",
+                      "iconFontFamily": "lucide",
+                      "fill": "#E91E8C"
+                    },
+                    {
+                      "type": "text",
+                      "id": "LvC9B",
+                      "name": "b12t",
+                      "fill": "#4A5A52",
+                      "content": "Screen",
+                      "textAlign": "center",
+                      "fontFamily": "Outfit",
+                      "fontSize": 11,
+                      "fontWeight": "500"
                     }
                   ]
                 }
@@ -12276,7 +12482,8 @@
                       "fill": "#2F3A3455",
                       "content": "Tue Jan 27    12    19    AM",
                       "fontFamily": "Outfit",
-                      "fontSize": 20
+                      "fontSize": 20,
+                      "fontWeight": "normal"
                     },
                     {
                       "type": "text",
@@ -12299,7 +12506,8 @@
                       "fill": "#2F3A3455",
                       "content": "Thu Jan 29     2    21    PM",
                       "fontFamily": "Outfit",
-                      "fontSize": 20
+                      "fontSize": 20,
+                      "fontWeight": "normal"
                     },
                     {
                       "type": "rectangle",

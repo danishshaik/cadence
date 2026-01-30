@@ -1,15 +1,29 @@
-import React, { useState } from "react";
-import { View, Text, Pressable, StyleSheet, Platform } from "react-native";
-import { ExpoDateTimePicker } from "@components/ui";
+import React, { useMemo, useState } from "react";
+import { Platform, Pressable, StyleSheet, Text, View } from "react-native";
+import { BottomSheet, Group } from "@expo/ui/swift-ui";
+import {
+  presentationDetents,
+  presentationDragIndicator,
+} from "@expo/ui/swift-ui/modifiers";
 import { colors } from "@theme";
-import { TIME_OF_DAY_OPTIONS, TimeOfDay } from "@/types/migraine";
+import { ExpoDateTimePicker } from "@/components/ui";
+import { TimeOfDay } from "@/types/migraine";
 import { useLogMigraine } from "./log-migraine-provider";
 
-const isIOS = process.env.EXPO_OS === "ios";
+const isIOS = Platform.OS === "ios";
 
 export function WhenStep() {
   const { formData, updateFormData } = useLogMigraine();
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [tempDate, setTempDate] = useState(formData.startedAt);
+
+  const getTimeOfDayFromDate = (date: Date): TimeOfDay => {
+    const hour = date.getHours();
+    if (hour >= 0 && hour < 6) return "night";
+    if (hour >= 6 && hour < 12) return "morning";
+    if (hour >= 12 && hour < 18) return "afternoon";
+    return "evening";
+  };
 
   const formatDate = (date: Date) => {
     const today = new Date();
@@ -20,20 +34,50 @@ export function WhenStep() {
       return "Today";
     } else if (date.toDateString() === yesterday.toDateString()) {
       return "Yesterday";
-    } else {
-      return date.toLocaleDateString("en-US", {
-        weekday: "short",
-        month: "short",
-        day: "numeric",
-      });
     }
+    return date.toLocaleDateString("en-US", {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+    });
   };
 
   const handleDateChange = (selectedDate: Date) => {
-    if (!isIOS) {
-      setShowDatePicker(false);
+    const now = new Date();
+    const clampedDate = selectedDate > now ? now : selectedDate;
+    updateFormData("startedAt", clampedDate);
+    updateFormData("timeOfDay", getTimeOfDayFromDate(clampedDate));
+  };
+
+  const durationLabel = useMemo(() => {
+    if (formData.isOngoing) {
+      const diffMs = Date.now() - formData.startedAt.getTime();
+      const minutes = Math.max(0, Math.round(diffMs / 60000));
+      const hours = Math.floor(minutes / 60);
+      const mins = minutes % 60;
+      if (hours === 0) return `${mins}m`;
+      if (mins === 0) return `${hours}h`;
+      return `${hours}h ${mins}m`;
     }
-    updateFormData("startedAt", selectedDate);
+    if (formData.durationMinutes === null) return "--";
+    const hours = Math.floor(formData.durationMinutes / 60);
+    const mins = formData.durationMinutes % 60;
+    if (hours === 0) return `${mins}m`;
+    if (mins === 0) return `${hours}h`;
+    return `${hours}h ${mins}m`;
+  }, [formData.durationMinutes, formData.isOngoing, formData.startedAt]);
+
+  const handleStopNow = () => {
+    updateFormData("isOngoing", false);
+    if (formData.durationMinutes === null) {
+      const diffMs = Date.now() - formData.startedAt.getTime();
+      updateFormData("durationMinutes", Math.max(0, Math.round(diffMs / 60000)));
+    }
+  };
+
+  const handleSetOngoing = () => {
+    updateFormData("isOngoing", true);
+    updateFormData("durationMinutes", null);
   };
 
   return (
@@ -41,51 +85,97 @@ export function WhenStep() {
       <Text style={styles.title}>When did it start?</Text>
       <Text style={styles.subtitle}>Select the date and time of day</Text>
 
-      <View style={styles.section}>
-        <Text style={styles.sectionLabel}>DATE</Text>
+      <View style={styles.card}>
+        <View style={styles.cardInfo}>
+          <Text style={styles.cardLabel}>Started</Text>
+          <Text style={styles.cardValue}>
+            {formatDate(formData.startedAt)}, {formData.startedAt.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}
+          </Text>
+        </View>
         <Pressable
-          style={({ pressed }) => [styles.dateButton, pressed && styles.dateButtonPressed]}
-          onPress={() => setShowDatePicker(true)}
+          onPress={() => {
+            setTempDate(formData.startedAt);
+            setShowDatePicker(true);
+          }}
         >
-          <Text style={styles.dateText}>{formatDate(formData.startedAt)}</Text>
+          <Text style={styles.cardAction}>Edit</Text>
         </Pressable>
       </View>
 
-      <View
-        style={[styles.datePickerContainer, !showDatePicker && styles.datePickerHidden]}
-        pointerEvents={showDatePicker ? "auto" : "none"}
-      >
+      {!isIOS && showDatePicker && (
         <ExpoDateTimePicker
           value={formData.startedAt}
-          mode="date"
-          display={isIOS ? "inline" : "default"}
-          onChange={handleDateChange}
+          mode="datetime"
+          display="default"
           maximumDate={new Date()}
-          accentColor={colors.migraine}
+          onChange={(selected) => {
+            handleDateChange(selected);
+            setShowDatePicker(false);
+          }}
         />
+      )}
+
+      {isIOS && (
+        <BottomSheet
+          isPresented={showDatePicker}
+          onIsPresentedChange={setShowDatePicker}
+          fitToContents
+        >
+          <Group
+            modifiers={[
+              presentationDetents([{ height: 360 }]),
+              presentationDragIndicator("visible"),
+            ]}
+          >
+            <View style={styles.sheetCard}>
+              <View style={styles.sheetHeader}>
+                <Pressable onPress={() => setShowDatePicker(false)}>
+                  <Text style={styles.sheetAction}>Cancel</Text>
+                </Pressable>
+                <Text style={styles.sheetTitle}>Edit start time</Text>
+                <Pressable
+                  onPress={() => {
+                    setShowDatePicker(false);
+                    handleDateChange(tempDate);
+                  }}
+                >
+                  <Text style={styles.sheetAction}>Done</Text>
+                </Pressable>
+              </View>
+              <ExpoDateTimePicker
+                value={tempDate}
+                mode="datetime"
+                display="spinner"
+                maximumDate={new Date()}
+                accentColor={colors.migraine}
+                onChange={(selected) => {
+                  setTempDate(selected);
+                }}
+              />
+            </View>
+          </Group>
+        </BottomSheet>
+      )}
+
+      <View style={styles.card}>
+        <View style={styles.cardInfo}>
+          <Text style={styles.cardLabel}>Ended</Text>
+          <Text style={styles.cardValue}>{formData.isOngoing ? "Ongoing" : "Stopped"}</Text>
+        </View>
+        {formData.isOngoing ? (
+          <Pressable style={styles.stopPill} onPress={handleStopNow}>
+            <Text style={styles.stopText}>Stop Now</Text>
+          </Pressable>
+        ) : (
+          <Pressable onPress={handleSetOngoing}>
+            <Text style={styles.cardAction}>Resume</Text>
+          </Pressable>
+        )}
       </View>
 
-      <View style={styles.section}>
-        <Text style={styles.sectionLabel}>TIME OF DAY</Text>
-        <View style={styles.chipGrid}>
-          {TIME_OF_DAY_OPTIONS.map((option) => {
-            const isSelected = formData.timeOfDay === option.id;
-            return (
-              <Pressable
-                key={option.id}
-                onPress={() => updateFormData("timeOfDay", option.id as TimeOfDay)}
-                style={[styles.chip, isSelected && styles.chipSelected]}
-              >
-                <Text style={[styles.chipLabel, isSelected && styles.chipLabelSelected]}>
-                  {option.label}
-                </Text>
-                <Text style={[styles.chipTime, isSelected && styles.chipTimeSelected]}>
-                  {option.timeRange}
-                </Text>
-              </Pressable>
-            );
-          })}
-        </View>
+      <View style={styles.durationDisplay}>
+        <Text style={styles.durationLabel}>Total Duration</Text>
+        <Text style={styles.durationValue}>{durationLabel}</Text>
       </View>
     </View>
   );
@@ -110,72 +200,87 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 32,
   },
-  section: {
-    marginBottom: 24,
-  },
-  sectionLabel: {
-    fontFamily: Platform.OS === "ios" ? "SF Pro Text" : "sans-serif",
-    fontSize: 12,
-    fontWeight: "600",
-    letterSpacing: 1,
-    color: colors.textTertiary,
-    marginBottom: 12,
-  },
-  dateButton: {
-    backgroundColor: colors.surfaceSecondary,
-    borderRadius: 12,
+  card: {
+    width: "100%",
+    backgroundColor: "#FFFFFF",
+    borderRadius: 16,
     padding: 16,
-    alignItems: "center",
-  },
-  dateButtonPressed: {
-    opacity: 0.7,
-  },
-  dateText: {
-    fontFamily: Platform.OS === "ios" ? "SF Pro Text" : "sans-serif",
-    fontSize: 18,
-    fontWeight: "600",
-    color: colors.textPrimary,
-  },
-  chipGrid: {
     flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 12,
-  },
-  chip: {
-    width: "47%",
-    backgroundColor: colors.surfaceSecondary,
-    borderRadius: 12,
-    padding: 16,
     alignItems: "center",
-    borderWidth: 2,
-    borderColor: "transparent",
+    justifyContent: "space-between",
+    marginBottom: 16,
   },
-  chipSelected: {
-    backgroundColor: colors.migraineLight,
-    borderColor: colors.migraine,
+  cardInfo: {
+    gap: 4,
   },
-  chipLabel: {
+  cardLabel: {
+    fontFamily: Platform.OS === "ios" ? "SF Pro Text" : "sans-serif",
+    fontSize: 14,
+    color: colors.textSecondary,
+  },
+  cardValue: {
     fontFamily: Platform.OS === "ios" ? "SF Pro Text" : "sans-serif",
     fontSize: 16,
     fontWeight: "600",
     color: colors.textPrimary,
-    marginBottom: 4,
   },
-  datePickerContainer: {
-    marginBottom: 16,
-  },
-  datePickerHidden: {
-    display: "none",
-  },
-  chipLabelSelected: {
+  cardAction: {
+    fontFamily: Platform.OS === "ios" ? "SF Pro Text" : "sans-serif",
+    fontSize: 14,
+    fontWeight: "600",
     color: colors.migraine,
   },
-  chipTime: {
+  stopPill: {
+    backgroundColor: colors.migraineLight,
+    borderRadius: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+  },
+  stopText: {
     fontFamily: Platform.OS === "ios" ? "SF Pro Text" : "sans-serif",
-    fontSize: 12,
+    fontSize: 14,
+    fontWeight: "600",
+    color: colors.migraine,
+  },
+  durationDisplay: {
+    alignItems: "center",
+    marginTop: 8,
+  },
+  durationLabel: {
+    fontFamily: Platform.OS === "ios" ? "SF Pro Text" : "sans-serif",
+    fontSize: 14,
     color: colors.textSecondary,
   },
-  chipTimeSelected: {
+  durationValue: {
+    fontFamily: Platform.OS === "ios" ? "SF Pro Display" : "sans-serif",
+    fontSize: 40,
+    fontWeight: "700",
+    color: colors.textPrimary,
+  },
+  sheetCard: {
+    width: "100%",
+    backgroundColor: "#FFFFFF",
+    borderRadius: 16,
+    overflow: "hidden",
+  },
+  sheetHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+  },
+  sheetTitle: {
+    fontFamily: Platform.OS === "ios" ? "SF Pro Text" : "sans-serif",
+    fontSize: 16,
+    fontWeight: "600",
+    color: colors.textPrimary,
+  },
+  sheetAction: {
+    fontFamily: Platform.OS === "ios" ? "SF Pro Text" : "sans-serif",
+    fontSize: 16,
+    fontWeight: "600",
     color: colors.migraine,
   },
 });

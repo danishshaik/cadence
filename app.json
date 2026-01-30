@@ -37,9 +37,14 @@
           "color": "#3B82F6"
         }
       ],
-      "@react-native-community/datetimepicker"
+      "expo-font",
+      "expo-web-browser",
+      "expo-image"
     ],
     "scheme": "cadence",
+    "experiments": {
+      "reactCompiler": true
+    },
     "extra": {
       "router": {},
       "eas": {

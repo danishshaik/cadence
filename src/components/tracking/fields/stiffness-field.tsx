@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from "react";
 import { StyleSheet, Text, useWindowDimensions, View } from "react-native";
-import Slider from "@react-native-community/slider";
 import * as Haptics from "expo-haptics";
 import Animated, {
   Easing,
@@ -13,6 +12,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { colors, shadows } from "@theme";
+import { ExpoSlider } from "@/components/ui";
 import { FieldProps } from "../types";
 import { FieldWrapper } from "./field-wrapper";
 
@@ -139,7 +139,7 @@ export function StiffnessField({
       </View>
 
       <View style={styles.sliderWrapper}>
-        <Slider
+        <ExpoSlider
           style={[styles.sliderTrack, { width: sliderWidth }]}
           minimumValue={min}
           maximumValue={max}
