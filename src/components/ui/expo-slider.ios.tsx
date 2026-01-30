@@ -42,7 +42,7 @@ export function ExpoSlider({
 
   return (
     <View style={hostMergedStyle}>
-      <Host>
+      <Host style={{ flex: 1 }}>
         <Slider
           value={value}
           min={minimumValue}
