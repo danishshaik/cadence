@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Cadence",
-    "slug": "cadence-mobile",
+    "slug": "cadence",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -16,7 +16,7 @@
     ],
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.cadence.mobile",
+      "bundleIdentifier": "com.dexterpark.cadence",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
@@ -26,7 +26,7 @@
         "foregroundImage": "./assets/images/android-icon-foreground.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.cadence.mobile"
+      "package": "com.dexterpark.cadence"
     },
     "plugins": [
       "expo-router",
@@ -48,7 +48,7 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "374eaa55-71c7-4cd4-b995-f061f6bd5dcb"
+        "projectId": "4a194302-4acf-4edd-9cbb-cb19ba861693"
       }
     }
   }

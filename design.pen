@@ -9349,7 +9349,7 @@
       "fill": "#FDF2F8",
       "cornerRadius": 40,
       "layout": "vertical",
-      "gap": 16,
+      "gap": 24,
       "padding": [
         60,
         24,
@@ -9428,7 +9428,7 @@
           "width": "fill_container",
           "height": "fill_container",
           "layout": "vertical",
-          "gap": 20,
+          "gap": 24,
           "alignItems": "center",
           "children": [
             {
@@ -9437,11 +9437,11 @@
               "name": "title1",
               "fill": "#2F3A34",
               "textGrowth": "fixed-width",
-              "width": 300,
+              "width": "fill_container",
               "content": "How severe is your migraine?",
               "textAlign": "center",
               "fontFamily": "Outfit",
-              "fontSize": 24,
+              "fontSize": 26,
               "fontWeight": "700"
             },
             {
@@ -9452,7 +9452,7 @@
               "content": "Rate your pain from 0 to 10",
               "textAlign": "center",
               "fontFamily": "Outfit",
-              "fontSize": 14,
+              "fontSize": 15,
               "fontWeight": "normal"
             },
             {
@@ -9499,7 +9499,7 @@
               "fill": "#2F3A34",
               "content": "5",
               "fontFamily": "Outfit",
-              "fontSize": 48,
+              "fontSize": 56,
               "fontWeight": "700"
             },
             {
@@ -9508,42 +9508,8 @@
               "name": "sliderContainer",
               "width": "fill_container",
               "layout": "vertical",
-              "gap": 8,
-              "padding": [
-                0,
-                24
-              ],
+              "gap": 6,
               "children": [
-                {
-                  "type": "frame",
-                  "id": "3eix1",
-                  "name": "sliderLabels",
-                  "width": "fill_container",
-                  "justifyContent": "space_between",
-                  "alignItems": "center",
-                  "children": [
-                    {
-                      "type": "text",
-                      "id": "YNX6v",
-                      "name": "label0",
-                      "fill": "#6C7A72",
-                      "content": "No pain",
-                      "fontFamily": "Outfit",
-                      "fontSize": 12,
-                      "fontWeight": "600"
-                    },
-                    {
-                      "type": "text",
-                      "id": "4GG8u",
-                      "name": "label10",
-                      "fill": "#6C7A72",
-                      "content": "Worst pain",
-                      "fontFamily": "Outfit",
-                      "fontSize": 12,
-                      "fontWeight": "600"
-                    }
-                  ]
-                },
                 {
                   "type": "frame",
                   "id": "n9Z5E",
@@ -9574,6 +9540,36 @@
                     ]
                   },
                   "cornerRadius": 100
+                },
+                {
+                  "type": "frame",
+                  "id": "3eix1",
+                  "name": "sliderLabels",
+                  "width": "fill_container",
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "YNX6v",
+                      "name": "label0",
+                      "fill": "#6C7A72",
+                      "content": "No pain",
+                      "fontFamily": "Outfit",
+                      "fontSize": 11,
+                      "fontWeight": "500"
+                    },
+                    {
+                      "type": "text",
+                      "id": "4GG8u",
+                      "name": "label10",
+                      "fill": "#6C7A72",
+                      "content": "Worst pain",
+                      "fontFamily": "Outfit",
+                      "fontSize": 11,
+                      "fontWeight": "500"
+                    }
+                  ]
                 }
               ]
             }
@@ -9727,7 +9723,7 @@
           "width": "fill_container",
           "height": "fill_container",
           "layout": "vertical",
-          "gap": 20,
+          "gap": 24,
           "alignItems": "center",
           "children": [
             {
@@ -9737,7 +9733,7 @@
               "content": "How severe is it?",
               "textAlign": "center",
               "fontFamily": "Outfit",
-              "fontSize": 24,
+              "fontSize": 26,
               "fontWeight": "700"
             },
             {
@@ -9747,7 +9743,7 @@
               "content": "Rate your pain from 0 to 10",
               "textAlign": "center",
               "fontFamily": "Outfit",
-              "fontSize": 16,
+              "fontSize": 15,
               "fontWeight": "normal"
             },
             {
@@ -9793,7 +9789,7 @@
               "fill": "#2F3A34",
               "content": "5",
               "fontFamily": "Outfit",
-              "fontSize": 64,
+              "fontSize": 56,
               "fontWeight": "700"
             },
             {
@@ -9803,7 +9799,7 @@
               "width": "fill_container",
               "height": 8,
               "fill": "#E5E7EB",
-              "cornerRadius": 4,
+              "cornerRadius": 100,
               "children": [
                 {
                   "type": "ellipse",
