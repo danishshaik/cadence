@@ -15,6 +15,8 @@ interface NativeFlowHeaderOptions {
   inactiveColor: string;
   iconColor?: string;
   height?: number;
+  headerHorizontalPadding?: number;
+  disabled?: boolean;
 }
 
 const isIOS = process.env.EXPO_OS === "ios";
@@ -30,10 +32,13 @@ export function useNativeFlowHeader({
   inactiveColor,
   iconColor,
   height = 96,
+  headerHorizontalPadding = 16,
+  disabled = false,
 }: NativeFlowHeaderOptions) {
   const navigation = useNavigation();
 
   React.useLayoutEffect(() => {
+    if (disabled) return;
     navigation.setOptions({
       headerShown: true,
       headerTitleAlign: "center",
@@ -49,8 +54,8 @@ export function useNativeFlowHeader({
       headerShadowVisible: false,
       headerStyle: { backgroundColor, height },
       headerTitleContainerStyle: { paddingTop: 6 },
-      headerLeftContainerStyle: { paddingLeft: 16, paddingTop: 6 },
-      headerRightContainerStyle: { paddingRight: 16, paddingTop: 6 },
+      headerLeftContainerStyle: { paddingLeft: headerHorizontalPadding, paddingTop: 6 },
+      headerRightContainerStyle: { paddingRight: headerHorizontalPadding, paddingTop: 6 },
       headerLeft: () =>
         canGoBack ? (
           <Pressable onPress={onBack} style={{ padding: 8, borderRadius: 16 }}>
@@ -93,5 +98,7 @@ export function useNativeFlowHeader({
     inactiveColor,
     iconColor,
     height,
+    headerHorizontalPadding,
+    disabled,
   ]);
 }

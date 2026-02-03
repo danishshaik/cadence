@@ -22,6 +22,16 @@ const BACK_SILHOUETTE =
 
 const isIOS = Platform.OS === "ios";
 
+const palette = {
+  textPrimary: "#2F3A34",
+  textSecondary: "#7B857F",
+  textMuted: "#4A5A52",
+  card: "#FFFFFF",
+  surface: "#F3F4F6",
+  accent: colors.migraine,
+  accentSoft: "#FCE7F3",
+} as const;
+
 export function LocationStep() {
   const { formData, updateFormData } = useLogMigraine();
   const [view, setView] = useState<HeadView>("front");
@@ -35,15 +45,15 @@ export function LocationStep() {
   };
 
   const currentRegions = PAIN_REGIONS[view];
-  const selectedCount = formData.painLocations.length;
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Where does it hurt?</Text>
-      <Text style={styles.subtitle}>Tap all affected areas</Text>
+      <View style={styles.titleArea}>
+        <Text style={styles.title}>Where does it hurt?</Text>
+        <Text style={styles.subtitle}>Tap the areas affected</Text>
+      </View>
 
-      {/* View toggle */}
-      <View style={styles.toggleRow}>
+      <View style={styles.toggleContainer}>
         <Pressable
           onPress={() => setView("front")}
           style={[styles.toggleButton, view === "front" && styles.toggleButtonSelected]}
@@ -62,28 +72,25 @@ export function LocationStep() {
         </Pressable>
       </View>
 
-      <View style={styles.mapContainer}>
+      <View style={styles.mapCard}>
         <Svg width="100%" height="100%" viewBox="0 0 300 400">
           <Defs>
             <LinearGradient id="skinGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-              <Stop offset="0%" stopColor="#ebd8c4" />
-              <Stop offset="100%" stopColor="#dcc4ae" />
+              <Stop offset="0%" stopColor="#FDF2F8" />
+              <Stop offset="100%" stopColor="#F3E8F0" />
             </LinearGradient>
           </Defs>
 
-          {/* Base silhouette */}
           <Path
             d={view === "front" ? FRONT_SILHOUETTE : BACK_SILHOUETTE}
             fill="url(#skinGrad)"
           />
 
-          {/* Ears */}
-          <G opacity={0.9} fill="#dcc4ae">
+          <G opacity={0.9} fill="#F3E8F0">
             <Path d="M 52,150 C 42,150 38,170 38,190 C 38,210 48,220 58,210" />
             <Path d="M 248,150 C 258,150 262,170 262,190 C 262,210 252,220 242,210" />
           </G>
 
-          {/* Pressable region paths */}
           {currentRegions.map((region) => {
             const isSelected = formData.painLocations.includes(region.id);
             return (
@@ -102,14 +109,8 @@ export function LocationStep() {
             );
           })}
 
-          {/* Facial feature hints (front view only) */}
           {view === "front" && (
-            <G
-              opacity={0.4}
-              stroke="#5d4037"
-              fill="none"
-              strokeLinecap="round"
-            >
+            <G opacity={0.4} stroke="#5d4037" fill="none" strokeLinecap="round">
               <Path d="M 80,180 Q 95,175 110,180" strokeWidth={1.5} />
               <Path d="M 190,180 Q 205,175 220,180" strokeWidth={1.5} />
               <Path d="M 145,215 Q 150,220 155,215" strokeWidth={1} />
@@ -119,29 +120,24 @@ export function LocationStep() {
         </Svg>
       </View>
 
-      <View style={styles.selectedInfo}>
-        <Text style={styles.selectedText}>
-          {selectedCount === 0
-            ? "No areas selected"
-            : `${selectedCount} area${selectedCount !== 1 ? "s" : ""} selected`}
-        </Text>
-      </View>
-
-      <View style={styles.locationChips}>
-        {formData.painLocations.map((regionId) => {
-          const region = findPainRegion(regionId);
-          return (
-            <Pressable
-              key={regionId}
-              onPress={() => handleRegionToggle(regionId)}
-              style={styles.locationChip}
-            >
-              <Text style={styles.locationChipText}>{region?.name}</Text>
-              <Text style={styles.locationChipX}>{"\u00D7"}</Text>
-            </Pressable>
-          );
-        })}
-      </View>
+      {formData.painLocations.length > 0 && (
+        <View style={styles.locationChips}>
+          {formData.painLocations.map((regionId) => {
+            const region = findPainRegion(regionId);
+            if (!region) return null;
+            return (
+              <Pressable
+                key={regionId}
+                onPress={() => handleRegionToggle(regionId)}
+                style={styles.locationChip}
+              >
+                <View style={styles.locationDot} />
+                <Text style={styles.locationChipText}>{region.name}</Text>
+              </Pressable>
+            );
+          })}
+        </View>
+      )}
     </View>
   );
 }
@@ -149,91 +145,85 @@ export function LocationStep() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    alignItems: "center",
+    gap: 20,
+  },
+  titleArea: {
+    alignItems: "center",
+    gap: 6,
   },
   title: {
-    fontFamily: isIOS ? "SF Pro Display" : "sans-serif",
-    fontSize: 28,
+    fontFamily: isIOS ? "SF Pro Rounded" : "sans-serif",
+    fontSize: 24,
     fontWeight: "700",
-    color: colors.textPrimary,
+    color: palette.textPrimary,
     textAlign: "center",
-    marginBottom: 8,
   },
   subtitle: {
     fontFamily: isIOS ? "SF Pro Text" : "sans-serif",
-    fontSize: 16,
-    color: colors.textSecondary,
+    fontSize: 14,
+    color: palette.textSecondary,
     textAlign: "center",
-    marginBottom: 20,
   },
-  toggleRow: {
+  toggleContainer: {
     flexDirection: "row",
-    gap: 12,
-    marginBottom: 16,
+    gap: 4,
+    backgroundColor: palette.surface,
+    borderRadius: 12,
+    padding: 4,
   },
   toggleButton: {
     flex: 1,
-    backgroundColor: colors.surfaceSecondary,
-    borderRadius: 12,
-    padding: 14,
+    borderRadius: 10,
+    paddingVertical: 8,
+    paddingHorizontal: 24,
     alignItems: "center",
-    borderWidth: 2,
-    borderColor: "transparent",
   },
   toggleButtonSelected: {
-    backgroundColor: colors.migraineLight,
-    borderColor: colors.migraine,
+    backgroundColor: "#FFFFFF",
   },
   toggleText: {
     fontFamily: isIOS ? "SF Pro Text" : "sans-serif",
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "600",
-    color: colors.textPrimary,
+    color: palette.textSecondary,
   },
   toggleTextSelected: {
-    color: colors.migraine,
+    color: palette.textPrimary,
   },
-  mapContainer: {
-    width: "100%",
-    aspectRatio: 3 / 4,
-    maxHeight: 340,
-    alignSelf: "center",
-  },
-  selectedInfo: {
+  mapCard: {
+    width: 300,
+    height: 340,
+    backgroundColor: palette.card,
+    borderRadius: 32,
+    justifyContent: "center",
     alignItems: "center",
-    marginTop: 16,
-  },
-  selectedText: {
-    fontFamily: isIOS ? "SF Pro Text" : "sans-serif",
-    fontSize: 14,
-    color: colors.textSecondary,
   },
   locationChips: {
     flexDirection: "row",
     flexWrap: "wrap",
     gap: 8,
     justifyContent: "center",
-    marginTop: 16,
   },
   locationChip: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: colors.migraineLight,
-    borderRadius: 16,
-    paddingVertical: 8,
-    paddingLeft: 14,
-    paddingRight: 10,
+    backgroundColor: palette.accentSoft,
+    borderRadius: 999,
+    paddingVertical: 6,
+    paddingHorizontal: 14,
     gap: 6,
+  },
+  locationDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: palette.accent,
   },
   locationChipText: {
     fontFamily: isIOS ? "SF Pro Text" : "sans-serif",
-    fontSize: 14,
-    fontWeight: "500",
-    color: colors.migraine,
-  },
-  locationChipX: {
-    fontFamily: isIOS ? "SF Pro Text" : "sans-serif",
-    fontSize: 18,
-    fontWeight: "400",
-    color: colors.migraine,
+    fontSize: 13,
+    fontWeight: "600",
+    color: palette.accent,
   },
 });
