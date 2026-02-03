@@ -13,13 +13,53 @@ export interface FlowOption {
   description?: string;
 }
 
+export interface RegionMapConfig {
+  frontSilhouette: string;
+  backSilhouette: string;
+  regions: Record<"front" | "back", { id: string; name: string; path: string }[]>;
+}
+
+export interface BubbleChoiceItem {
+  id: string;
+  label: string;
+  icon: string;
+  size: number;
+  x: number;
+  y: number;
+  labelSize?: number;
+}
+
+export interface DayPartOption {
+  id: string;
+  label: string;
+  icon: string;
+}
+
+export interface DurationOption {
+  id: string;
+  label: string;
+  minutes: number | null;
+  ongoing: boolean;
+}
+
+export interface IconGridItem {
+  id: string;
+  label: string;
+  icon: string;
+}
+
 export type TrackerFieldType =
   | "stiffness"
   | "linear_scale"
   | "toggle"
   | "joint_map"
   | "selection"
-  | "choice";
+  | "choice"
+  | "hero_scale"
+  | "region_map"
+  | "bubble_choice"
+  | "day_part_duration"
+  | "icon_grid";
 
 export interface TrackerFieldConfig {
   id: string;
@@ -38,6 +78,18 @@ export interface TrackerFieldConfig {
   visualizationKey?: VisualizationKey;
   bilateralKey?: string;
   visibility?: VisibilityRule;
+  startedAtKey?: string;
+  durationKey?: string;
+  ongoingKey?: string;
+  noneSelectedKey?: string;
+  hintText?: string;
+  noneOptionLabel?: string;
+  mapConfig?: RegionMapConfig;
+  bubbleItems?: BubbleChoiceItem[];
+  dayParts?: DayPartOption[];
+  durationOptions?: DurationOption[];
+  iconItems?: IconGridItem[];
+  iconValueType?: "string" | "object";
 }
 
 export type FlowContentBlock =

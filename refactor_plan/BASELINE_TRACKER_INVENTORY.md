@@ -7,7 +7,7 @@ Generated as part of Step 0: Baseline + Safety Nets.
 
 | Tracker | Steps | Route | Provider | Store |
 |---------|-------|-------|----------|-------|
-| Migraine | 7 | `/log-migraine` | `log-migraine-provider.tsx` | `migraine-store.ts` |
+| Migraine | 5 | `/log-migraine` | `log-migraine-provider.tsx` | `migraine-store.ts` |
 | Mood | 4 | `/log-mood` | `log-mood-provider.tsx` | `mood-store.ts` |
 | GI | 6 | `/log-gi` | `log-gi-provider.tsx` | `gi-store.ts` |
 | Respiratory | 5+ | `/log-respiratory` | `log-respiratory-provider.tsx` | `respiratory-store.ts` |
@@ -24,25 +24,26 @@ Generated as part of Step 0: Baseline + Safety Nets.
 
 ### Steps
 1. **Severity Step** (`severity-step.tsx`) - Pain intensity slider (0-10)
-2. **When Step** (`when-step.tsx`) - Time of day selection
-3. **Duration Step** (`duration-step.tsx`) - How long the migraine lasted
-4. **Location Step** (`location-step.tsx`) - Pain location on head diagram
-5. **Triggers Step** (`triggers-step.tsx`) - Trigger identification
-6. **Medication Step** (`medication-step.tsx`) - Medication tracking
-7. **Notes Step** (`notes-step.tsx`) - Additional notes
+2. **Location Step** (`location-step.tsx`) - Pain location on head diagram
+3. **Triggers Step** (`triggers-step.tsx`) - Trigger identification
+4. **When Step** (`when-step.tsx`) - Time of day + rough duration selection
+5. **Medication Step** (`medication-step.tsx`) - Medication tracking
 
 ### Form Data Shape
 ```typescript
 {
   severity: number;          // 0-10
-  severityLabel: string;     // Auto-computed
+  severityLabel: string;     // Auto-computed ("mild" | "moderate" | "severe")
+  startedAt: Date;           // Timestamp for selected time of day
   timeOfDay: string;         // 'morning' | 'afternoon' | 'evening' | 'night'
-  duration: string;          // Duration option
-  locations: string[];       // Pain locations
+  isOngoing: boolean;        // True when duration is "Ongoing"
+  durationMinutes: number | null; // Duration preset in minutes
+  painLocations: string[];   // Pain locations
   triggers: string[];        // Selected triggers
-  medications: string[];     // Medications taken
-  notes: string;             // Free text
-  loggedAt: Date;
+  medicationTaken: boolean;  // Derived from meds selection
+  medications: { name: string; takenAt: string }[]; // Medications taken
+  medicationNoneSelected: boolean; // UI-only toggle
+  notes: string | null;      // Currently not collected in the 5-step flow
 }
 ```
 

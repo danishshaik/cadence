@@ -4,9 +4,14 @@ import { colors } from "@theme";
 import { FlowContentBlock, TrackerFlowConfig } from "./flow-config";
 import { FormDataConstraint } from "./types";
 import {
+  BubbleChoiceField,
   ChoiceField,
+  DayPartDurationField,
+  HeroScaleField,
+  IconGridField,
   JointMapField,
   LinearScaleField,
+  RegionMapField,
   SelectionField,
   StiffnessField,
   ToggleField,
@@ -20,6 +25,8 @@ import {
   WeatherIcon,
 } from "./visuals/arthritis-visuals";
 import { WeatherConfirmationId } from "@/types/arthritis";
+import { getMigraineSeverityLabel } from "@/types/migraine";
+import { SeverityCircle } from "@components/migraine/severity-circle";
 
 const isIOS = process.env.EXPO_OS === "ios";
 
@@ -169,6 +176,228 @@ export function TrackerFlowRenderer<TFormData extends FormDataConstraint>({
           description={field.description}
           required={field.required}
           error={error}
+        />
+      );
+    }
+
+    if (field.type === "hero_scale") {
+      const heroVariant = field.visualizationKey;
+      const hero =
+        heroVariant === "migraine.severity"
+          ? (value: number) => {
+              const severityLabel = getMigraineSeverityLabel(value);
+              const label =
+                severityLabel.charAt(0).toUpperCase() + severityLabel.slice(1);
+              return (
+                <View style={styles.heroStack}>
+                  <SeverityCircle severity={value} size={180} />
+                  <Text selectable style={styles.heroValue}>
+                    {value}
+                  </Text>
+                  <View style={styles.heroPill}>
+                    <Text selectable style={styles.heroPillText}>
+                      {label}
+                    </Text>
+                  </View>
+                </View>
+              );
+            }
+          : undefined;
+
+      return (
+        <HeroScaleField
+          key={field.id}
+          value={(formData as any)[field.fieldKey] as number}
+          onChange={(next) => updateField(field.fieldKey as any, next as any)}
+          label={field.label}
+          description={field.description}
+          min={field.min ?? 0}
+          max={field.max ?? 10}
+          step={field.step ?? 1}
+          leftLabel={field.leftLabel}
+          rightLabel={field.rightLabel}
+          hero={hero}
+          gradientColors={
+            heroVariant === "migraine.severity"
+              ? ["#8EF2B2", "#FFE082", "#FF8AC7", "#F44336"]
+              : undefined
+          }
+          cardGradientColors={
+            heroVariant === "migraine.severity" ? ["#FFFFFF", "#FFF5FA"] : undefined
+          }
+          accentColor={heroVariant === "migraine.severity" ? "#E91E8C" : undefined}
+          textPrimaryColor={heroVariant === "migraine.severity" ? "#2F3A34" : undefined}
+          textSecondaryColor={heroVariant === "migraine.severity" ? "#7B857F" : undefined}
+          textMutedColor={heroVariant === "migraine.severity" ? "#6C7A72" : undefined}
+          pillBackgroundColor={heroVariant === "migraine.severity" ? "#FFF0F6" : undefined}
+          tickInactiveColor={heroVariant === "migraine.severity" ? "#D6DED9" : undefined}
+          tickActiveColor={heroVariant === "migraine.severity" ? "#E91E8C" : undefined}
+          cardShadow={
+            heroVariant === "migraine.severity"
+              ? "0 12px 30px rgba(233, 30, 140, 0.16)"
+              : undefined
+          }
+        />
+      );
+    }
+
+    if (field.type === "region_map") {
+      if (!field.mapConfig) {
+        return null;
+      }
+      const mapTheme = field.visualizationKey;
+      return (
+        <RegionMapField
+          key={field.id}
+          value={(formData as any)[field.fieldKey] as string[]}
+          onChange={(next) => updateField(field.fieldKey as any, next as any)}
+          label={field.label}
+          description={field.description}
+          frontSilhouette={field.mapConfig.frontSilhouette}
+          backSilhouette={field.mapConfig.backSilhouette}
+          regions={field.mapConfig.regions}
+          accentColor={mapTheme === "migraine.map" ? colors.migraine : undefined}
+          accentSoftColor={mapTheme === "migraine.map" ? "#FCE7F3" : undefined}
+          cardColor={mapTheme === "migraine.map" ? "#FFFFFF" : undefined}
+          surfaceColor={mapTheme === "migraine.map" ? "#F3F4F6" : undefined}
+          textPrimaryColor={mapTheme === "migraine.map" ? "#2F3A34" : undefined}
+          textSecondaryColor={mapTheme === "migraine.map" ? "#7B857F" : undefined}
+          mapGradientColors={mapTheme === "migraine.map" ? ["#FDF2F8", "#F3E8F0"] : undefined}
+        />
+      );
+    }
+
+    if (field.type === "bubble_choice") {
+      if (!field.bubbleItems) {
+        return null;
+      }
+      const bubbleTheme = field.visualizationKey;
+      return (
+        <BubbleChoiceField
+          key={field.id}
+          value={(formData as any)[field.fieldKey] as string[]}
+          onChange={(next) => updateField(field.fieldKey as any, next as any)}
+          label={field.label}
+          description={field.description}
+          items={field.bubbleItems}
+          accentColor={bubbleTheme === "migraine.bubbles" ? colors.migraine : undefined}
+          textPrimaryColor={bubbleTheme === "migraine.bubbles" ? "#2F3A34" : undefined}
+          textSecondaryColor={bubbleTheme === "migraine.bubbles" ? "#7B857F" : undefined}
+          textMutedColor={bubbleTheme === "migraine.bubbles" ? "#4A5A52" : undefined}
+        />
+      );
+    }
+
+    if (field.type === "day_part_duration") {
+      const durationKey = field.durationKey ?? "durationMinutes";
+      const ongoingKey = field.ongoingKey ?? "isOngoing";
+      const startedAtKey = field.startedAtKey ?? "startedAt";
+      if (!field.dayParts || !field.durationOptions) {
+        return null;
+      }
+      const dayPartTheme = field.visualizationKey;
+      return (
+        <DayPartDurationField
+          key={field.id}
+          label={field.label}
+          description={field.description}
+          hintText={field.hintText}
+          dayParts={field.dayParts}
+          durationOptions={field.durationOptions}
+          timeOfDay={(formData as any)[field.fieldKey] as string}
+          isOngoing={(formData as any)[ongoingKey] as boolean}
+          durationMinutes={(formData as any)[durationKey] as number | null}
+          onTimeOfDayChange={(next) => updateField(field.fieldKey as any, next as any)}
+          onStartedAtChange={(next) => updateField(startedAtKey as any, next as any)}
+          onIsOngoingChange={(next) => updateField(ongoingKey as any, next as any)}
+          onDurationMinutesChange={(next) => updateField(durationKey as any, next as any)}
+          accentColor={dayPartTheme === "migraine.day-part" ? colors.migraine : undefined}
+          accentSoftColor={dayPartTheme === "migraine.day-part" ? "#FCE4F1" : undefined}
+          cardColor={dayPartTheme === "migraine.day-part" ? "#FFFFFF" : undefined}
+          textPrimaryColor={dayPartTheme === "migraine.day-part" ? "#2F3A34" : undefined}
+          textSecondaryColor={dayPartTheme === "migraine.day-part" ? "#7B857F" : undefined}
+          textMutedColor={dayPartTheme === "migraine.day-part" ? "#4A5A52" : undefined}
+          hintColor={dayPartTheme === "migraine.day-part" ? "#E91E8C90" : undefined}
+          dayPartShadow={
+            dayPartTheme === "migraine.day-part"
+              ? "0 4px 16px rgba(233, 30, 140, 0.06)"
+              : undefined
+          }
+          durationShadow={
+            dayPartTheme === "migraine.day-part"
+              ? "0 6px 20px rgba(233, 30, 140, 0.06)"
+              : undefined
+          }
+        />
+      );
+    }
+
+    if (field.type === "icon_grid") {
+      if (!field.iconItems) {
+        return null;
+      }
+      const noneSelectedKey = field.noneSelectedKey ?? "noneSelected";
+      const valueType = field.iconValueType ?? "string";
+      const currentValue = (formData as any)[field.fieldKey] as
+        | { name: string; takenAt: string }[]
+        | string[]
+        | undefined;
+      const currentList = Array.isArray(currentValue) ? currentValue : [];
+      const selectedIds = currentList.map((item) =>
+        valueType === "object" ? (item as { name: string }).name : (item as string)
+      );
+      const iconTheme = field.visualizationKey;
+      return (
+        <IconGridField
+          key={field.id}
+          label={field.label}
+          description={field.description}
+          items={field.iconItems}
+          selectedIds={selectedIds}
+          onToggle={(id) => {
+            const alreadySelected = selectedIds.includes(id);
+            const next = alreadySelected
+              ? currentList.filter((item) =>
+                  valueType === "object"
+                    ? (item as { name: string }).name !== id
+                    : (item as string) !== id
+                )
+              : valueType === "object"
+              ? [
+                  ...(currentList as { name: string; takenAt: string }[]),
+                  { name: id, takenAt: new Date().toISOString() },
+                ]
+              : [...(currentList as string[]), id];
+            updateField(field.fieldKey as any, next as any);
+            if ((formData as any)[noneSelectedKey]) {
+              updateField(noneSelectedKey as any, false as any);
+            }
+          }}
+          noneOption={
+            field.noneOptionLabel
+              ? {
+                  label: field.noneOptionLabel,
+                  selected: Boolean((formData as any)[noneSelectedKey]),
+                  onPress: () => {
+                    const nextNoneSelected = !(formData as any)[noneSelectedKey];
+                    updateField(noneSelectedKey as any, nextNoneSelected as any);
+                    if (nextNoneSelected) {
+                      updateField(field.fieldKey as any, [] as any);
+                    }
+                  },
+                }
+              : undefined
+          }
+          accentColor={iconTheme === "migraine.icon-grid" ? colors.migraine : undefined}
+          accentSoftColor={iconTheme === "migraine.icon-grid" ? "#FCE4F1" : undefined}
+          textPrimaryColor={iconTheme === "migraine.icon-grid" ? "#2F3A34" : undefined}
+          textSecondaryColor={iconTheme === "migraine.icon-grid" ? "#7B857F" : undefined}
+          textMutedColor={iconTheme === "migraine.icon-grid" ? "#4A5A52" : undefined}
+          iconMutedColor={iconTheme === "migraine.icon-grid" ? "#C0C6C2" : undefined}
+          badgeGradient={
+            iconTheme === "migraine.icon-grid" ? [colors.migraine, "#FF8CCB"] : undefined
+          }
+          badgeIcon={iconTheme === "migraine.icon-grid" ? "pill" : undefined}
         />
       );
     }
@@ -369,5 +598,30 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: colors.arthritisTextSecondary,
     textAlign: "center",
+  },
+  heroStack: {
+    alignItems: "center",
+    gap: 8,
+    width: "100%",
+  },
+  heroValue: {
+    fontFamily: isIOS ? "SF Pro Rounded" : "sans-serif",
+    fontSize: 56,
+    fontWeight: "700",
+    color: "#E91E8C",
+    fontVariant: ["tabular-nums"],
+  },
+  heroPill: {
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 999,
+    borderCurve: "continuous",
+    backgroundColor: "#FFF0F6",
+  },
+  heroPillText: {
+    fontFamily: isIOS ? "SF Pro Text" : "sans-serif",
+    fontSize: 12,
+    fontWeight: "600",
+    color: "#E91E8C",
   },
 });

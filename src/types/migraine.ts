@@ -14,6 +14,22 @@ export interface MigraineLog {
   createdAt: string;
 }
 
+export type MigraineSeverityLabel = "mild" | "moderate" | "severe";
+
+export interface MigraineFormData {
+  severity: number;
+  severityLabel: MigraineSeverityLabel;
+  startedAt: Date;
+  timeOfDay: TimeOfDay;
+  isOngoing: boolean;
+  durationMinutes: number | null;
+  painLocations: string[];
+  triggers: string[];
+  medications: { name: string; takenAt: string }[];
+  medicationNoneSelected: boolean;
+  notes: string | null;
+}
+
 export interface PainRegion {
   id: string;
   name: string;
@@ -84,3 +100,17 @@ export const DURATION_PRESETS = [
 export type PainLocationId = string;
 export type TriggerId = (typeof MIGRAINE_TRIGGERS)[number]["id"];
 export type TimeOfDay = (typeof TIME_OF_DAY_OPTIONS)[number]["id"];
+
+export function getInitialMigraineTimeOfDay(): TimeOfDay {
+  const hour = new Date().getHours();
+  if (hour >= 0 && hour < 6) return "night";
+  if (hour >= 6 && hour < 12) return "morning";
+  if (hour >= 12 && hour < 18) return "afternoon";
+  return "evening";
+}
+
+export function getMigraineSeverityLabel(severity: number): MigraineSeverityLabel {
+  if (severity <= 3) return "mild";
+  if (severity <= 6) return "moderate";
+  return "severe";
+}

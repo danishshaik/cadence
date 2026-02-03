@@ -22,7 +22,12 @@ export type VisualizationKey =
   | "selection.compact"
   | "weather.pill"
   | "activity.pill"
-  | "management.card";
+  | "management.card"
+  | "migraine.severity"
+  | "migraine.map"
+  | "migraine.bubbles"
+  | "migraine.day-part"
+  | "migraine.icon-grid";
 
 const visualizationRegistry: Record<VisualizationKey, VisualizationConfig> = {
   "selection.compact": {
@@ -38,6 +43,11 @@ const visualizationRegistry: Record<VisualizationKey, VisualizationConfig> = {
       gap: 12,
     },
   },
+  "migraine.severity": {},
+  "migraine.map": {},
+  "migraine.bubbles": {},
+  "migraine.day-part": {},
+  "migraine.icon-grid": {},
 };
 
 export function getVisualization(
