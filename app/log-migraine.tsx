@@ -1,5 +1,12 @@
-import { LogMigraineFlow } from "@components/migraine";
+import { LogMigraineFlow, LogMigraineFlowRefactor } from "@components/migraine";
+import { FlowSwitcher } from "@components/tracking";
 
 export default function LogMigraineModal() {
-  return <LogMigraineFlow />;
+  return (
+    <FlowSwitcher
+      tracker="migraine"
+      legacyFlow={<LogMigraineFlow />}
+      newFlow={<LogMigraineFlowRefactor />}
+    />
+  );
 }

@@ -1,88 +1,58 @@
 import React from "react";
-import { View, Text, Pressable, StyleSheet, Platform } from "react-native";
-import Animated, { useAnimatedStyle, withSpring, useSharedValue } from "react-native-reanimated";
-import * as Haptics from "expo-haptics";
-import { colors } from "@theme";
+import { View, StyleSheet } from "react-native";
+import { BubbleChoiceField, type BubbleChoiceItem } from "@components/tracking/fields/bubble-choice-field";
 import { useLogMood } from "./log-mood-provider";
-import { EMOTIONS, EmotionId } from "@/types/mood";
+import { EmotionId } from "@/types/mood";
+import { FlowTitle } from "./flow-title";
+import { mentalWeatherColors } from "./mental-weather-theme";
 
-function EmotionPill({
-  emotion,
-  isSelected,
-  onPress
-}: {
-  emotion: typeof EMOTIONS[number];
-  isSelected: boolean;
-  onPress: () => void;
-}) {
-  const scale = useSharedValue(1);
-
-  const handlePress = () => {
-    scale.value = withSpring(0.95, { damping: 15 }, () => {
-      scale.value = withSpring(1, { damping: 15 });
-    });
-    onPress();
-  };
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }],
-  }));
-
-  return (
-    <Pressable onPress={handlePress}>
-      <Animated.View
-        style={[
-          styles.pill,
-          isSelected && styles.pillSelected,
-          animatedStyle,
-        ]}
-      >
-        <Text style={[styles.pillText, isSelected && styles.pillTextSelected]}>
-          {emotion.label}
-        </Text>
-      </Animated.View>
-    </Pressable>
-  );
-}
+const EMOTION_BUBBLES: BubbleChoiceItem[] = [
+  { id: "stress", label: "Stress", icon: "brain" },
+  { id: "sleep", label: "Sleep", icon: "moon" },
+  { id: "light", label: "Light", icon: "sun" },
+  { id: "noise", label: "Noise", icon: "volume-2" },
+  { id: "smell", label: "Smell", icon: "wind" },
+  { id: "weather", label: "Weather", icon: "cloud-rain" },
+  { id: "meals", label: "Meals", icon: "utensils-crossed" },
+  { id: "water", label: "Water", icon: "droplets" },
+  { id: "alcohol", label: "Alcohol", icon: "wine" },
+  { id: "caffeine", label: "Caffeine", icon: "coffee" },
+  { id: "hormonal", label: "Hormonal", icon: "heart-pulse" },
+  { id: "screen", label: "Screen", icon: "monitor" },
+];
 
 export function EmotionsStep() {
   const { formData, updateFormData } = useLogMood();
 
-  const handleEmotionToggle = (id: EmotionId) => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    const currentEmotions = formData.emotions;
-    const newEmotions = currentEmotions.includes(id)
-      ? currentEmotions.filter((e) => e !== id)
-      : [...currentEmotions, id];
-    updateFormData({ emotions: newEmotions });
-  };
+  const bubbleItems = EMOTION_BUBBLES;
+
+  const handleChange = React.useCallback(
+    (next: string[]) => {
+      updateFormData({ emotions: next as EmotionId[] });
+    },
+    [updateFormData]
+  );
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Which words fit this feeling?</Text>
-      <Text style={styles.subtitle}>Select all that apply</Text>
+      <FlowTitle
+        title="Pick a few words"
+        subtitle="How are you feeling right now?"
+        align="center"
+      />
 
-      <View style={styles.cloudContainer}>
-        {EMOTIONS.map((emotion) => {
-          const isSelected = formData.emotions.includes(emotion.id);
-          return (
-            <EmotionPill
-              key={emotion.id}
-              emotion={emotion}
-              isSelected={isSelected}
-              onPress={() => handleEmotionToggle(emotion.id)}
-            />
-          );
-        })}
+      <View style={styles.bubbleArea}>
+        <BubbleChoiceField
+          value={formData.emotions}
+          onChange={handleChange}
+          items={bubbleItems}
+          layoutPreset="pencil"
+          accentColor={mentalWeatherColors.accent}
+          textPrimaryColor={mentalWeatherColors.textPrimary}
+          textSecondaryColor={mentalWeatherColors.textSecondary}
+          textMutedColor={mentalWeatherColors.textMuted}
+        />
       </View>
-
-      {formData.emotions.length > 0 && (
-        <View style={styles.summary}>
-          <Text style={styles.summaryText}>
-            {formData.emotions.length} selected
-          </Text>
-        </View>
-      )}
     </View>
   );
 }
@@ -90,58 +60,10 @@ export function EmotionsStep() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    gap: 8,
   },
-  title: {
-    fontFamily: Platform.OS === "ios" ? "SF Pro Display" : "sans-serif",
-    fontSize: 22,
-    fontWeight: "700",
-    color: colors.textPrimary,
-    marginBottom: 6,
-  },
-  subtitle: {
-    fontFamily: Platform.OS === "ios" ? "SF Pro Text" : "sans-serif",
-    fontSize: 15,
-    color: colors.textSecondary,
-    marginBottom: 20,
-  },
-  cloudContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 10,
-    justifyContent: "center",
+  bubbleArea: {
+    flex: 1,
     paddingHorizontal: 8,
-  },
-  pill: {
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 24,
-    backgroundColor: colors.surfaceSecondary,
-    borderWidth: 2,
-    borderColor: "transparent",
-  },
-  pillSelected: {
-    backgroundColor: colors.moodLight,
-    borderColor: colors.mood,
-  },
-  pillText: {
-    fontFamily: Platform.OS === "ios" ? "SF Pro Text" : "sans-serif",
-    fontSize: 15,
-    fontWeight: "500",
-    color: colors.textSecondary,
-  },
-  pillTextSelected: {
-    fontWeight: "600",
-    color: colors.mood,
-  },
-  summary: {
-    alignItems: "center",
-    marginTop: "auto",
-    paddingTop: 16,
-  },
-  summaryText: {
-    fontFamily: Platform.OS === "ios" ? "SF Pro Text" : "sans-serif",
-    fontSize: 14,
-    color: colors.mood,
-    fontWeight: "600",
   },
 });

@@ -12,6 +12,7 @@ export interface LogMigraineFormData {
   triggers: string[];
   medicationTaken: boolean;
   medications: { name: string; takenAt: string }[];
+  medicationNoneSelected: boolean;
   notes: string | null;
 }
 
@@ -32,7 +33,7 @@ interface LogMigraineContextType {
 
 const LogMigraineContext = createContext<LogMigraineContextType | null>(null);
 
-const TOTAL_STEPS = 7;
+const TOTAL_STEPS = 5;
 
 const getInitialTimeOfDay = (): TimeOfDay => {
   const hour = new Date().getHours();
@@ -59,6 +60,7 @@ const getInitialFormData = (): LogMigraineFormData => ({
   triggers: [],
   medicationTaken: false,
   medications: [],
+  medicationNoneSelected: false,
   notes: null,
 });
 

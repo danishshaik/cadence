@@ -1,89 +1,157 @@
-import React, { useState } from "react";
-import { View, Text, Pressable, StyleSheet, Platform } from "react-native";
-import { ExpoDateTimePicker } from "@components/ui";
+import React from "react";
+import { Platform, Pressable, StyleSheet, Text, View } from "react-native";
 import { colors } from "@theme";
-import { TIME_OF_DAY_OPTIONS, TimeOfDay } from "@/types/migraine";
+import { Icon } from "@components/ui";
 import { useLogMigraine } from "./log-migraine-provider";
 
-const isIOS = process.env.EXPO_OS === "ios";
+const isIOS = Platform.OS === "ios";
+
+const palette = {
+  card: "#FFFFFF",
+  accent: colors.migraine,
+  accentSoft: "#FCE4F1",
+  textPrimary: "#2F3A34",
+  textSecondary: "#7B857F",
+  textMuted: "#4A5A52",
+  border: "#E5E7EB",
+} as const;
+
+const DAY_PARTS = [
+  { id: "morning", label: "Morning", icon: "sunrise" },
+  { id: "afternoon", label: "Afternoon", icon: "sun" },
+  { id: "evening", label: "Evening", icon: "sunset" },
+  { id: "night", label: "Night", icon: "moon" },
+] as const;
+
+const DURATION_OPTIONS = [
+  { id: "short", label: "≤1h", minutes: 60, ongoing: false },
+  { id: "medium", label: "1–4h", minutes: 240, ongoing: false },
+  { id: "long", label: "4h+", minutes: 480, ongoing: false },
+  { id: "ongoing", label: "Ongoing", minutes: null, ongoing: true },
+] as const;
 
 export function WhenStep() {
   const { formData, updateFormData } = useLogMigraine();
-  const [showDatePicker, setShowDatePicker] = useState(false);
 
-  const formatDate = (date: Date) => {
-    const today = new Date();
-    const yesterday = new Date(today);
-    yesterday.setDate(yesterday.getDate() - 1);
-
-    if (date.toDateString() === today.toDateString()) {
-      return "Today";
-    } else if (date.toDateString() === yesterday.toDateString()) {
-      return "Yesterday";
-    } else {
-      return date.toLocaleDateString("en-US", {
-        weekday: "short",
-        month: "short",
-        day: "numeric",
-      });
-    }
+  const handleDayPartSelect = (timeOfDay: (typeof DAY_PARTS)[number]["id"]) => {
+    updateFormData("timeOfDay", timeOfDay);
+    updateFormData("startedAt", new Date());
   };
 
-  const handleDateChange = (selectedDate: Date) => {
-    if (!isIOS) {
-      setShowDatePicker(false);
+  const handleDurationSelect = (option: (typeof DURATION_OPTIONS)[number]) => {
+    if (option.ongoing) {
+      updateFormData("isOngoing", true);
+      updateFormData("durationMinutes", null);
+      return;
     }
-    updateFormData("startedAt", selectedDate);
+
+    updateFormData("durationMinutes", option.minutes);
+    updateFormData("isOngoing", false);
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>When did it start?</Text>
-      <Text style={styles.subtitle}>Select the date and time of day</Text>
-
-      <View style={styles.section}>
-        <Text style={styles.sectionLabel}>DATE</Text>
-        <Pressable
-          style={({ pressed }) => [styles.dateButton, pressed && styles.dateButtonPressed]}
-          onPress={() => setShowDatePicker(true)}
-        >
-          <Text style={styles.dateText}>{formatDate(formData.startedAt)}</Text>
-        </Pressable>
+      <View style={styles.titleArea}>
+        <Text style={styles.title}>Pick a time of day</Text>
+        <Text style={styles.subtitle}>Then choose a rough length</Text>
       </View>
 
-      {showDatePicker && (
-        <ExpoDateTimePicker
-          value={formData.startedAt}
-          mode="date"
-          display={isIOS ? "inline" : "default"}
-          onChange={handleDateChange}
-          maximumDate={new Date()}
-          accentColor={colors.migraine}
-        />
-      )}
-
-      <View style={styles.section}>
-        <Text style={styles.sectionLabel}>TIME OF DAY</Text>
-        <View style={styles.chipGrid}>
-          {TIME_OF_DAY_OPTIONS.map((option) => {
-            const isSelected = formData.timeOfDay === option.id;
+      <View style={styles.dayPartGrid}>
+        <View style={styles.dayPartRow}>
+          {DAY_PARTS.slice(0, 2).map((part) => {
+            const isSelected = formData.timeOfDay === part.id;
             return (
               <Pressable
-                key={option.id}
-                onPress={() => updateFormData("timeOfDay", option.id as TimeOfDay)}
-                style={[styles.chip, isSelected && styles.chipSelected]}
+                key={part.id}
+                onPress={() => handleDayPartSelect(part.id)}
+                style={[
+                  styles.dayPartTile,
+                  isSelected && styles.dayPartTileSelected,
+                ]}
               >
-                <Text style={[styles.chipLabel, isSelected && styles.chipLabelSelected]}>
-                  {option.label}
+                <Icon
+                  name={part.icon}
+                  size={22}
+                  color={isSelected ? colors.migraine : colors.migraine}
+                />
+                <Text
+                  style={[
+                    styles.dayPartLabel,
+                    isSelected && styles.dayPartLabelSelected,
+                  ]}
+                >
+                  {part.label}
                 </Text>
-                <Text style={[styles.chipTime, isSelected && styles.chipTimeSelected]}>
-                  {option.timeRange}
+              </Pressable>
+            );
+          })}
+        </View>
+        <View style={styles.dayPartRow}>
+          {DAY_PARTS.slice(2).map((part) => {
+            const isSelected = formData.timeOfDay === part.id;
+            return (
+              <Pressable
+                key={part.id}
+                onPress={() => handleDayPartSelect(part.id)}
+                style={[
+                  styles.dayPartTile,
+                  isSelected && styles.dayPartTileSelected,
+                ]}
+              >
+                <Icon
+                  name={part.icon}
+                  size={22}
+                  color={isSelected ? colors.migraine : colors.migraine}
+                />
+                <Text
+                  style={[
+                    styles.dayPartLabel,
+                    isSelected && styles.dayPartLabelSelected,
+                  ]}
+                >
+                  {part.label}
                 </Text>
               </Pressable>
             );
           })}
         </View>
       </View>
+
+      <View style={styles.durationCard}>
+        <Text style={styles.durationLabel}>How long?</Text>
+        <Text style={styles.durationHelper}>Tap one to choose</Text>
+        <View style={styles.durationSegments}>
+          {DURATION_OPTIONS.map((option) => {
+            const isSelected = option.ongoing
+              ? formData.isOngoing
+              : !formData.isOngoing && formData.durationMinutes === option.minutes;
+            return (
+              <Pressable
+                key={option.id}
+                onPress={() => handleDurationSelect(option)}
+                style={[
+                  styles.durationSegment,
+                  isSelected && styles.durationSegmentSelected,
+                ]}
+              >
+                <Text
+                  numberOfLines={1}
+                  adjustsFontSizeToFit
+                  minimumFontScale={0.85}
+                  style={[
+                    styles.durationSegmentText,
+                    isSelected && styles.durationSegmentTextSelected,
+                  ]}
+                >
+                  {option.label}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </View>
+      </View>
+
+      <Text style={styles.hintText}>Fine-tune later if needed</Text>
     </View>
   );
 }
@@ -91,82 +159,114 @@ export function WhenStep() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    gap: 20,
+    alignItems: "center",
+  },
+  titleArea: {
+    width: "100%",
+    alignItems: "center",
+    gap: 6,
   },
   title: {
-    fontFamily: Platform.OS === "ios" ? "SF Pro Display" : "sans-serif",
-    fontSize: 28,
+    fontFamily: isIOS ? "SF Pro Rounded" : "sans-serif",
+    fontSize: 24,
     fontWeight: "700",
-    color: colors.textPrimary,
+    color: palette.textPrimary,
     textAlign: "center",
-    marginBottom: 8,
   },
   subtitle: {
-    fontFamily: Platform.OS === "ios" ? "SF Pro Text" : "sans-serif",
-    fontSize: 16,
-    color: colors.textSecondary,
+    fontFamily: isIOS ? "SF Pro Text" : "sans-serif",
+    fontSize: 15,
+    color: palette.textSecondary,
     textAlign: "center",
-    marginBottom: 32,
   },
-  section: {
-    marginBottom: 24,
-  },
-  sectionLabel: {
-    fontFamily: Platform.OS === "ios" ? "SF Pro Text" : "sans-serif",
-    fontSize: 12,
-    fontWeight: "600",
-    letterSpacing: 1,
-    color: colors.textTertiary,
-    marginBottom: 12,
-  },
-  dateButton: {
-    backgroundColor: colors.surfaceSecondary,
-    borderRadius: 12,
-    padding: 16,
-    alignItems: "center",
-  },
-  dateButtonPressed: {
-    opacity: 0.7,
-  },
-  dateText: {
-    fontFamily: Platform.OS === "ios" ? "SF Pro Text" : "sans-serif",
-    fontSize: 18,
-    fontWeight: "600",
-    color: colors.textPrimary,
-  },
-  chipGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
+  dayPartGrid: {
+    width: "100%",
     gap: 12,
   },
-  chip: {
-    width: "47%",
-    backgroundColor: colors.surfaceSecondary,
-    borderRadius: 12,
-    padding: 16,
+  dayPartRow: {
+    flexDirection: "row",
+    gap: 12,
+  },
+  dayPartTile: {
+    flex: 1,
+    height: 110,
+    backgroundColor: palette.card,
+    borderRadius: 20,
+    borderCurve: "continuous",
+    justifyContent: "center",
     alignItems: "center",
-    borderWidth: 2,
-    borderColor: "transparent",
+    gap: 6,
+    boxShadow: "0 4px 16px rgba(233, 30, 140, 0.06)",
   },
-  chipSelected: {
-    backgroundColor: colors.migraineLight,
-    borderColor: colors.migraine,
+  dayPartTileSelected: {
+    backgroundColor: palette.accentSoft,
   },
-  chipLabel: {
-    fontFamily: Platform.OS === "ios" ? "SF Pro Text" : "sans-serif",
-    fontSize: 16,
+  dayPartLabel: {
+    fontFamily: isIOS ? "SF Pro Text" : "sans-serif",
+    fontSize: 14,
     fontWeight: "600",
-    color: colors.textPrimary,
-    marginBottom: 4,
+    color: palette.textMuted,
   },
-  chipLabelSelected: {
-    color: colors.migraine,
+  dayPartLabelSelected: {
+    color: palette.accent,
   },
-  chipTime: {
-    fontFamily: Platform.OS === "ios" ? "SF Pro Text" : "sans-serif",
-    fontSize: 12,
-    color: colors.textSecondary,
+  durationCard: {
+    width: "100%",
+    backgroundColor: palette.card,
+    borderRadius: 24,
+    borderCurve: "continuous",
+    padding: 20,
+    gap: 12,
+    boxShadow: "0 6px 20px rgba(233, 30, 140, 0.06)",
   },
-  chipTimeSelected: {
-    color: colors.migraine,
+  durationLabel: {
+    fontFamily: isIOS ? "SF Pro Text" : "sans-serif",
+    fontSize: 18,
+    fontWeight: "600",
+    color: palette.textMuted,
+  },
+  durationHelper: {
+    fontFamily: isIOS ? "SF Pro Text" : "sans-serif",
+    fontSize: 13,
+    fontWeight: "500",
+    color: palette.textSecondary,
+  },
+  durationSegments: {
+    flexDirection: "row",
+    gap: 4,
+    padding: 4,
+    backgroundColor: "#F3F4F6",
+    borderRadius: 999,
+    borderCurve: "continuous",
+  },
+  durationSegment: {
+    flex: 1,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 999,
+    borderCurve: "continuous",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  durationSegmentSelected: {
+    backgroundColor: palette.accent,
+  },
+  durationSegmentText: {
+    fontFamily: isIOS ? "SF Pro Text" : "sans-serif",
+    fontSize: 11,
+    fontWeight: "600",
+    color: "#6D6C6A",
+  },
+  durationSegmentTextSelected: {
+    color: "#FFFFFF",
+  },
+  hintText: {
+    fontFamily: isIOS ? "SF Pro Text" : "sans-serif",
+    fontSize: 14,
+    fontWeight: "500",
+    color: "#E91E8C90",
+    textAlign: "center",
   },
 });

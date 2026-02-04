@@ -5,6 +5,7 @@ import * as Haptics from "expo-haptics";
 import { colors, shadows } from "@theme";
 import { useLogArthritis } from "./log-arthritis-provider";
 import { ManagementMethodId, MANAGEMENT_METHODS } from "@/types/arthritis";
+import { ChoiceField } from "@components/tracking";
 
 const isIOS = process.env.EXPO_OS === "ios";
 
@@ -85,19 +86,6 @@ export function ManagementStep() {
 
   const cardSize = Math.min((width - 60) / 2, 150);
 
-  const handleMethodPress = (id: ManagementMethodId) => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    const current = formData.managementMethods;
-    const updated = current.includes(id)
-      ? current.filter((m) => m !== id)
-      : [...current, id];
-    updateFormData({ managementMethods: updated });
-  };
-
-  // Split methods into two columns
-  const leftColumn = MANAGEMENT_METHODS.filter((_, i) => i % 2 === 0);
-  const rightColumn = MANAGEMENT_METHODS.filter((_, i) => i % 2 === 1);
-
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -110,34 +98,31 @@ export function ManagementStep() {
         contentContainerStyle={styles.gridContainer}
         showsVerticalScrollIndicator={false}
       >
-        <View style={styles.column}>
-          {leftColumn.map((method) => (
+        <ChoiceField
+          value={formData.managementMethods}
+          onChange={(next) => updateFormData({ managementMethods: next as ManagementMethodId[] })}
+          options={MANAGEMENT_METHODS.map((method) => ({
+            value: method.id,
+            label: method.label,
+            description: method.icon,
+          }))}
+          listStyle={styles.gridList}
+          renderOption={({ option, selected, onPress }) => (
             <ManagementCard
-              key={method.id}
-              id={method.id}
-              label={method.label}
-              description={method.description}
-              icon={method.icon}
-              selected={formData.managementMethods.includes(method.id)}
-              onPress={handleMethodPress}
+              key={option.value}
+              id={option.value as ManagementMethodId}
+              label={option.label}
+              description={""}
+              icon={option.description ?? "circle.fill"}
+              selected={selected}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                onPress();
+              }}
               size={cardSize}
             />
-          ))}
-        </View>
-        <View style={styles.column}>
-          {rightColumn.map((method) => (
-            <ManagementCard
-              key={method.id}
-              id={method.id}
-              label={method.label}
-              description={method.description}
-              icon={method.icon}
-              selected={formData.managementMethods.includes(method.id)}
-              onPress={handleMethodPress}
-              size={cardSize}
-            />
-          ))}
-        </View>
+          )}
+        />
       </ScrollView>
 
       <Text style={styles.footerNote}>
@@ -178,12 +163,13 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   gridContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    gap: 12,
     paddingHorizontal: 4,
+    paddingBottom: 4,
   },
-  column: {
+  gridList: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
     gap: 12,
   },
   card: {

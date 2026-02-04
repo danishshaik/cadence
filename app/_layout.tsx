@@ -24,6 +24,9 @@ export default function RootLayout() {
             options={{
               presentation: "modal",
               animation: "slide_from_bottom",
+              headerShown: true,
+              headerTitle: "",
+              headerShadowVisible: false,
             }}
           />
           <Stack.Screen
@@ -38,6 +41,9 @@ export default function RootLayout() {
             options={{
               presentation: "modal",
               animation: "slide_from_bottom",
+              headerShown: true,
+              headerTitle: "",
+              headerShadowVisible: false,
             }}
           />
           <Stack.Screen

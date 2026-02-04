@@ -1,4 +1,5 @@
 export { LogMigraineFlow } from "./log-migraine-flow";
+export { LogMigraineFlowRefactor } from "./log-migraine-flow-refactor";
 export { LogMigraineProvider, useLogMigraine } from "./log-migraine-provider";
 export { ProgressBar } from "./progress-bar";
 export { StepHeader } from "./step-header";

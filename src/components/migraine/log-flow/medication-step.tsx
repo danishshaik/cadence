@@ -1,172 +1,136 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  Pressable,
-  StyleSheet,
-  Platform,
-  TextInput,
-  ScrollView,
-  KeyboardAvoidingView,
-} from "react-native";
+import React from "react";
+import { View, Text, Pressable, StyleSheet, Platform } from "react-native";
+import Svg, { Defs, RadialGradient, Stop, Rect } from "react-native-svg";
 import { Icon } from "@components/ui";
-import * as Haptics from "expo-haptics";
 import { colors } from "@theme";
 import { useLogMigraine } from "./log-migraine-provider";
 
+const isIOS = Platform.OS === "ios";
+
+const palette = {
+  textPrimary: "#2F3A34",
+  textSecondary: "#7B857F",
+  textMuted: "#4A5A52",
+  card: "#FFFFFF",
+  accent: colors.migraine,
+  accentSoft: "#FCE4F1",
+  iconMuted: "#C0C6C2",
+} as const;
+
+const MED_OPTIONS = [
+  { id: "ibuprofen", label: "Ibuprofen", icon: "pill" },
+  { id: "tylenol", label: "Tylenol", icon: "pill" },
+  { id: "excedrin", label: "Excedrin", icon: "zap" },
+  { id: "sumatriptan", label: "Sumatriptan", icon: "syringe" },
+  { id: "aspirin", label: "Aspirin", icon: "heart-pulse" },
+  { id: "other", label: "Other", icon: "plus" },
+] as const;
+
+const MED_ROWS = [
+  [MED_OPTIONS[0], MED_OPTIONS[1]],
+  [MED_OPTIONS[2], MED_OPTIONS[3]],
+  [MED_OPTIONS[4], MED_OPTIONS[5]],
+] as const;
+
 export function MedicationStep() {
   const { formData, updateFormData } = useLogMigraine();
-  const [newMedName, setNewMedName] = useState("");
-  const [showInput, setShowInput] = useState(false);
 
-  const handleToggleMedication = (taken: boolean) => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    updateFormData("medicationTaken", taken);
-    if (!taken) {
+  const handleToggleMedication = (label: string) => {
+    const alreadySelected = formData.medications.some((med) => med.name === label);
+    const nextMeds = alreadySelected
+      ? formData.medications.filter((med) => med.name !== label)
+      : [...formData.medications, { name: label, takenAt: new Date().toISOString() }];
+    updateFormData("medications", nextMeds);
+    updateFormData("medicationTaken", nextMeds.length > 0);
+    updateFormData("medicationNoneSelected", false);
+  };
+
+  const handleToggleNone = () => {
+    const nextNoneSelected = !formData.medicationNoneSelected;
+    updateFormData("medicationNoneSelected", nextNoneSelected);
+    if (nextNoneSelected) {
       updateFormData("medications", []);
+      updateFormData("medicationTaken", false);
     }
   };
-
-  const handleAddMedication = () => {
-    if (newMedName.trim()) {
-      const newMed = {
-        name: newMedName.trim(),
-        takenAt: new Date().toISOString(),
-      };
-      updateFormData("medications", [...formData.medications, newMed]);
-      setNewMedName("");
-      setShowInput(false);
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    }
-  };
-
-  const handleRemoveMedication = (index: number) => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    const newMeds = formData.medications.filter((_, i) => i !== index);
-    updateFormData("medications", newMeds);
-  };
-
-  const commonMeds = ["Ibuprofen", "Acetaminophen", "Sumatriptan", "Excedrin", "Aspirin"];
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
-      <Text style={styles.title}>Did you take medication?</Text>
-      <Text style={styles.subtitle}>Track what you took for this attack</Text>
-
-      <View style={styles.toggleSection}>
-        <Pressable
-          onPress={() => handleToggleMedication(true)}
-          style={[styles.toggleButton, formData.medicationTaken && styles.toggleButtonSelected]}
-        >
-          <Text
-            style={[styles.toggleText, formData.medicationTaken && styles.toggleTextSelected]}
-          >
-            Yes
-          </Text>
-        </Pressable>
-        <Pressable
-          onPress={() => handleToggleMedication(false)}
-          style={[styles.toggleButton, !formData.medicationTaken && styles.toggleButtonSelected]}
-        >
-          <Text
-            style={[styles.toggleText, !formData.medicationTaken && styles.toggleTextSelected]}
-          >
-            No
-          </Text>
-        </Pressable>
+    <View style={styles.container}>
+      <View style={styles.titleArea}>
+        <View style={styles.badge}>
+          <Svg width={56} height={56} style={StyleSheet.absoluteFill}>
+            <Defs>
+              <RadialGradient id="medBadgeGradient" cx="50%" cy="50%" rx="50%" ry="50%">
+                <Stop offset="0%" stopColor={colors.migraine} />
+                <Stop offset="100%" stopColor="#FF8CCB" />
+              </RadialGradient>
+            </Defs>
+            <Rect width={56} height={56} rx={16} fill="url(#medBadgeGradient)" />
+          </Svg>
+          <Icon name="pill" size={24} color="#FFFFFF" />
+        </View>
+        <Text style={styles.title}>Did you take medication?</Text>
+        <Text style={styles.subtitle}>Tap all that apply</Text>
       </View>
 
-      {formData.medicationTaken && (
-        <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-          {/* Added medications */}
-          {formData.medications.length > 0 && (
-            <View style={styles.medList}>
-              {formData.medications.map((med, index) => (
-                <View key={index} style={styles.medItem}>
-                  <View style={styles.medInfo}>
-                    <Text style={styles.medName}>{med.name}</Text>
-                    <Text style={styles.medTime}>
-                      {new Date(med.takenAt).toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </Text>
-                  </View>
-                  <Pressable
-                    onPress={() => handleRemoveMedication(index)}
-                    style={styles.removeButton}
-                  >
-                    <Icon name="close-circle" size={24} color={colors.textTertiary} />
-                  </Pressable>
-                </View>
-              ))}
-            </View>
-          )}
-
-          {/* Add medication section */}
-          {showInput ? (
-            <View style={styles.inputSection}>
-              <TextInput
-                style={styles.input}
-                placeholder="Medication name"
-                placeholderTextColor={colors.textTertiary}
-                value={newMedName}
-                onChangeText={setNewMedName}
-                autoFocus
-                onSubmitEditing={handleAddMedication}
-                returnKeyType="done"
-              />
-              <View style={styles.inputActions}>
-                <Pressable onPress={() => setShowInput(false)} style={styles.cancelInputButton}>
-                  <Text style={styles.cancelInputText}>Cancel</Text>
-                </Pressable>
+      <View style={styles.medGrid}>
+        {MED_ROWS.map((row) => (
+          <View key={row.map((item) => item.id).join("-")} style={styles.medRow}>
+            {row.map((med) => {
+              const isSelected = formData.medications.some((item) => item.name === med.label);
+              return (
                 <Pressable
-                  onPress={handleAddMedication}
-                  style={[styles.addInputButton, !newMedName.trim() && styles.addInputButtonDisabled]}
-                  disabled={!newMedName.trim()}
+                  key={med.id}
+                  onPress={() => handleToggleMedication(med.label)}
+                  style={[
+                    styles.medTile,
+                    isSelected && styles.medTileSelected,
+                  ]}
                 >
-                  <Text style={styles.addInputText}>Add</Text>
-                </Pressable>
-              </View>
-            </View>
-          ) : (
-            <>
-              {/* Quick add common meds */}
-              <Text style={styles.sectionLabel}>QUICK ADD</Text>
-              <View style={styles.quickAddGrid}>
-                {commonMeds.map((med) => (
-                  <Pressable
-                    key={med}
-                    onPress={() => {
-                      updateFormData("medications", [
-                        ...formData.medications,
-                        { name: med, takenAt: new Date().toISOString() },
-                      ]);
-                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                    }}
-                    style={styles.quickAddChip}
+                  <Icon
+                    name={med.icon}
+                    size={32}
+                    color={isSelected ? palette.accent : palette.iconMuted}
+                  />
+                  <Text
+                    style={[
+                      styles.medLabel,
+                      isSelected && styles.medLabelSelected,
+                    ]}
                   >
-                    <Text style={styles.quickAddText}>{med}</Text>
-                  </Pressable>
-                ))}
-              </View>
+                    {med.label}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </View>
+        ))}
 
-              {/* Custom medication button */}
-              <Pressable
-                onPress={() => setShowInput(true)}
-                style={styles.addCustomButton}
-              >
-                <Icon name="add" size={20} color={colors.migraine} />
-                <Text style={styles.addCustomText}>Add other medication</Text>
-              </Pressable>
-            </>
-          )}
-        </ScrollView>
-      )}
-    </KeyboardAvoidingView>
+        <View style={styles.noneRow}>
+          <Pressable
+            onPress={handleToggleNone}
+            style={[
+              styles.noneTile,
+              formData.medicationNoneSelected && styles.noneTileSelected,
+            ]}
+          >
+            <Icon
+              name="x"
+              size={20}
+              color={formData.medicationNoneSelected ? palette.accent : palette.iconMuted}
+            />
+            <Text
+              style={[
+                styles.noneLabel,
+                formData.medicationNoneSelected && styles.noneLabelSelected,
+              ]}
+            >
+              No medication taken
+            </Text>
+          </Pressable>
+        </View>
+      </View>
+    </View>
   );
 }
 
@@ -174,163 +138,85 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  titleArea: {
+    alignItems: "center",
+    gap: 10,
+    marginBottom: 6,
+  },
+  badge: {
+    width: 56,
+    height: 56,
+    borderRadius: 16,
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden",
+  },
   title: {
-    fontFamily: Platform.OS === "ios" ? "SF Pro Display" : "sans-serif",
-    fontSize: 28,
+    fontFamily: isIOS ? "SF Pro Rounded" : "sans-serif",
+    fontSize: 24,
     fontWeight: "700",
-    color: colors.textPrimary,
+    color: palette.textPrimary,
     textAlign: "center",
-    marginBottom: 8,
   },
   subtitle: {
-    fontFamily: Platform.OS === "ios" ? "SF Pro Text" : "sans-serif",
-    fontSize: 16,
-    color: colors.textSecondary,
+    fontFamily: isIOS ? "SF Pro Text" : "sans-serif",
+    fontSize: 14,
+    color: palette.textSecondary,
     textAlign: "center",
-    marginBottom: 24,
   },
-  toggleSection: {
+  medGrid: {
+    gap: 12,
+  },
+  medRow: {
     flexDirection: "row",
     gap: 12,
-    marginBottom: 24,
   },
-  toggleButton: {
+  medTile: {
     flex: 1,
-    backgroundColor: colors.surfaceSecondary,
-    borderRadius: 12,
-    padding: 16,
-    alignItems: "center",
-    borderWidth: 2,
-    borderColor: "transparent",
-  },
-  toggleButtonSelected: {
-    backgroundColor: colors.migraineLight,
-    borderColor: colors.migraine,
-  },
-  toggleText: {
-    fontFamily: Platform.OS === "ios" ? "SF Pro Text" : "sans-serif",
-    fontSize: 16,
-    fontWeight: "600",
-    color: colors.textPrimary,
-  },
-  toggleTextSelected: {
-    color: colors.migraine,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  medList: {
-    marginBottom: 24,
-    gap: 8,
-  },
-  medItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: colors.surfaceSecondary,
-    borderRadius: 12,
-    padding: 16,
-  },
-  medInfo: {
-    flex: 1,
-  },
-  medName: {
-    fontFamily: Platform.OS === "ios" ? "SF Pro Text" : "sans-serif",
-    fontSize: 16,
-    fontWeight: "600",
-    color: colors.textPrimary,
-  },
-  medTime: {
-    fontFamily: Platform.OS === "ios" ? "SF Pro Text" : "sans-serif",
-    fontSize: 13,
-    color: colors.textSecondary,
-    marginTop: 2,
-  },
-  removeButton: {
-    padding: 4,
-  },
-  sectionLabel: {
-    fontFamily: Platform.OS === "ios" ? "SF Pro Text" : "sans-serif",
-    fontSize: 12,
-    fontWeight: "600",
-    letterSpacing: 1,
-    color: colors.textTertiary,
-    marginBottom: 12,
-  },
-  quickAddGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 8,
-    marginBottom: 24,
-  },
-  quickAddChip: {
-    backgroundColor: colors.surfaceSecondary,
-    borderRadius: 20,
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-  },
-  quickAddText: {
-    fontFamily: Platform.OS === "ios" ? "SF Pro Text" : "sans-serif",
-    fontSize: 14,
-    fontWeight: "500",
-    color: colors.textPrimary,
-  },
-  addCustomButton: {
-    flexDirection: "row",
+    height: 100,
+    backgroundColor: palette.card,
+    borderRadius: 16,
     alignItems: "center",
     justifyContent: "center",
     gap: 8,
-    backgroundColor: colors.migraineLight,
-    borderRadius: 12,
-    padding: 16,
   },
-  addCustomText: {
-    fontFamily: Platform.OS === "ios" ? "SF Pro Text" : "sans-serif",
-    fontSize: 16,
+  medTileSelected: {
+    backgroundColor: palette.accentSoft,
+  },
+  medLabel: {
+    fontFamily: isIOS ? "SF Pro Text" : "sans-serif",
+    fontSize: 14,
     fontWeight: "600",
-    color: colors.migraine,
+    color: palette.textMuted,
+    textAlign: "center",
   },
-  inputSection: {
-    gap: 12,
+  medLabelSelected: {
+    color: palette.accent,
   },
-  input: {
-    fontFamily: Platform.OS === "ios" ? "SF Pro Text" : "sans-serif",
-    fontSize: 16,
-    backgroundColor: colors.surfaceSecondary,
-    borderRadius: 12,
-    padding: 16,
-    color: colors.textPrimary,
-  },
-  inputActions: {
+  noneRow: {
     flexDirection: "row",
     gap: 12,
   },
-  cancelInputButton: {
+  noneTile: {
     flex: 1,
-    backgroundColor: colors.surfaceSecondary,
-    borderRadius: 12,
-    padding: 14,
+    height: 52,
+    backgroundColor: palette.card,
+    borderRadius: 14,
     alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
+    gap: 10,
   },
-  cancelInputText: {
-    fontFamily: Platform.OS === "ios" ? "SF Pro Text" : "sans-serif",
-    fontSize: 15,
+  noneTileSelected: {
+    backgroundColor: palette.accentSoft,
+  },
+  noneLabel: {
+    fontFamily: isIOS ? "SF Pro Text" : "sans-serif",
+    fontSize: 14,
     fontWeight: "600",
-    color: colors.textSecondary,
+    color: palette.textMuted,
   },
-  addInputButton: {
-    flex: 1,
-    backgroundColor: colors.migraine,
-    borderRadius: 12,
-    padding: 14,
-    alignItems: "center",
-  },
-  addInputButtonDisabled: {
-    opacity: 0.5,
-  },
-  addInputText: {
-    fontFamily: Platform.OS === "ios" ? "SF Pro Text" : "sans-serif",
-    fontSize: 15,
-    fontWeight: "600",
-    color: "#FFFFFF",
+  noneLabelSelected: {
+    color: palette.accent,
   },
 });

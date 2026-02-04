@@ -1,24 +1,23 @@
 import React from "react";
 import { View, Text, Pressable, StyleSheet, Platform } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { colors } from "@theme";
 import { useMigraineStore } from "@stores/migraine-store";
 import { useLogMigraine, LogMigraineProvider } from "./log-migraine-provider";
-import { ProgressBar } from "./progress-bar";
-import { StepHeader } from "./step-header";
 import { SeverityStep } from "./severity-step";
-import { WhenStep } from "./when-step";
-import { DurationStep } from "./duration-step";
 import { LocationStep } from "./location-step";
 import { TriggersStep } from "./triggers-step";
 import { MedicationStep } from "./medication-step";
-import { NotesStep } from "./notes-step";
+import { WhenStep } from "./when-step";
+import { useNativeFlowHeader } from "@components/tracking";
 
 function LogMigraineFlowContent() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const addLog = useMigraineStore((state) => state.addLog);
+  const [closing, setClosing] = React.useState(false);
 
   const {
     formData,
@@ -30,9 +29,53 @@ function LogMigraineFlowContent() {
     isLastStep,
   } = useLogMigraine();
 
-  const handleCancel = () => {
-    router.back();
-  };
+  const closeFlow = React.useCallback(() => {
+    setClosing(true);
+    requestAnimationFrame(() => {
+      if (router.canGoBack()) {
+        router.dismiss();
+      } else {
+        router.replace("/");
+      }
+    });
+  }, [router]);
+
+  const handleCancel = React.useCallback(() => {
+    closeFlow();
+  }, [closeFlow]);
+
+  const handleHeaderBack = React.useCallback(() => {
+    goToPreviousStep();
+  }, [goToPreviousStep]);
+
+  const handleHeaderCancel = React.useCallback(() => {
+    handleCancel();
+  }, [handleCancel]);
+
+  const steps = [
+    { key: "severity", node: <SeverityStep /> },
+    { key: "location", node: <LocationStep /> },
+    { key: "triggers", node: <TriggersStep /> },
+    { key: "when", node: <WhenStep /> },
+    { key: "medication", node: <MedicationStep /> },
+  ];
+  const currentStepConfig = steps[currentStep - 1];
+  const isMedicationStep = currentStepConfig?.key === "medication";
+  const isSeverityStep = currentStepConfig?.key === "severity";
+
+  useNativeFlowHeader({
+    currentStep,
+    totalSteps,
+    canGoBack,
+    onBack: handleHeaderBack,
+    onCancel: handleHeaderCancel,
+    backgroundColor: isSeverityStep ? "#FFF7FB" : colors.migraineLight,
+    activeColor: colors.migraine,
+    inactiveColor: "#F3E8F0",
+    iconColor: "#4A5A52",
+    headerHorizontalPadding: 24,
+    disabled: closing,
+  });
 
   const handleSave = () => {
     addLog({
@@ -48,7 +91,7 @@ function LogMigraineFlowContent() {
       medications: formData.medications,
       notes: formData.notes,
     });
-    router.back();
+    closeFlow();
   };
 
   const handleContinue = () => {
@@ -59,59 +102,68 @@ function LogMigraineFlowContent() {
     }
   };
 
-  const renderStep = () => {
-    switch (currentStep) {
-      case 1:
-        return <SeverityStep />;
-      case 2:
-        return <WhenStep />;
-      case 3:
-        return <DurationStep />;
-      case 4:
-        return <LocationStep />;
-      case 5:
-        return <TriggersStep />;
-      case 6:
-        return <MedicationStep />;
-      case 7:
-        return <NotesStep />;
-      default:
-        return null;
+  const handleSkip = () => {
+    if (isLastStep) {
+      handleSave();
+      return;
     }
+    goToNextStep();
   };
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
-      <StepHeader
-        onBack={canGoBack ? goToPreviousStep : undefined}
-        onCancel={handleCancel}
-        showBack={canGoBack}
-      />
+    <View style={styles.container}>
+      {isSeverityStep && (
+        <LinearGradient
+          colors={["#FFF7FB", "#FDE7F2"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
+          style={styles.severityBackground}
+          pointerEvents="none"
+        />
+      )}
+      <View style={styles.stepContainer}>{currentStepConfig?.node}</View>
 
-      <ProgressBar currentStep={currentStep} totalSteps={totalSteps} />
-
-      <View style={styles.stepContainer}>{renderStep()}</View>
-
-      <View style={[styles.footer, { paddingBottom: insets.bottom + 12 }]}>
+      <View
+        style={[
+          styles.footer,
+          { paddingBottom: insets.bottom + 12 },
+        ]}
+      >
         <View style={styles.buttonRow}>
-          {currentStep > 1 && (
-            <Pressable
-              onPress={handleSave}
-              style={({ pressed }) => [styles.saveButton, pressed && styles.saveButtonPressed]}
+          <Pressable
+            onPress={handleSkip}
+            style={({ pressed }) => [
+              styles.skipButton,
+              isMedicationStep && styles.skipButtonMedication,
+              pressed && styles.skipButtonPressed,
+            ]}
+          >
+            <Text
+              style={[
+                styles.skipButtonText,
+                isMedicationStep && styles.skipButtonTextMedication,
+              ]}
             >
-              <Text style={styles.saveButtonText}>Save</Text>
-            </Pressable>
-          )}
+              Skip
+            </Text>
+          </Pressable>
 
           <Pressable
             onPress={handleContinue}
             style={({ pressed }) => [
               styles.continueButton,
-              currentStep === 1 && styles.continueButtonFull,
+              isMedicationStep && styles.continueButtonMedication,
               pressed && styles.continuePressed,
             ]}
           >
-            <Text style={styles.continueText}>{isLastStep ? "Done" : "Continue"}</Text>
+            <Text
+              style={[
+                styles.continueText,
+                isMedicationStep && styles.continueTextMedication,
+              ]}
+            >
+              Continue
+            </Text>
           </Pressable>
         </View>
       </View>
@@ -130,49 +182,60 @@ export function LogMigraineFlow() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: colors.migraineLight,
+  },
+  severityBackground: {
+    ...StyleSheet.absoluteFillObject,
   },
   stepContainer: {
     flex: 1,
-    paddingHorizontal: 20,
-    paddingTop: 16,
+    paddingHorizontal: 24,
+    paddingTop: 12,
   },
   footer: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 24,
     paddingTop: 12,
   },
   buttonRow: {
     flexDirection: "row",
-    gap: 10,
+    gap: 12,
   },
-  saveButton: {
+  skipButton: {
     flex: 1,
-    backgroundColor: colors.surfaceSecondary,
-    borderRadius: 14,
-    paddingVertical: 16,
+    backgroundColor: "#F3F4F6",
+    borderRadius: 12,
     alignItems: "center",
-    borderWidth: 1,
-    borderColor: colors.border,
+    justifyContent: "center",
+    height: 50,
   },
-  saveButtonPressed: {
+  skipButtonMedication: {
+    flex: 0,
+    width: 100,
+    height: 48,
+  },
+  skipButtonPressed: {
     opacity: 0.9,
     transform: [{ scale: 0.98 }],
   },
-  saveButtonText: {
+  skipButtonText: {
     fontFamily: Platform.OS === "ios" ? "SF Pro Text" : "sans-serif",
     fontSize: 16,
     fontWeight: "600",
-    color: colors.textPrimary,
+    color: "#4A5A52",
+  },
+  skipButtonTextMedication: {
+    fontSize: 14,
   },
   continueButton: {
-    flex: 2,
     backgroundColor: colors.migraine,
-    borderRadius: 14,
-    paddingVertical: 16,
+    borderRadius: 12,
     alignItems: "center",
-  },
-  continueButtonFull: {
+    justifyContent: "center",
+    height: 50,
     flex: 1,
+  },
+  continueButtonMedication: {
+    height: 48,
   },
   continuePressed: {
     opacity: 0.9,
@@ -183,5 +246,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
     color: "#FFFFFF",
+  },
+  continueTextMedication: {
+    fontSize: 14,
   },
 });
