@@ -1,9 +1,11 @@
 import React from "react";
 import { StyleSheet, Text, View, useWindowDimensions } from "react-native";
-import { colors } from "@theme";
+import { colors, mentalWeatherColors, mentalWeatherFonts } from "@theme";
 import { FlowContentBlock, TrackerFlowConfig } from "./flow-config";
 import { FormDataConstraint } from "./types";
 import {
+  AxisGridField,
+  CategorizedChipField,
   BubbleChoiceField,
   ChoiceField,
   DayPartDurationField,
@@ -11,6 +13,7 @@ import {
   IconGridField,
   JointMapField,
   LinearScaleField,
+  MultiSelectCardField,
   RegionMapField,
   SelectionField,
   StiffnessField,
@@ -52,14 +55,18 @@ export function TrackerFlowRenderer<TFormData extends FormDataConstraint>({
   const { formData, updateField, errors, currentStep } = useTrackerFlow<TFormData>();
   const { width } = useWindowDimensions();
   const step = config.steps[currentStep - 1];
+  const theme = config.theme;
 
   if (!step) {
     return null;
   }
 
+  const hasFillField = step.fields.some((field) => field.fill);
   const cardSize = Math.min((width - 60) / 2, 150);
 
   const renderContentBlock = (block: FlowContentBlock, index: number) => {
+    const noteStyle = [styles.footerNote, theme?.noteStyle];
+
     if (block.type === "weather_summary") {
       const pressure = (formData as any)[block.pressureKey] as
         | "rising"
@@ -97,7 +104,7 @@ export function TrackerFlowRenderer<TFormData extends FormDataConstraint>({
           ? block.emptyText ?? "No selections"
           : `${count} ${count === 1 ? singularLabel : pluralLabel} selected`;
       return (
-        <Text key={`note-${index}`} style={styles.footerNote}>
+        <Text key={`note-${index}`} style={noteStyle}>
           {text}
         </Text>
       );
@@ -111,8 +118,16 @@ export function TrackerFlowRenderer<TFormData extends FormDataConstraint>({
           }`
         : "Select an option above";
       return (
-        <Text key={`note-${index}`} style={styles.footerNote}>
+        <Text key={`note-${index}`} style={noteStyle}>
           {text}
+        </Text>
+      );
+    }
+
+    if (block.type === "note" && block.variant === "text") {
+      return (
+        <Text key={`note-${index}`} style={noteStyle}>
+          {block.text}
         </Text>
       );
     }
@@ -132,6 +147,32 @@ export function TrackerFlowRenderer<TFormData extends FormDataConstraint>({
     const visualization = field.visualizationKey
       ? getVisualization(field.visualizationKey, { cardSize })
       : undefined;
+
+    if (field.type === "axis_grid") {
+      if (!field.secondaryKey) {
+        return null;
+      }
+      const dominantKey = field.dominantKey ?? "dominantMood";
+      return (
+        <AxisGridField
+          key={field.id}
+          value={{
+            energy: (formData as any)[field.fieldKey] as number,
+            positivity: (formData as any)[field.secondaryKey] as number,
+          }}
+          onChange={(next) => {
+            updateField(field.fieldKey as any, next.energy as any);
+            updateField(field.secondaryKey as any, next.positivity as any);
+          }}
+          dominantLabel={(formData as any)[dominantKey] as string}
+          leftAxisLabel={field.leftLabel}
+          rightAxisLabel={field.rightLabel}
+          topAxisLabel={field.topLabel}
+          bottomAxisLabel={field.bottomLabel}
+          cardGradient={field.cardGradient}
+        />
+      );
+    }
 
     if (field.type === "stiffness") {
       return (
@@ -280,10 +321,157 @@ export function TrackerFlowRenderer<TFormData extends FormDataConstraint>({
           label={field.label}
           description={field.description}
           items={field.bubbleItems}
-          accentColor={bubbleTheme === "migraine.bubbles" ? colors.migraine : undefined}
-          textPrimaryColor={bubbleTheme === "migraine.bubbles" ? "#2F3A34" : undefined}
-          textSecondaryColor={bubbleTheme === "migraine.bubbles" ? "#7B857F" : undefined}
-          textMutedColor={bubbleTheme === "migraine.bubbles" ? "#4A5A52" : undefined}
+          layoutPreset={field.bubbleLayoutPreset}
+          accentColor={
+            bubbleTheme === "migraine.bubbles"
+              ? colors.migraine
+              : bubbleTheme === "mood.bubbles"
+              ? mentalWeatherColors.accent
+              : undefined
+          }
+          textPrimaryColor={
+            bubbleTheme === "migraine.bubbles"
+              ? "#2F3A34"
+              : bubbleTheme === "mood.bubbles"
+              ? mentalWeatherColors.textPrimary
+              : undefined
+          }
+          textSecondaryColor={
+            bubbleTheme === "migraine.bubbles"
+              ? "#7B857F"
+              : bubbleTheme === "mood.bubbles"
+              ? mentalWeatherColors.textSecondary
+              : undefined
+          }
+          textMutedColor={
+            bubbleTheme === "migraine.bubbles"
+              ? "#4A5A52"
+              : bubbleTheme === "mood.bubbles"
+              ? mentalWeatherColors.textMuted
+              : undefined
+          }
+        />
+      );
+    }
+
+    if (field.type === "categorized_chips") {
+      if (!field.chipCategories || !field.chipItems) {
+        return null;
+      }
+      const chipTheme = field.visualizationKey;
+      return (
+        <CategorizedChipField
+          key={field.id}
+          value={(formData as any)[field.fieldKey] as string[]}
+          onChange={(next) => updateField(field.fieldKey as any, next as any)}
+          categories={field.chipCategories}
+          items={field.chipItems}
+          accentColor={chipTheme === "mood.triggers" ? mentalWeatherColors.accent : undefined}
+          accentSoftColor={
+            chipTheme === "mood.triggers" ? mentalWeatherColors.accentLight : undefined
+          }
+          surfaceColor={chipTheme === "mood.triggers" ? mentalWeatherColors.surface : undefined}
+          borderColor={chipTheme === "mood.triggers" ? mentalWeatherColors.borderSoft : undefined}
+          headerTextColor={
+            chipTheme === "mood.triggers" ? "#6C7A72" : undefined
+          }
+          headerIconColor={
+            chipTheme === "mood.triggers" ? mentalWeatherColors.textSecondary : undefined
+          }
+          chipTextColor={chipTheme === "mood.triggers" ? mentalWeatherColors.textMuted : undefined}
+          chipSelectedTextColor={
+            chipTheme === "mood.triggers" ? mentalWeatherColors.accent : undefined
+          }
+          summaryTextColor={
+            chipTheme === "mood.triggers" ? mentalWeatherColors.accent : undefined
+          }
+        />
+      );
+    }
+
+    if (field.type === "multi_select_card") {
+      if (!field.cardOptions) {
+        return null;
+      }
+      const cardTheme = field.visualizationKey;
+      const selected = (formData as any)[field.fieldKey] as string[];
+      const selectedCount = selected?.length ?? 0;
+      const badgeText = field.badgeTemplate
+        ? field.badgeTemplate
+            .replace("{count}", String(selectedCount))
+            .replace("{plural}", selectedCount === 1 ? "" : "s")
+        : undefined;
+      const showBadge = field.badgeShowWhenEmpty ? true : selectedCount > 0;
+      return (
+        <MultiSelectCardField
+          key={field.id}
+          options={field.cardOptions}
+          selectedIds={selected ?? []}
+          onToggle={(id) => {
+            const next = selected?.includes(id)
+              ? selected.filter((item) => item !== id)
+              : [...(selected ?? []), id];
+            updateField(field.fieldKey as any, next as any);
+          }}
+          badge={
+            badgeText
+              ? {
+                  enabled: showBadge,
+                  text: badgeText,
+                  icon: field.badgeIcon,
+                }
+              : undefined
+          }
+          accentColor={cardTheme === "mood.selfcare" ? mentalWeatherColors.accent : undefined}
+          accentSoftColor={
+            cardTheme === "mood.selfcare" ? mentalWeatherColors.accentLight : undefined
+          }
+          cardBackgroundColor={
+            cardTheme === "mood.selfcare" ? mentalWeatherColors.surface : undefined
+          }
+          cardBorderColor={
+            cardTheme === "mood.selfcare" ? mentalWeatherColors.borderSoft : undefined
+          }
+          cardSelectedBorderColor={
+            cardTheme === "mood.selfcare" ? mentalWeatherColors.accent : undefined
+          }
+          iconBackgroundColor={
+            cardTheme === "mood.selfcare" ? mentalWeatherColors.accentLight : undefined
+          }
+          iconMutedColor={
+            cardTheme === "mood.selfcare" ? mentalWeatherColors.textSecondary : undefined
+          }
+          iconSelectedColor={
+            cardTheme === "mood.selfcare" ? mentalWeatherColors.accent : undefined
+          }
+          textPrimaryColor={
+            cardTheme === "mood.selfcare" ? mentalWeatherColors.textPrimary : undefined
+          }
+          textSecondaryColor={
+            cardTheme === "mood.selfcare" ? mentalWeatherColors.textSecondary : undefined
+          }
+          checkBorderColor={
+            cardTheme === "mood.selfcare" ? mentalWeatherColors.borderMuted : undefined
+          }
+          checkSelectedColor={
+            cardTheme === "mood.selfcare" ? mentalWeatherColors.accent : undefined
+          }
+          badgeBackgroundColor={
+            cardTheme === "mood.selfcare" ? mentalWeatherColors.accentLight : undefined
+          }
+          badgeTextColor={
+            cardTheme === "mood.selfcare" ? mentalWeatherColors.accent : undefined
+          }
+          badgeIconColor={
+            cardTheme === "mood.selfcare" ? mentalWeatherColors.accent : undefined
+          }
+          titleFontFamily={cardTheme === "mood.selfcare" ? mentalWeatherFonts.text : undefined}
+          subtitleFontFamily={cardTheme === "mood.selfcare" ? mentalWeatherFonts.text : undefined}
+          badgeFontFamily={cardTheme === "mood.selfcare" ? mentalWeatherFonts.text : undefined}
+          containerStyle={
+            field.fill ? [styles.fieldFill, styles.fieldFillPinned] : undefined
+          }
+          badgeStyle={field.fill ? styles.badgePinned : undefined}
         />
       );
     }
@@ -521,17 +709,36 @@ export function TrackerFlowRenderer<TFormData extends FormDataConstraint>({
   }, [weatherBlock, formData, updateField]);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, theme?.containerStyle]}>
       {(step.title || step.subtitle) && (
-        <View style={styles.header}>
-          {step.title && <Text style={styles.title}>{step.title}</Text>}
-          {step.subtitle && <Text style={styles.subtitle}>{step.subtitle}</Text>}
+        <View style={[styles.header, theme?.headerStyle]}>
+          {step.title && <Text style={[styles.title, theme?.titleStyle]}>{step.title}</Text>}
+          {step.subtitle && (
+            <Text style={[styles.subtitle, theme?.subtitleStyle]}>{step.subtitle}</Text>
+          )}
         </View>
       )}
 
       {primaryContent.map(renderContentBlock)}
 
-      <View style={styles.fields}>{step.fields.map(renderField)}</View>
+      <View
+        style={[
+          styles.fields,
+          hasFillField ? styles.fieldsFill : null,
+          theme?.fieldsStyle,
+        ]}
+      >
+        {step.fields.map((field) => {
+          const rendered = renderField(field);
+          if (!rendered) return null;
+          if (!field.fill) return rendered;
+          return (
+            <View key={`${field.id}-fill`} style={styles.fieldFill}>
+              {rendered}
+            </View>
+          );
+        })}
+      </View>
 
       {noteContent.map(renderContentBlock)}
     </View>
@@ -565,6 +772,19 @@ const styles = StyleSheet.create({
   fields: {
     width: "100%",
     gap: 16,
+  },
+  fieldsFill: {
+    flex: 1,
+  },
+  fieldFill: {
+    flex: 1,
+    alignSelf: "stretch",
+  },
+  fieldFillPinned: {
+    justifyContent: "flex-start",
+  },
+  badgePinned: {
+    marginTop: "auto",
   },
   weatherCard: {
     backgroundColor: "#FFFFFF",

@@ -1,10 +1,11 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { MultiSelectCardField } from "@components/tracking/fields";
-import { useLogMood } from "./log-mood-provider";
+import { useTrackerFlow } from "@components/tracking/tracker-flow-provider";
 import { SELF_CARE_OPTIONS, SelfCareId } from "@/types/mood";
 import { FlowTitle } from "./flow-title";
-import { mentalWeatherColors, mentalWeatherFonts } from "./mental-weather-theme";
+import { mentalWeatherColors, mentalWeatherFonts } from "@theme";
+import { MoodFormData } from "./mood-flow-types";
 
 const SELF_CARE_CARD_CONFIG: Record<
   SelfCareId,
@@ -29,7 +30,7 @@ const SELF_CARE_CARD_OPTIONS = SELF_CARE_OPTIONS.map((option) => {
 });
 
 export function SelfCareStep() {
-  const { formData, updateFormData } = useLogMood();
+  const { formData, updateField } = useTrackerFlow<MoodFormData>();
   const selectedCount = formData.selfCare.length;
   const badgeText = `${selectedCount} thing${selectedCount > 1 ? "s" : ""} - you showed up for yourself.`;
 
@@ -39,9 +40,9 @@ export function SelfCareStep() {
       const next = current.includes(id)
         ? current.filter((item) => item !== id)
         : [...current, id];
-      updateFormData({ selfCare: next });
+      updateField("selfCare", next);
     },
-    [formData.selfCare, updateFormData]
+    [formData.selfCare, updateField]
   );
 
   return (

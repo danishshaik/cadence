@@ -1,18 +1,23 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { useLogMood } from "./log-mood-provider";
-import { AxisGridCard } from "./axis-grid-card";
+import { useTrackerFlow } from "@components/tracking/tracker-flow-provider";
+import { AxisGridField, type AxisGridValue } from "@components/tracking/fields";
 import { FlowTitle } from "./flow-title";
-import { mentalWeatherColors, mentalWeatherFonts } from "./mental-weather-theme";
+import { mentalWeatherColors, mentalWeatherFonts } from "@theme";
+import { MoodFormData } from "./mood-flow-types";
 
 export function CoreStateStep() {
-  const { formData, updateFormData } = useLogMood();
+  const { formData, setFormData } = useTrackerFlow<MoodFormData>();
 
   const handleChange = React.useCallback(
-    ({ energy, positivity }: { energy: number; positivity: number }) => {
-      updateFormData({ energy, positivity });
+    ({ energy, positivity }: AxisGridValue) => {
+      setFormData((prev) => ({
+        ...prev,
+        energy,
+        positivity,
+      }));
     },
-    [updateFormData]
+    [setFormData]
   );
 
   return (
@@ -23,7 +28,7 @@ export function CoreStateStep() {
         align="center"
       />
 
-      <AxisGridCard
+      <AxisGridField
         value={{ energy: formData.energy, positivity: formData.positivity }}
         onChange={handleChange}
         dominantLabel={formData.dominantMood}

@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, Pressable, StyleSheet } from "react-native";
 import * as Haptics from "expo-haptics";
-import { mentalWeatherColors, mentalWeatherFonts } from "./mental-weather-theme";
+import { mentalWeatherColors, mentalWeatherFonts } from "@theme";
 
 interface MentalWeatherFooterProps {
   primaryLabel: string;

@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, Text, View, ViewStyle, TextStyle } from "react-native";
-import { mentalWeatherColors, mentalWeatherFonts } from "./mental-weather-theme";
+import { mentalWeatherColors, mentalWeatherFonts } from "@theme";
 
 type FlowTitleAlign = "center" | "left";
 

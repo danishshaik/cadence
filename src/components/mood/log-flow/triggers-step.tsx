@@ -2,10 +2,11 @@ import React from "react";
 import { View, Text, Pressable, StyleSheet } from "react-native";
 import * as Haptics from "expo-haptics";
 import { Icon } from "@components/ui";
-import { useLogMood } from "./log-mood-provider";
+import { useTrackerFlow } from "@components/tracking/tracker-flow-provider";
 import { MOOD_TRIGGERS, MoodTriggerId } from "@/types/mood";
 import { FlowTitle } from "./flow-title";
-import { mentalWeatherColors, mentalWeatherFonts } from "./mental-weather-theme";
+import { mentalWeatherColors, mentalWeatherFonts } from "@theme";
+import { MoodFormData } from "./mood-flow-types";
 
 const TRIGGER_CATEGORIES = [
   { key: "sleep", label: "Sleep", icon: "moon" },
@@ -15,7 +16,7 @@ const TRIGGER_CATEGORIES = [
 ] as const;
 
 export function TriggersStep() {
-  const { formData, updateFormData } = useLogMood();
+  const { formData, updateField } = useTrackerFlow<MoodFormData>();
   const selectedCount = formData.triggers.length;
 
   const handleTriggerToggle = React.useCallback(
@@ -25,9 +26,9 @@ export function TriggersStep() {
       const next = current.includes(id)
         ? current.filter((trigger) => trigger !== id)
         : [...current, id];
-      updateFormData({ triggers: next });
+      updateField("triggers", next);
     },
-    [formData.triggers, updateFormData]
+    [formData.triggers, updateField]
   );
 
   return (

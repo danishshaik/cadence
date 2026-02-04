@@ -9,7 +9,7 @@ import Animated, {
 } from "react-native-reanimated";
 import Svg, { Defs, RadialGradient, LinearGradient, Stop, Rect, Line, Circle, Ellipse } from "react-native-svg";
 import * as Haptics from "expo-haptics";
-import { mentalWeatherColors } from "./mental-weather-theme";
+import { mentalWeatherColors } from "@theme";
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 const AnimatedEllipse = Animated.createAnimatedComponent(Ellipse);

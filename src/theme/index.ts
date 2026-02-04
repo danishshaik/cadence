@@ -1,4 +1,4 @@
-export { colors } from "./colors";
+export { colors, mentalWeatherColors, mentalWeatherFonts } from "./colors";
 export { spacing } from "./spacing";
 export { typography } from "./typography";
 

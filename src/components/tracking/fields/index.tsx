@@ -1,3 +1,6 @@
+export { AxisGridField } from "./axis-grid-field";
+export type { AxisGridValue } from "./axis-grid-field";
+export { CategorizedChipField } from "./categorized-chip-field";
 export { BubbleChoiceField } from "./bubble-choice-field";
 export { ChoiceField } from "./choice-field";
 export { DayPartDurationField } from "./day-part-duration-field";

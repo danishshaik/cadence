@@ -23,6 +23,10 @@ export type VisualizationKey =
   | "weather.pill"
   | "activity.pill"
   | "management.card"
+  | "mood.axis-grid"
+  | "mood.bubbles"
+  | "mood.triggers"
+  | "mood.selfcare"
   | "migraine.severity"
   | "migraine.map"
   | "migraine.bubbles"
@@ -43,6 +47,10 @@ const visualizationRegistry: Record<VisualizationKey, VisualizationConfig> = {
       gap: 12,
     },
   },
+  "mood.axis-grid": {},
+  "mood.bubbles": {},
+  "mood.triggers": {},
+  "mood.selfcare": {},
   "migraine.severity": {},
   "migraine.map": {},
   "migraine.bubbles": {},

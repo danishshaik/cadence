@@ -68,7 +68,9 @@ Generated as part of Step 0: Baseline + Safety Nets.
 {
   energy: number;            // -1 to 1 (Y axis)
   positivity: number;        // -1 to 1 (X axis)
+  dominantMood: string;      // derived label
   emotions: string[];        // Selected emotions
+  somaticSymptoms: string[]; // Selected somatic symptoms
   triggers: string[];        // Selected triggers
   selfCare: string[];        // Self-care activities
   loggedAt: Date;

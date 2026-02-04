@@ -3,99 +3,43 @@ import { StyleSheet } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { useMoodStore } from "@stores/mood-store";
-import { useLogMood, LogMoodProvider } from "./log-mood-provider";
-import { CoreStateStep } from "./core-state-step";
-import { EmotionsStep } from "./emotions-step";
-import { TriggersStep } from "./triggers-step";
-import { SelfCareStep } from "./selfcare-step";
-import { mentalWeatherColors } from "./mental-weather-theme";
-import { FlowFooter, FlowScaffold, useNativeFlowHeader } from "@components/tracking";
+import { TrackerFlowProvider, useTrackerFlow } from "@components/tracking/tracker-flow-provider";
+import { FlowFooter, FlowScaffold, TrackerFlowRenderer, useNativeFlowHeader } from "@components/tracking";
 import * as Haptics from "expo-haptics";
-import { shadows } from "@theme";
-
-const STEP_CONFIG = [
-  {
-    key: "core",
-    title: "Mental Weather",
-    component: CoreStateStep,
-    gap: 24,
-  },
-  {
-    key: "emotions",
-    title: "Emotions",
-    component: EmotionsStep,
-    gap: 24,
-  },
-  {
-    key: "triggers",
-    title: "Triggers",
-    component: TriggersStep,
-    gap: 16,
-  },
-  {
-    key: "selfcare",
-    title: "Self Care",
-    component: SelfCareStep,
-    gap: 16,
-  },
-] as const;
+import { mentalWeatherColors, mentalWeatherFonts, shadows } from "@theme";
+import { getInitialMoodFormData, normalizeMoodFormData, type MoodFormData } from "./mood-flow-types";
+import { moodFlowConfig } from "./mood-flow-config";
 
 function LogMoodFlowContent() {
-  const router = useRouter();
-  const addLog = useMoodStore((state) => state.addLog);
-
   const {
-    formData,
     currentStep,
     totalSteps,
     goToNextStep,
     goToPreviousStep,
     canGoBack,
     isLastStep,
-  } = useLogMood();
+    isFirstStep,
+    save,
+    cancel,
+  } = useTrackerFlow<MoodFormData>();
 
-  const currentStepConfig = STEP_CONFIG[currentStep - 1];
-  const gap = currentStepConfig?.gap ?? 16;
-  const StepComponent = currentStepConfig?.component;
-
-  const handleClose = React.useCallback(() => {
-    router.back();
-  }, [router]);
-
-  const handleSave = React.useCallback(() => {
-    addLog({
-      energy: formData.energy,
-      positivity: formData.positivity,
-      dominantMood: formData.dominantMood,
-      emotions: formData.emotions,
-      somaticSymptoms: formData.somaticSymptoms,
-      triggers: formData.triggers,
-      selfCare: formData.selfCare,
-      loggedAt: formData.loggedAt.toISOString(),
-    });
-    router.back();
-  }, [addLog, formData, router]);
+  const currentStepConfig = moodFlowConfig.steps[currentStep - 1];
 
   const handleContinue = React.useCallback(() => {
     if (isLastStep) {
-      handleSave();
+      void save();
     } else {
       goToNextStep();
     }
-  }, [goToNextStep, handleSave, isLastStep]);
+  }, [goToNextStep, isLastStep, save]);
 
-  const handleSecondary = React.useCallback(() => {
-    if (currentStep <= 2) {
-      goToNextStep();
-      return;
-    }
-    handleSave();
-  }, [currentStep, goToNextStep, handleSave]);
+  const handleSaveAndExit = React.useCallback(() => {
+    void save();
+  }, [save]);
 
-  const secondaryLabel = currentStep <= 2 ? "Skip" : "Save";
-  const primaryLabel = isLastStep ? "Done" : "Continue";
-  const isCompactFooter = currentStep <= 2;
-  const isSelfCareStep = currentStepConfig?.key === "selfcare";
+  const primaryLabel = isLastStep ? "Complete" : "Continue";
+  const showSecondary = !isFirstStep && !isLastStep;
+  const isSelfCareStep = currentStepConfig?.id === "selfcare";
 
   const handleHeaderBack = React.useCallback(() => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -104,8 +48,8 @@ function LogMoodFlowContent() {
 
   const handleHeaderCancel = React.useCallback(() => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    handleClose();
-  }, [handleClose]);
+    cancel();
+  }, [cancel]);
 
   useNativeFlowHeader({
     currentStep,
@@ -129,34 +73,57 @@ function LogMoodFlowContent() {
     >
       <FlowScaffold
         scrollEnabled={!isSelfCareStep}
-        contentContainerStyle={[styles.contentContainer, { gap }]}
+        contentContainerStyle={styles.contentContainer}
         footer={
           <FlowFooter
             primaryAction={{ label: primaryLabel, onPress: handleContinue }}
-            secondaryAction={{ label: secondaryLabel, onPress: handleSecondary }}
-            primaryButtonStyle={isCompactFooter ? styles.primaryButtonCompact : styles.primaryButton}
+            secondaryAction={
+              showSecondary ? { label: "Save", onPress: handleSaveAndExit } : undefined
+            }
+            primaryButtonStyle={styles.primaryButton}
             primaryPressedStyle={styles.buttonPressed}
             primaryTextStyle={styles.primaryText}
-            secondaryButtonStyle={isCompactFooter ? styles.secondaryButtonCompact : styles.secondaryButton}
+            secondaryButtonStyle={styles.secondaryButton}
             secondaryPressedStyle={styles.buttonPressed}
             secondaryTextStyle={styles.secondaryText}
-            fullWidthPrimaryWhenSolo={false}
+            fullWidthPrimaryWhenSolo={!showSecondary}
             containerStyle={styles.footerContainer}
             buttonRowStyle={styles.footerRow}
           />
         }
       >
-        {StepComponent ? <StepComponent /> : null}
+        <TrackerFlowRenderer config={moodFlowConfig} />
       </FlowScaffold>
     </LinearGradient>
   );
 }
 
 export function LogMoodFlow() {
+  const router = useRouter();
+  const addLog = useMoodStore((state) => state.addLog);
+
   return (
-    <LogMoodProvider>
+    <TrackerFlowProvider
+      initialData={getInitialMoodFormData()}
+      totalSteps={moodFlowConfig.steps.length}
+      onSave={(data) => {
+        addLog({
+          energy: data.energy,
+          positivity: data.positivity,
+          dominantMood: data.dominantMood,
+          emotions: data.emotions,
+          somaticSymptoms: data.somaticSymptoms,
+          triggers: data.triggers,
+          selfCare: data.selfCare,
+          loggedAt: data.loggedAt.toISOString(),
+        });
+        router.back();
+      }}
+      onCancel={() => router.back()}
+      onFormDataChange={normalizeMoodFormData}
+    >
       <LogMoodFlowContent />
-    </LogMoodProvider>
+    </TrackerFlowProvider>
   );
 }
 
@@ -179,15 +146,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  primaryButtonCompact: {
-    flex: 1,
-    backgroundColor: mentalWeatherColors.accent,
-    borderRadius: 12,
-    borderCurve: "continuous",
-    height: 50,
-    alignItems: "center",
-    justifyContent: "center",
-  },
   secondaryButton: {
     width: 100,
     flex: 0,
@@ -201,23 +159,14 @@ const styles = StyleSheet.create({
     borderColor: mentalWeatherColors.borderMuted,
     ...shadows.sm,
   },
-  secondaryButtonCompact: {
-    flex: 1,
-    backgroundColor: mentalWeatherColors.buttonMuted,
-    borderRadius: 12,
-    borderCurve: "continuous",
-    height: 50,
-    alignItems: "center",
-    justifyContent: "center",
-  },
   primaryText: {
-    fontFamily: process.env.EXPO_OS === "ios" ? "SF Pro Text" : "sans-serif",
+    fontFamily: mentalWeatherFonts.text,
     fontSize: 16,
     fontWeight: "600",
     color: "#FFFFFF",
   },
   secondaryText: {
-    fontFamily: process.env.EXPO_OS === "ios" ? "SF Pro Text" : "sans-serif",
+    fontFamily: mentalWeatherFonts.text,
     fontSize: 16,
     fontWeight: "600",
     color: mentalWeatherColors.textMuted,

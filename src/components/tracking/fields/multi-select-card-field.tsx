@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Pressable,
   StyleProp,
@@ -101,6 +100,7 @@ export function MultiSelectCardField<T extends string = string>({
   badgeTextStyle,
 }: MultiSelectCardFieldProps<T>) {
   const badgeVisible = badge?.enabled ?? Boolean(badge?.text);
+  const selectedCount = selectedIds.length;
 
   const handlePress = (id: T) => {
     if (disabled) return;
@@ -119,7 +119,7 @@ export function MultiSelectCardField<T extends string = string>({
       ]}
     >
       <View style={[styles.list, listStyle]}>
-        {options.map((option) => {
+        {options.map((option, index) => {
           const isSelected = selectedIds.includes(option.id);
           return (
             <Pressable
@@ -230,10 +230,12 @@ export function MultiSelectCardField<T extends string = string>({
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    alignSelf: "stretch",
+    flexGrow: 1,
   },
   list: {
     gap: 9,
+    width: "100%",
   },
   card: {
     flexDirection: "row",
@@ -241,6 +243,7 @@ const styles = StyleSheet.create({
     gap: 14,
     paddingVertical: 13,
     paddingHorizontal: 16,
+    width: "100%",
     borderRadius: 18,
     borderCurve: "continuous",
     borderWidth: 1,
@@ -264,10 +267,12 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontSize: 16,
     fontWeight: "600",
+    lineHeight: 20,
   },
   cardSubtitle: {
     fontSize: 12,
     fontWeight: "500",
+    lineHeight: 16,
   },
   check: {
     width: 24,

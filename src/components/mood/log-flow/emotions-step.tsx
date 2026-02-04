@@ -1,10 +1,11 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
 import { BubbleChoiceField, type BubbleChoiceItem } from "@components/tracking/fields/bubble-choice-field";
-import { useLogMood } from "./log-mood-provider";
+import { useTrackerFlow } from "@components/tracking/tracker-flow-provider";
 import { EmotionId } from "@/types/mood";
 import { FlowTitle } from "./flow-title";
-import { mentalWeatherColors } from "./mental-weather-theme";
+import { mentalWeatherColors } from "@theme";
+import { MoodFormData } from "./mood-flow-types";
 
 const EMOTION_BUBBLES: BubbleChoiceItem[] = [
   { id: "stress", label: "Stress", icon: "brain" },
@@ -22,15 +23,15 @@ const EMOTION_BUBBLES: BubbleChoiceItem[] = [
 ];
 
 export function EmotionsStep() {
-  const { formData, updateFormData } = useLogMood();
+  const { formData, updateField } = useTrackerFlow<MoodFormData>();
 
   const bubbleItems = EMOTION_BUBBLES;
 
   const handleChange = React.useCallback(
     (next: string[]) => {
-      updateFormData({ emotions: next as EmotionId[] });
+      updateField("emotions", next as EmotionId[]);
     },
-    [updateFormData]
+    [updateField]
   );
 
   return (

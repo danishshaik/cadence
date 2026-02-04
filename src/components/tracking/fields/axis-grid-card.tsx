@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet, Text, View, useWindowDimensions } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { AxisGrid, type AxisGridValue } from "./axis-grid";
-import { mentalWeatherColors, mentalWeatherFonts } from "./mental-weather-theme";
+import { mentalWeatherColors, mentalWeatherFonts } from "@theme";
 
 const DEFAULT_GRID_TOP = 28;
 const DEFAULT_GRID_INSET = 25;
