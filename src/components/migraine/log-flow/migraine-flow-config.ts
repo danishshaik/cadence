@@ -26,18 +26,18 @@ const migraineMapConfig: RegionMapConfig = {
 };
 
 const migraineTriggerBubbles: BubbleChoiceItem[] = [
-  { id: "stress", label: "Stress", icon: "brain", size: 100, x: 8, y: 5 },
-  { id: "lack_of_sleep", label: "Sleep", icon: "moon", size: 86, x: 132, y: 18 },
-  { id: "bright_light", label: "Light", icon: "sun", size: 94, x: 242, y: 40 },
-  { id: "loud_noise", label: "Noise", icon: "volume-2", size: 80, x: 52, y: 122 },
-  { id: "strong_smell", label: "Smell", icon: "wind", size: 76, x: 162, y: 130 },
-  { id: "weather", label: "Weather", icon: "cloud-rain", size: 82, x: 255, y: 160 },
-  { id: "skipped_meal", label: "Meals", icon: "utensils-crossed", size: 92, x: 0, y: 225 },
-  { id: "dehydration", label: "Water", icon: "droplets", size: 82, x: 115, y: 240 },
-  { id: "alcohol", label: "Alcohol", icon: "wine", size: 78, x: 220, y: 265 },
-  { id: "caffeine", label: "Caffeine", icon: "coffee", size: 80, x: 40, y: 340 },
-  { id: "hormonal", label: "Hormonal", icon: "heart-pulse", size: 88, x: 145, y: 350, labelSize: 10 },
-  { id: "screen_time", label: "Screen", icon: "monitor", size: 80, x: 255, y: 368 },
+  { id: "stress", label: "Stress", icon: "brain" },
+  { id: "lack_of_sleep", label: "Sleep", icon: "moon" },
+  { id: "bright_light", label: "Light", icon: "sun" },
+  { id: "loud_noise", label: "Noise", icon: "volume-2" },
+  { id: "strong_smell", label: "Smell", icon: "wind" },
+  { id: "weather", label: "Weather", icon: "cloud-rain" },
+  { id: "skipped_meal", label: "Meals", icon: "utensils-crossed" },
+  { id: "dehydration", label: "Water", icon: "droplets" },
+  { id: "alcohol", label: "Alcohol", icon: "wine" },
+  { id: "caffeine", label: "Caffeine", icon: "coffee" },
+  { id: "hormonal", label: "Hormonal", icon: "heart-pulse" },
+  { id: "screen_time", label: "Screen", icon: "monitor" },
 ];
 
 const migraineDayParts: DayPartOption[] = [

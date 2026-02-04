@@ -35,13 +35,13 @@ export function FlowScaffold({
           style={styles.scroll}
           contentInsetAdjustmentBehavior="automatic"
           keyboardShouldPersistTaps="handled"
-          contentContainerStyle={[styles.contentContainer, contentContainerStyle]}
+          contentContainerStyle={[styles.scrollContentContainer, contentContainerStyle]}
           {...scrollViewProps}
         >
           {children}
         </ScrollView>
       ) : (
-        <View style={[styles.contentContainer, contentContainerStyle]}>{children}</View>
+        <View style={[styles.staticContentContainer, contentContainerStyle]}>{children}</View>
       )}
       {footer}
     </View>
@@ -52,8 +52,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  contentContainer: {
+  scrollContentContainer: {
     flexGrow: 1,
+  },
+  staticContentContainer: {
     flex: 1,
   },
   scroll: {

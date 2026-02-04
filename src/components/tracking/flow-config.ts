@@ -23,10 +23,6 @@ export interface BubbleChoiceItem {
   id: string;
   label: string;
   icon: string;
-  size: number;
-  x: number;
-  y: number;
-  labelSize?: number;
 }
 
 export interface DayPartOption {

@@ -5,6 +5,7 @@ export { HeroScaleField } from "./hero-scale-field";
 export { IconGridField } from "./icon-grid-field";
 export { JointMapField } from "./joint-map-field";
 export { LinearScaleField } from "./linear-scale-field";
+export { MultiSelectCardField } from "./multi-select-card-field";
 export { RegionMapField } from "./region-map-field";
 export { SelectionField } from "./selection-field";
 export { StiffnessField } from "./stiffness-field";
