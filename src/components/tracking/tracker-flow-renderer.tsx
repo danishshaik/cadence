@@ -754,6 +754,7 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: "center",
+    width: "100%",
   },
   title: {
     fontFamily: isIOS ? "SF Pro Rounded" : "sans-serif",

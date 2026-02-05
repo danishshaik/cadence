@@ -48,7 +48,7 @@ interface FeatureFlagsStore {
 }
 
 const DEFAULT_FLAGS: Record<TrackerName, boolean> = {
-  migraine: false,
+  migraine: true,
   mood: false,
   gi: false,
   respiratory: false,

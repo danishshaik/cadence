@@ -19713,66 +19713,66 @@
                 {
                   "type": "ellipse",
                   "id": "AvpF6",
-                  "x": 132,
-                  "y": 50,
+                  "x": 120,
+                  "y": 30,
                   "name": "Head-Sil",
                   "fill": "#F3F4F6",
-                  "width": 56,
-                  "height": 56
+                  "width": 72,
+                  "height": 72
                 },
                 {
                   "type": "frame",
                   "id": "9ppfa",
-                  "x": 149,
-                  "y": 102,
+                  "x": 143,
+                  "y": 98,
                   "name": "Neck-Sil",
-                  "width": 22,
-                  "height": 36,
+                  "width": 26,
+                  "height": 44,
                   "fill": "#F3F4F6",
                   "cornerRadius": 6
                 },
                 {
                   "type": "frame",
                   "id": "ID7mS",
-                  "x": 100,
-                  "y": 134,
+                  "x": 82,
+                  "y": 138,
                   "name": "Torso-Sil",
-                  "width": 120,
-                  "height": 180,
+                  "width": 148,
+                  "height": 210,
                   "fill": "#F3F4F6",
-                  "cornerRadius": 20
+                  "cornerRadius": 24
                 },
                 {
                   "type": "frame",
                   "id": "3FwYe",
-                  "x": 68,
-                  "y": 142,
+                  "x": 44,
+                  "y": 148,
                   "name": "LArm-Sil",
-                  "width": 26,
-                  "height": 130,
+                  "width": 32,
+                  "height": 160,
                   "fill": "#F3F4F6",
-                  "cornerRadius": 12
+                  "cornerRadius": 14
                 },
                 {
                   "type": "frame",
                   "id": "Ouik6",
-                  "x": 230,
-                  "y": 142,
+                  "x": 236,
+                  "y": 148,
                   "name": "RArm-Sil",
-                  "width": 26,
-                  "height": 130,
+                  "width": 32,
+                  "height": 160,
                   "fill": "#F3F4F6",
-                  "cornerRadius": 12
+                  "cornerRadius": 14
                 },
                 {
                   "type": "frame",
                   "id": "TpdH3",
-                  "x": 108,
-                  "y": 158,
+                  "x": 94,
+                  "y": 164,
                   "name": "Lung-L-Sil",
-                  "width": 48,
-                  "height": 76,
-                  "fill": "#E0F2F1",
+                  "width": 58,
+                  "height": 92,
+                  "fill": "#EAEDEC",
                   "cornerRadius": [
                     8,
                     18,
@@ -19783,12 +19783,12 @@
                 {
                   "type": "frame",
                   "id": "1AZHc",
-                  "x": 164,
-                  "y": 158,
+                  "x": 160,
+                  "y": 164,
                   "name": "Lung-R-Sil",
-                  "width": 48,
-                  "height": 76,
-                  "fill": "#E0F2F1",
+                  "width": 58,
+                  "height": 92,
+                  "fill": "#EAEDEC",
                   "cornerRadius": [
                     18,
                     8,
@@ -19799,23 +19799,23 @@
                 {
                   "type": "frame",
                   "id": "Fs7eF",
-                  "x": 155,
-                  "y": 124,
+                  "x": 150,
+                  "y": 128,
                   "name": "Trachea-Sil",
-                  "width": 12,
-                  "height": 42,
-                  "fill": "#E0F2F1",
+                  "width": 14,
+                  "height": 50,
+                  "fill": "#EAEDEC",
                   "cornerRadius": 4
                 },
                 {
                   "type": "ellipse",
                   "id": "W2Udb",
-                  "x": 149,
-                  "y": 60,
+                  "x": 145,
+                  "y": 46,
                   "name": "Sinus Dot",
                   "fill": "#FFFFFF",
-                  "width": 22,
-                  "height": 22,
+                  "width": 24,
+                  "height": 24,
                   "stroke": {
                     "thickness": 1,
                     "fill": "#E5E7EB"
@@ -19824,22 +19824,22 @@
                 {
                   "type": "ellipse",
                   "id": "gzNf2",
-                  "x": 149,
-                  "y": 108,
+                  "x": 145,
+                  "y": 110,
                   "name": "Throat Dot",
                   "fill": "#88D8B0",
-                  "width": 22,
-                  "height": 22
+                  "width": 24,
+                  "height": 24
                 },
                 {
                   "type": "ellipse",
                   "id": "tMJ3o",
-                  "x": 142,
-                  "y": 101,
+                  "x": 137,
+                  "y": 102,
                   "name": "Pulse Ring",
                   "fill": "#88D8B020",
-                  "width": 36,
-                  "height": 36,
+                  "width": 40,
+                  "height": 40,
                   "stroke": {
                     "thickness": 2,
                     "fill": "#88D8B0"
@@ -19848,12 +19848,12 @@
                 {
                   "type": "ellipse",
                   "id": "3Jyjv",
-                  "x": 149,
-                  "y": 148,
+                  "x": 145,
+                  "y": 156,
                   "name": "Upper Chest Dot",
                   "fill": "#FFFFFF",
-                  "width": 22,
-                  "height": 22,
+                  "width": 24,
+                  "height": 24,
                   "stroke": {
                     "thickness": 1,
                     "fill": "#E5E7EB"
@@ -19862,12 +19862,12 @@
                 {
                   "type": "ellipse",
                   "id": "woAXQ",
-                  "x": 118,
-                  "y": 186,
+                  "x": 108,
+                  "y": 198,
                   "name": "Lung L Dot",
                   "fill": "#FFFFFF",
-                  "width": 22,
-                  "height": 22,
+                  "width": 24,
+                  "height": 24,
                   "stroke": {
                     "thickness": 1,
                     "fill": "#E5E7EB"
@@ -19876,12 +19876,12 @@
                 {
                   "type": "ellipse",
                   "id": "EhrwS",
-                  "x": 182,
-                  "y": 186,
+                  "x": 180,
+                  "y": 198,
                   "name": "Lung R Dot",
                   "fill": "#FFFFFF",
-                  "width": 22,
-                  "height": 22,
+                  "width": 24,
+                  "height": 24,
                   "stroke": {
                     "thickness": 1,
                     "fill": "#E5E7EB"
@@ -19890,12 +19890,12 @@
                 {
                   "type": "ellipse",
                   "id": "p6tdv",
-                  "x": 149,
-                  "y": 248,
+                  "x": 145,
+                  "y": 272,
                   "name": "Lower Chest Dot",
                   "fill": "#FFFFFF",
-                  "width": 22,
-                  "height": 22,
+                  "width": 24,
+                  "height": 24,
                   "stroke": {
                     "thickness": 1,
                     "fill": "#E5E7EB"
@@ -20001,7 +20001,7 @@
     {
       "type": "frame",
       "id": "cYPYE",
-      "x": 1260,
+      "x": 2100,
       "y": 7332,
       "name": "Resonance - Production v2",
       "clip": true,
@@ -20540,7 +20540,7 @@
     {
       "type": "frame",
       "id": "t4rGC",
-      "x": 1680,
+      "x": 2520,
       "y": 7332,
       "name": "Resonance - Soothing v2",
       "clip": true,
@@ -21330,6 +21330,1195 @@
                   "name": "cbt5",
                   "fill": "#FFFFFF",
                   "content": "Save Entry",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "k41Iy",
+      "x": 1260,
+      "y": 7332,
+      "name": "Resonance - Source v2 (B)",
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "#F9F9F9",
+      "cornerRadius": 40,
+      "layout": "vertical",
+      "gap": 16,
+      "padding": [
+        0,
+        24,
+        40,
+        24
+      ],
+      "children": [
+        {
+          "type": "frame",
+          "id": "zoZki",
+          "name": "Header",
+          "width": "fill_container",
+          "padding": [
+            60,
+            24,
+            20,
+            24
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "AFHhF",
+              "name": "bkB",
+              "width": 40,
+              "height": 40,
+              "fill": "#FFFFFF",
+              "cornerRadius": 100,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "5stYw",
+                  "name": "bktB",
+                  "fill": "#4A5A52",
+                  "content": "<",
+                  "fontFamily": "Outfit",
+                  "fontSize": 18,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "jZq4Q",
+              "name": "stpB",
+              "fill": "#6C7A72",
+              "content": "3/5",
+              "fontFamily": "Outfit",
+              "fontSize": 12,
+              "fontWeight": "600"
+            },
+            {
+              "type": "frame",
+              "id": "TsBCq",
+              "name": "clB",
+              "width": 40,
+              "height": 40,
+              "fill": "#FFFFFF",
+              "cornerRadius": 100,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "eXZg7",
+                  "name": "cltB",
+                  "fill": "#4A5A52",
+                  "content": "x",
+                  "fontFamily": "Outfit",
+                  "fontSize": 16,
+                  "fontWeight": "700"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "ZDjlZ",
+          "name": "Content",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": 20,
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "wUYgB",
+              "name": "Title Area",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "padding": [
+                0,
+                24
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "YauHi",
+                  "name": "ttB",
+                  "fill": "#2F3A34",
+                  "content": "Where is the congestion\nsitting?",
+                  "textAlign": "center",
+                  "fontFamily": "Outfit",
+                  "fontSize": 24,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "mDxyb",
+                  "name": "subB",
+                  "fill": "#7B857F",
+                  "content": "Tap the zones that feel affected",
+                  "textAlign": "center",
+                  "fontFamily": "Outfit",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "nVBdl",
+              "name": "Zone Stack Card",
+              "clip": true,
+              "width": "fill_container",
+              "fill": "#FFFFFF",
+              "cornerRadius": 28,
+              "effect": {
+                "type": "shadow",
+                "shadowType": "outer",
+                "color": "#00000012",
+                "offset": {
+                  "x": 0,
+                  "y": 8
+                },
+                "blur": 24
+              },
+              "layout": "vertical",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "JtTZk",
+                  "name": "Sinus Zone",
+                  "width": "fill_container",
+                  "fill": "#FFFFFF",
+                  "stroke": {
+                    "thickness": {
+                      "bottom": 1
+                    },
+                    "fill": "#F0F0F0"
+                  },
+                  "gap": 14,
+                  "padding": [
+                    20,
+                    24
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "4x1mk",
+                      "name": "z1ico",
+                      "width": 48,
+                      "height": 48,
+                      "fill": "#F3F4F6",
+                      "cornerRadius": 14,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "Ui1vu",
+                          "name": "z1ic",
+                          "width": 24,
+                          "height": 24,
+                          "iconFontName": "scan-face",
+                          "iconFontFamily": "lucide",
+                          "fill": "#B0B8B4"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "5T8JC",
+                      "name": "z1info",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "58Jio",
+                          "name": "z1t",
+                          "fill": "#2F3A34",
+                          "content": "Sinuses",
+                          "fontFamily": "Outfit",
+                          "fontSize": 16,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "xerAL",
+                          "name": "z1s",
+                          "fill": "#7B857F",
+                          "content": "Forehead, behind nose",
+                          "fontFamily": "Outfit",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "trbl4",
+                      "name": "z1chk",
+                      "width": 24,
+                      "height": 24,
+                      "fill": "transparent",
+                      "cornerRadius": 100,
+                      "stroke": {
+                        "thickness": 1.5,
+                        "fill": "#E5E7EB"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "tmgsL",
+                  "name": "Throat Zone",
+                  "width": "fill_container",
+                  "fill": "#E0F2F108",
+                  "stroke": {
+                    "thickness": {
+                      "left": 3
+                    },
+                    "fill": "#88D8B030"
+                  },
+                  "gap": 14,
+                  "padding": [
+                    20,
+                    24
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "4jQbz",
+                      "name": "z2ico",
+                      "width": 48,
+                      "height": 48,
+                      "fill": "#E0F2F1",
+                      "cornerRadius": 14,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "xCMj7",
+                          "name": "z2ic",
+                          "width": 24,
+                          "height": 24,
+                          "iconFontName": "circle-dot",
+                          "iconFontFamily": "lucide",
+                          "fill": "#88D8B0"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "dRAz9",
+                      "name": "z2info",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "XiQZB",
+                          "name": "z2t",
+                          "fill": "#2F3A34",
+                          "content": "Throat",
+                          "fontFamily": "Outfit",
+                          "fontSize": 16,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "BGPAe",
+                          "name": "z2s",
+                          "fill": "#7B857F",
+                          "content": "Back of throat, tonsils",
+                          "fontFamily": "Outfit",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "0PcHs",
+                      "name": "z2chk",
+                      "width": 24,
+                      "height": 24,
+                      "fill": "#88D8B0",
+                      "cornerRadius": 100,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "9sPiI",
+                          "name": "z2chkIc",
+                          "width": 14,
+                          "height": 14,
+                          "iconFontName": "check",
+                          "iconFontFamily": "lucide",
+                          "fill": "#FFFFFF"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "ZRI9F",
+                  "name": "Upper Chest Zone",
+                  "width": "fill_container",
+                  "fill": "#FFFFFF",
+                  "stroke": {
+                    "thickness": {
+                      "top": 1,
+                      "bottom": 1
+                    },
+                    "fill": "#F0F0F0"
+                  },
+                  "gap": 14,
+                  "padding": [
+                    20,
+                    24
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "8wS0m",
+                      "name": "z3ico",
+                      "width": 48,
+                      "height": 48,
+                      "fill": "#F3F4F6",
+                      "cornerRadius": 14,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "UcEJQ",
+                          "name": "z3ic",
+                          "width": 24,
+                          "height": 24,
+                          "iconFontName": "shield",
+                          "iconFontFamily": "lucide",
+                          "fill": "#B0B8B4"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "jdizc",
+                      "name": "z3info",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "4b6EE",
+                          "name": "z3t",
+                          "fill": "#2F3A34",
+                          "content": "Upper Chest",
+                          "fontFamily": "Outfit",
+                          "fontSize": 16,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "3uRHk",
+                          "name": "z3s",
+                          "fill": "#7B857F",
+                          "content": "Bronchial tubes, sternum",
+                          "fontFamily": "Outfit",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "KyD5d",
+                      "name": "z3chk",
+                      "width": 24,
+                      "height": 24,
+                      "fill": "transparent",
+                      "cornerRadius": 100,
+                      "stroke": {
+                        "thickness": 1.5,
+                        "fill": "#E5E7EB"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "oNXxK",
+                  "name": "Lungs Zone",
+                  "width": "fill_container",
+                  "fill": "#FFFFFF",
+                  "stroke": {
+                    "thickness": {
+                      "bottom": 1
+                    },
+                    "fill": "#F0F0F0"
+                  },
+                  "gap": 14,
+                  "padding": [
+                    20,
+                    24
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "QaSgb",
+                      "name": "z4ico",
+                      "width": 48,
+                      "height": 48,
+                      "fill": "#F3F4F6",
+                      "cornerRadius": 14,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "XOJWJ",
+                          "name": "z4ic",
+                          "width": 24,
+                          "height": 24,
+                          "iconFontName": "heart-pulse",
+                          "iconFontFamily": "lucide",
+                          "fill": "#B0B8B4"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "GtK7F",
+                      "name": "z4info",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "Gkymn",
+                          "name": "z4t",
+                          "fill": "#2F3A34",
+                          "content": "Lungs",
+                          "fontFamily": "Outfit",
+                          "fontSize": 16,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "gM8E8",
+                          "name": "z4s",
+                          "fill": "#7B857F",
+                          "content": "Deep in chest, lower lobes",
+                          "fontFamily": "Outfit",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "hh0bQ",
+                      "name": "z4chk",
+                      "width": 24,
+                      "height": 24,
+                      "fill": "transparent",
+                      "cornerRadius": 100,
+                      "stroke": {
+                        "thickness": 1.5,
+                        "fill": "#E5E7EB"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Y7qoo",
+                  "name": "Lower Airway Zone",
+                  "width": "fill_container",
+                  "fill": "#FFFFFF",
+                  "gap": 14,
+                  "padding": [
+                    20,
+                    24
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "WW8ca",
+                      "name": "z5ico",
+                      "width": 48,
+                      "height": 48,
+                      "fill": "#F3F4F6",
+                      "cornerRadius": 14,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "6rt2g",
+                          "name": "z5ic",
+                          "width": 24,
+                          "height": 24,
+                          "iconFontName": "arrow-down",
+                          "iconFontFamily": "lucide",
+                          "fill": "#B0B8B4"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "jccge",
+                      "name": "z5info",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "hbTJS",
+                          "name": "z5t",
+                          "fill": "#2F3A34",
+                          "content": "Lower Airway",
+                          "fontFamily": "Outfit",
+                          "fontSize": 16,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "tJk2l",
+                          "name": "z5s",
+                          "fill": "#7B857F",
+                          "content": "Below the diaphragm",
+                          "fontFamily": "Outfit",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Fnpo0",
+                      "name": "z5chk",
+                      "width": 24,
+                      "height": 24,
+                      "fill": "transparent",
+                      "cornerRadius": 100,
+                      "stroke": {
+                        "thickness": 1.5,
+                        "fill": "#E5E7EB"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "oqa9R",
+          "name": "navContainer",
+          "width": "fill_container",
+          "height": 56,
+          "fill": "transparent",
+          "cornerRadius": 999,
+          "gap": 12,
+          "padding": [
+            0,
+            16
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "dkN3t",
+              "name": "sbB",
+              "width": 100,
+              "height": 44,
+              "fill": "#F3F4F6",
+              "cornerRadius": 12,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "iEX3w",
+                  "name": "sbtB",
+                  "fill": "#2F3A34",
+                  "content": "Save",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "FqWLp",
+              "name": "cbB",
+              "width": "fill_container",
+              "height": 44,
+              "fill": "#88D8B0",
+              "cornerRadius": 12,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "sJ5vD",
+                  "name": "cbtB",
+                  "fill": "#FFFFFF",
+                  "content": "Continue",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "jBbjK",
+      "x": 1680,
+      "y": 7332,
+      "name": "Resonance - Source v2 (C)",
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "#F9F9F9",
+      "cornerRadius": 40,
+      "layout": "vertical",
+      "gap": 16,
+      "padding": [
+        0,
+        24,
+        40,
+        24
+      ],
+      "children": [
+        {
+          "type": "frame",
+          "id": "R6S3z",
+          "name": "Header",
+          "width": "fill_container",
+          "padding": [
+            60,
+            24,
+            20,
+            24
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "vAwjF",
+              "name": "bkC",
+              "width": 40,
+              "height": 40,
+              "fill": "#FFFFFF",
+              "cornerRadius": 100,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "53Vz6",
+                  "name": "bktC",
+                  "fill": "#4A5A52",
+                  "content": "<",
+                  "fontFamily": "Outfit",
+                  "fontSize": 18,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "wMrBe",
+              "name": "stpC",
+              "fill": "#6C7A72",
+              "content": "3/5",
+              "fontFamily": "Outfit",
+              "fontSize": 12,
+              "fontWeight": "600"
+            },
+            {
+              "type": "frame",
+              "id": "wBthI",
+              "name": "clC",
+              "width": 40,
+              "height": 40,
+              "fill": "#FFFFFF",
+              "cornerRadius": 100,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "EnFpz",
+                  "name": "cltC",
+                  "fill": "#4A5A52",
+                  "content": "x",
+                  "fontFamily": "Outfit",
+                  "fontSize": 16,
+                  "fontWeight": "700"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "DkkAM",
+          "name": "Content",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": 16,
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "6jgkD",
+              "name": "Title Area",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "padding": [
+                0,
+                24
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "M2WWM",
+                  "name": "ttC",
+                  "fill": "#2F3A34",
+                  "content": "Where is the congestion\nsitting?",
+                  "textAlign": "center",
+                  "fontFamily": "Outfit",
+                  "fontSize": 24,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "nEgEw",
+                  "name": "subC",
+                  "fill": "#7B857F",
+                  "content": "Tap the regions that feel affected",
+                  "textAlign": "center",
+                  "fontFamily": "Outfit",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "90aDC",
+              "name": "Lung Map",
+              "width": "fill_container",
+              "height": 340,
+              "fill": "#FFFFFF",
+              "cornerRadius": 28,
+              "effect": {
+                "type": "shadow",
+                "shadowType": "outer",
+                "color": "#00000012",
+                "offset": {
+                  "x": 0,
+                  "y": 8
+                },
+                "blur": 24
+              },
+              "layout": "none",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "sIcHp",
+                  "x": 153,
+                  "y": 24,
+                  "name": "Trachea",
+                  "width": 16,
+                  "height": 70,
+                  "fill": "#EAEDEC",
+                  "cornerRadius": 8
+                },
+                {
+                  "type": "frame",
+                  "id": "ZMTpj",
+                  "x": 105,
+                  "y": 90,
+                  "name": "Bronchus L",
+                  "rotation": -25,
+                  "width": 50,
+                  "height": 10,
+                  "fill": "#EAEDEC",
+                  "cornerRadius": 4
+                },
+                {
+                  "type": "frame",
+                  "id": "4HioI",
+                  "x": 167,
+                  "y": 90,
+                  "name": "Bronchus R",
+                  "rotation": 25,
+                  "width": 50,
+                  "height": 10,
+                  "fill": "#EAEDEC",
+                  "cornerRadius": 4
+                },
+                {
+                  "type": "frame",
+                  "id": "iWEbA",
+                  "x": 22,
+                  "y": 100,
+                  "name": "Left Lung",
+                  "width": 110,
+                  "height": 170,
+                  "fill": "#88D8B018",
+                  "cornerRadius": [
+                    20,
+                    50,
+                    20,
+                    50
+                  ],
+                  "stroke": {
+                    "thickness": 3,
+                    "fill": "#88D8B0"
+                  },
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "kYWPt",
+                      "x": 28,
+                      "y": 58,
+                      "name": "lungLLabel",
+                      "fill": "#88D8B0",
+                      "content": "Left\nLung",
+                      "textAlign": "center",
+                      "fontFamily": "Outfit",
+                      "fontSize": 14,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "ZY2HG",
+                      "x": 43,
+                      "y": 130,
+                      "name": "checkL",
+                      "width": 24,
+                      "height": 24,
+                      "fill": "#88D8B0",
+                      "cornerRadius": 100,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "e5YbZ",
+                          "name": "checkLIc",
+                          "width": 14,
+                          "height": 14,
+                          "iconFontName": "check",
+                          "iconFontFamily": "lucide",
+                          "fill": "#FFFFFF"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "UOlCj",
+                  "x": 190,
+                  "y": 100,
+                  "name": "Right Lung",
+                  "width": 110,
+                  "height": 170,
+                  "fill": "#F3F4F6",
+                  "cornerRadius": [
+                    50,
+                    20,
+                    50,
+                    20
+                  ],
+                  "stroke": {
+                    "thickness": 1.5,
+                    "fill": "#E5E7EB"
+                  },
+                  "layout": "none",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "KI4gH",
+                      "x": 28,
+                      "y": 58,
+                      "name": "lungRLabel",
+                      "fill": "#B0B8B4",
+                      "content": "Right\nLung",
+                      "textAlign": "center",
+                      "fontFamily": "Outfit",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "ellipse",
+                  "id": "jg66W",
+                  "x": 133,
+                  "y": 0,
+                  "name": "Sinus Area",
+                  "fill": "#F3F4F6",
+                  "width": 56,
+                  "height": 36,
+                  "stroke": {
+                    "thickness": 1.5,
+                    "fill": "#E5E7EB"
+                  }
+                },
+                {
+                  "type": "ellipse",
+                  "id": "rJjAI",
+                  "x": 141,
+                  "y": 58,
+                  "name": "Throat Zone",
+                  "fill": "#F3F4F6",
+                  "width": 40,
+                  "height": 26,
+                  "stroke": {
+                    "thickness": 1.5,
+                    "fill": "#E5E7EB"
+                  }
+                },
+                {
+                  "type": "text",
+                  "id": "10QDG",
+                  "x": 200,
+                  "y": 8,
+                  "name": "sinusLbl",
+                  "fill": "#B0B8B4",
+                  "content": "Sinuses",
+                  "fontFamily": "Outfit",
+                  "fontSize": 11,
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "text",
+                  "id": "di8YQ",
+                  "x": 200,
+                  "y": 62,
+                  "name": "throatLbl",
+                  "fill": "#B0B8B4",
+                  "content": "Throat",
+                  "fontFamily": "Outfit",
+                  "fontSize": 11,
+                  "fontWeight": "500"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "o6cIF",
+              "name": "Selection Pills",
+              "width": "fill_container",
+              "gap": 8,
+              "justifyContent": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "JGCvx",
+                  "name": "pillL",
+                  "fill": "#E0F2F1",
+                  "cornerRadius": 100,
+                  "stroke": {
+                    "thickness": 1.5,
+                    "fill": "#88D8B0"
+                  },
+                  "gap": 6,
+                  "padding": [
+                    8,
+                    14
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "V5QJZ",
+                      "name": "pillLIc",
+                      "width": 8,
+                      "height": 8,
+                      "fill": "#88D8B0",
+                      "cornerRadius": 100
+                    },
+                    {
+                      "type": "text",
+                      "id": "WbP6a",
+                      "name": "pillLTxt",
+                      "fill": "#4A5A52",
+                      "content": "Left Lung",
+                      "fontFamily": "Outfit",
+                      "fontSize": 12,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "zAPDT",
+                  "name": "pillR",
+                  "fill": "#F3F4F6",
+                  "cornerRadius": 100,
+                  "stroke": {
+                    "thickness": 1,
+                    "fill": "#E5E7EB"
+                  },
+                  "gap": 6,
+                  "padding": [
+                    8,
+                    14
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "WlbWS",
+                      "name": "pillRTxt",
+                      "fill": "#7B857F",
+                      "content": "Right Lung",
+                      "fontFamily": "Outfit",
+                      "fontSize": 12,
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Qk9Lu",
+                  "name": "pillT",
+                  "fill": "#F3F4F6",
+                  "cornerRadius": 100,
+                  "stroke": {
+                    "thickness": 1,
+                    "fill": "#E5E7EB"
+                  },
+                  "gap": 6,
+                  "padding": [
+                    8,
+                    14
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "7qKSX",
+                      "name": "pillTTxt",
+                      "fill": "#7B857F",
+                      "content": "Throat",
+                      "fontFamily": "Outfit",
+                      "fontSize": 12,
+                      "fontWeight": "500"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "k3cwS",
+          "name": "navContainer",
+          "width": "fill_container",
+          "height": 56,
+          "fill": "transparent",
+          "cornerRadius": 999,
+          "gap": 12,
+          "padding": [
+            0,
+            16
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "EM74Q",
+              "name": "sbC",
+              "width": 100,
+              "height": 44,
+              "fill": "#F3F4F6",
+              "cornerRadius": 12,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "IWfzT",
+                  "name": "sbtC",
+                  "fill": "#2F3A34",
+                  "content": "Save",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "pOG2s",
+              "name": "cbC",
+              "width": "fill_container",
+              "height": 44,
+              "fill": "#88D8B0",
+              "cornerRadius": 12,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "8qx3v",
+                  "name": "cbtC",
+                  "fill": "#FFFFFF",
+                  "content": "Continue",
                   "fontFamily": "Inter",
                   "fontSize": 14,
                   "fontWeight": "600"

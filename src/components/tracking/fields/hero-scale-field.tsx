@@ -153,9 +153,9 @@ export function HeroScaleField({
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     alignItems: "center",
     gap: 20,
+    width: "100%",
   },
   titleArea: {
     alignItems: "center",

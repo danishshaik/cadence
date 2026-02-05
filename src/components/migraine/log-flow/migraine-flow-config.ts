@@ -4,6 +4,7 @@ import {
   getMigraineSeverityLabel,
   PAIN_REGIONS,
 } from "@/types/migraine";
+import { colors } from "@theme";
 import {
   BubbleChoiceItem,
   DayPartOption,
@@ -91,13 +92,13 @@ export const migraineFlowConfig: TrackerFlowConfig<MigraineFormData> = {
   steps: [
     {
       id: "severity",
+      title: "How severe is your migraine?",
+      subtitle: "Rate your pain from 0 to 10",
       fields: [
         {
           id: "severity",
           type: "hero_scale",
           fieldKey: "severity",
-          label: "How severe is your migraine?",
-          description: "Rate your pain from 0 to 10",
           min: 0,
           max: 10,
           step: 1,
@@ -109,13 +110,13 @@ export const migraineFlowConfig: TrackerFlowConfig<MigraineFormData> = {
     },
     {
       id: "location",
+      title: "Where does it hurt?",
+      subtitle: "Tap the areas affected",
       fields: [
         {
           id: "location",
           type: "region_map",
           fieldKey: "painLocations",
-          label: "Where does it hurt?",
-          description: "Tap the areas affected",
           mapConfig: migraineMapConfig,
           visualizationKey: "migraine.map",
         },
@@ -123,13 +124,13 @@ export const migraineFlowConfig: TrackerFlowConfig<MigraineFormData> = {
     },
     {
       id: "triggers",
+      title: "What triggered it?",
+      subtitle: "Tap bubbles to select",
       fields: [
         {
           id: "triggers",
           type: "bubble_choice",
           fieldKey: "triggers",
-          label: "What triggered it?",
-          description: "Tap bubbles to select",
           bubbleItems: migraineTriggerBubbles,
           visualizationKey: "migraine.bubbles",
         },
@@ -137,13 +138,13 @@ export const migraineFlowConfig: TrackerFlowConfig<MigraineFormData> = {
     },
     {
       id: "when",
+      title: "Pick a time of day",
+      subtitle: "Then choose a rough length",
       fields: [
         {
           id: "when",
           type: "day_part_duration",
           fieldKey: "timeOfDay",
-          label: "Pick a time of day",
-          description: "Then choose a rough length",
           hintText: "Fine-tune later if needed",
           dayParts: migraineDayParts,
           durationOptions: migraineDurationOptions,
@@ -156,13 +157,13 @@ export const migraineFlowConfig: TrackerFlowConfig<MigraineFormData> = {
     },
     {
       id: "medication",
+      title: "Did you take medication?",
+      subtitle: "Tap all that apply",
       fields: [
         {
           id: "medication",
           type: "icon_grid",
           fieldKey: "medications",
-          label: "Did you take medication?",
-          description: "Tap all that apply",
           iconItems: migraineMedOptions,
           noneSelectedKey: "medicationNoneSelected",
           noneOptionLabel: "No medication taken",
@@ -172,4 +173,9 @@ export const migraineFlowConfig: TrackerFlowConfig<MigraineFormData> = {
       ],
     },
   ],
+  theme: {
+    headerStyle: { paddingHorizontal: 0 },
+    titleStyle: { color: colors.arthritisText, fontSize: 28 },
+    subtitleStyle: { color: colors.arthritisTextSecondary, fontSize: 17 },
+  },
 };
