@@ -149,6 +149,7 @@ export const migraineFlowConfig: TrackerFlowConfig<MigraineFormData> = {
           hintText: "Fine-tune later if needed",
           dayParts: migraineDayParts,
           durationOptions: migraineDurationOptions,
+          durationSegmentVisualizationKey: "orthostatic.segmented-duration",
           startedAtKey: "startedAt",
           durationKey: "durationMinutes",
           ongoingKey: "isOngoing",

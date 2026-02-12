@@ -1,6 +1,8 @@
 import React from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Icon } from "@components/ui";
+import { SegmentedSelectionField } from "./segmented-selection-field";
+import type { SegmentedSelectionFieldProps } from "./segmented-selection-field";
 
 const isIOS = process.env.EXPO_OS === "ios";
 
@@ -40,6 +42,10 @@ interface DayPartDurationFieldProps {
   hintColor?: string;
   dayPartShadow?: string;
   durationShadow?: string;
+  durationSegmentOverrides?: Omit<
+    Partial<SegmentedSelectionFieldProps>,
+    "value" | "onChange" | "options" | "label" | "description"
+  >;
 }
 
 export function DayPartDurationField({
@@ -65,7 +71,10 @@ export function DayPartDurationField({
   hintColor = "#6366F1",
   dayPartShadow = "0 4px 16px rgba(15, 23, 42, 0.08)",
   durationShadow = "0 6px 20px rgba(15, 23, 42, 0.08)",
+  durationSegmentOverrides,
 }: DayPartDurationFieldProps) {
+  const useLegacyDurationSegmentStyle = !durationSegmentOverrides;
+
   const handleDayPartSelect = (next: string) => {
     if (disabled) return;
     onTimeOfDayChange(next);
@@ -172,52 +181,40 @@ export function DayPartDurationField({
         </View>
       </View>
 
-      <View
-        style={[
-          styles.durationCard,
-          { backgroundColor: cardColor, boxShadow: durationShadow },
-        ]}
-      >
-        <Text selectable style={[styles.durationLabel, { color: textMutedColor }]}
-        >
-          How long?
-        </Text>
-        <Text selectable style={[styles.durationHelper, { color: textSecondaryColor }]}
-        >
-          Tap one to choose
-        </Text>
-        <View style={styles.durationSegments}>
-          {durationOptions.map((option) => {
-            const isSelected = option.ongoing
-              ? isOngoing
-              : !isOngoing && durationMinutes === option.minutes;
-            return (
-              <Pressable
-                key={option.id}
-                onPress={() => handleDurationSelect(option)}
-                style={[
-                  styles.durationSegment,
-                  isSelected && { backgroundColor: accentColor },
-                ]}
-                disabled={disabled}
-              >
-                <Text
-                  selectable
-                  numberOfLines={1}
-                  adjustsFontSizeToFit
-                  minimumFontScale={0.85}
-                  style={[
-                    styles.durationSegmentText,
-                    isSelected && styles.durationSegmentTextSelected,
-                  ]}
-                >
-                  {option.label}
-                </Text>
-              </Pressable>
-            );
-          })}
-        </View>
-      </View>
+      <SegmentedSelectionField
+        label="How long?"
+        description="Tap one to choose"
+        value={
+          durationOptions.find((option) =>
+            option.ongoing ? isOngoing : !isOngoing && durationMinutes === option.minutes
+          )?.id ?? durationOptions[0]?.id ?? ""
+        }
+        onChange={(optionId) => {
+          const option = durationOptions.find((item) => item.id === optionId);
+          if (option) {
+            handleDurationSelect(option);
+          }
+        }}
+        options={durationOptions.map((option) => ({
+          value: option.id,
+          label: option.label,
+        }))}
+        disabled={disabled}
+        accentColor={accentColor}
+        cardColor={cardColor}
+        segmentSurfaceColor="#F3F4F6"
+        textPrimaryColor={textMutedColor}
+        textSecondaryColor="#6D6C6A"
+        segmentSelectedTextColor="#FFFFFF"
+        containerRadius={useLegacyDurationSegmentStyle ? 999 : undefined}
+        segmentRadius={useLegacyDurationSegmentStyle ? 999 : undefined}
+        segmentMinHeight={useLegacyDurationSegmentStyle ? 34 : undefined}
+        showDividers={useLegacyDurationSegmentStyle ? false : undefined}
+        cardShadow={useLegacyDurationSegmentStyle ? durationShadow : undefined}
+        cardStyle={useLegacyDurationSegmentStyle ? styles.durationCard : undefined}
+        style={useLegacyDurationSegmentStyle ? styles.durationSegments : undefined}
+        {...durationSegmentOverrides}
+      />
 
       {hintText ? (
         <Text selectable style={[styles.hintText, { color: hintColor }]}>
@@ -274,47 +271,14 @@ const styles = StyleSheet.create({
   },
   durationCard: {
     width: "100%",
-    borderRadius: 24,
+    borderRadius: 6,
     borderCurve: "continuous",
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 18,
     gap: 12,
   },
-  durationLabel: {
-    fontFamily: isIOS ? "SF Pro Text" : "sans-serif",
-    fontSize: 18,
-    fontWeight: "600",
-  },
-  durationHelper: {
-    fontFamily: isIOS ? "SF Pro Text" : "sans-serif",
-    fontSize: 13,
-    fontWeight: "500",
-  },
   durationSegments: {
-    flexDirection: "row",
-    gap: 4,
-    padding: 4,
-    backgroundColor: "#F3F4F6",
-    borderRadius: 999,
-    borderCurve: "continuous",
-  },
-  durationSegment: {
-    flex: 1,
-    paddingVertical: 8,
-    paddingHorizontal: 10,
-    backgroundColor: "#FFFFFF",
-    borderRadius: 999,
-    borderCurve: "continuous",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  durationSegmentText: {
-    fontFamily: isIOS ? "SF Pro Text" : "sans-serif",
-    fontSize: 11,
-    fontWeight: "600",
-    color: "#6D6C6A",
-  },
-  durationSegmentTextSelected: {
-    color: "#FFFFFF",
+    alignSelf: "stretch",
   },
   hintText: {
     fontFamily: isIOS ? "SF Pro Text" : "sans-serif",

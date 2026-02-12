@@ -13,6 +13,7 @@ export {
   ToggleField,
 } from "./fields";
 export { useNativeFlowHeader } from "./native-flow-header";
+export { TrackerFlowProvider, useTrackerFlow } from "./tracker-flow-provider";
 export { getAction } from "./registries/action-registry";
 export { getValidation } from "./registries/validation-registry";
 export { getVisualization } from "./registries/visualization-registry";

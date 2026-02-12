@@ -35,6 +35,7 @@ function LogArthritisFlowContent() {
     goToStep,
     canGoBack,
     isLastStep,
+    isFirstStep,
     validateStep,
     validateAllSteps,
     save,
@@ -90,6 +91,7 @@ function LogArthritisFlowContent() {
       goToNextStep();
     }
   };
+  const showSecondary = !isFirstStep && !isLastStep;
 
   return (
     <FlowScaffold
@@ -102,7 +104,7 @@ function LogArthritisFlowContent() {
             onPress: handleContinue,
           }}
           secondaryAction={
-            currentStep > 1
+            showSecondary
               ? {
                   label: "Save",
                   onPress: handleSave,
@@ -115,7 +117,7 @@ function LogArthritisFlowContent() {
           secondaryButtonStyle={styles.saveButton}
           secondaryPressedStyle={styles.saveButtonPressed}
           secondaryTextStyle={styles.saveButtonText}
-          fullWidthPrimaryWhenSolo={currentStep === 1}
+          fullWidthPrimaryWhenSolo={!showSecondary}
         />
       }
     >

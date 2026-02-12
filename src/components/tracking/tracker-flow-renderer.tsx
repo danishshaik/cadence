@@ -11,27 +11,41 @@ import {
   ChoiceField,
   DayPartDurationField,
   HeroScaleField,
+  HotspotMapField,
   IconGridField,
   JointMapField,
   LinearScaleField,
   MultiSelectCardField,
+  RadialDurationField,
   RegionMapField,
+  SegmentedSelectionField,
   SelectionField,
   StiffnessField,
   ToggleField,
 } from "./fields";
 import { useTrackerFlow } from "./tracker-flow-provider";
 import { getVisualization } from "./registries/visualization-registry";
+import type { VisualizationKey } from "./registries/visualization-registry";
 import {
   ActivityPill,
   ManagementCard,
   WeatherConfirmationPill,
   WeatherIcon,
 } from "./visuals/arthritis-visuals";
+import {
+  IllustratedOptionCard,
+  SittingIllustration,
+  SupineIllustration,
+} from "./visuals/illustrated-option-card";
+import {
+  OrthostaticFactorCard,
+} from "./visuals/orthostatic-visuals";
 import { WeatherConfirmationId } from "@/types/arthritis";
 import { getMigraineSeverityLabel } from "@/types/migraine";
+import { getOrthostaticSeverityLabel } from "@/types/orthostatic";
 import { SeverityCircle } from "@components/migraine/severity-circle";
 import { Icon } from "@components/ui";
+import type { SegmentedSelectionFieldProps } from "./fields/segmented-selection-field";
 
 const isIOS = process.env.EXPO_OS === "ios";
 
@@ -45,6 +59,34 @@ function getSimulatedWeather() {
     temperature: temps[Math.floor(Math.random() * temps.length)],
     humidity: humidities[Math.floor(Math.random() * humidities.length)],
   };
+}
+
+type SegmentedSelectionStyleOverrides = Omit<
+  Partial<SegmentedSelectionFieldProps>,
+  "value" | "onChange" | "options" | "label" | "description"
+>;
+
+function getSegmentedSelectionStyle(
+  visualizationKey?: VisualizationKey,
+  accentOverride?: string
+): SegmentedSelectionStyleOverrides | undefined {
+  if (visualizationKey === "orthostatic.segmented-duration") {
+    return {
+      accentColor: accentOverride ?? "#6C5CE7",
+      cardColor: "#FFFFFF",
+      segmentSurfaceColor: "#F3F4F6",
+      textPrimaryColor: "#2F3A34",
+      textSecondaryColor: "#9AA2A0",
+      segmentSelectedTextColor: "#FFFFFF",
+      showDividers: true,
+      containerRadius: 12,
+      segmentRadius: 10,
+      segmentMinHeight: 40,
+      cardShadow: "0 12px 24px rgba(108, 92, 231, 0.1)",
+    };
+  }
+
+  return undefined;
 }
 
 interface TrackerFlowRendererProps<TFormData extends FormDataConstraint> {
@@ -64,6 +106,20 @@ export function TrackerFlowRenderer<TFormData extends FormDataConstraint>({
   const headerBadgeRadius = headerBadge?.cornerRadius ?? 16;
   const headerBadgeIconSize = headerBadge?.iconSize ?? 24;
   const headerBadgeIconColor = headerBadge?.iconColor ?? "#FFFFFF";
+  const contentBlocks = step?.content ?? [];
+  const weatherBlock = contentBlocks.find((block) => block.type === "weather_summary");
+
+  React.useEffect(() => {
+    if (!weatherBlock || weatherBlock.type !== "weather_summary") return;
+
+    const pressureValue = (formData as any)[weatherBlock.pressureKey];
+    if (pressureValue !== null && pressureValue !== undefined) return;
+
+    const weather = getSimulatedWeather();
+    updateField(weatherBlock.pressureKey as any, weather.pressure as any);
+    updateField(weatherBlock.temperatureKey as any, weather.temperature as any);
+    updateField(weatherBlock.humidityKey as any, weather.humidity as any);
+  }, [weatherBlock, formData, updateField]);
 
   if (!step) {
     return null;
@@ -232,19 +288,41 @@ export function TrackerFlowRenderer<TFormData extends FormDataConstraint>({
     if (field.type === "hero_scale") {
       const heroVariant = field.visualizationKey;
       const hero =
-        heroVariant === "migraine.severity"
+        heroVariant === "migraine.severity" || heroVariant === "orthostatic.severity"
           ? (value: number) => {
-              const severityLabel = getMigraineSeverityLabel(value);
               const label =
-                severityLabel.charAt(0).toUpperCase() + severityLabel.slice(1);
+                heroVariant === "migraine.severity"
+                  ? `${getMigraineSeverityLabel(value).charAt(0).toUpperCase()}${getMigraineSeverityLabel(value).slice(1)}`
+                  : getOrthostaticSeverityLabel(value);
+              const accent = heroVariant === "migraine.severity" ? "#E91E8C" : "#6C5CE7";
+              const pillBackground =
+                heroVariant === "migraine.severity" ? "#FFF0F6" : "#F0EDFC";
               return (
                 <View style={styles.heroStack}>
-                  <SeverityCircle severity={value} size={180} />
-                  <Text selectable style={styles.heroValue}>
+                  <SeverityCircle
+                    severity={value}
+                    size={180}
+                    baseGradientColors={
+                      heroVariant === "migraine.severity"
+                        ? ["#FFE6F3", "#FFB6DA", "#F48BC9"]
+                        : ["#E8E5FF", "#CFCBFF", "#A79CFF"]
+                    }
+                    hotGradientColors={
+                      heroVariant === "migraine.severity"
+                        ? ["#FF8AC7", "#F05FA9", "#C2185B"]
+                        : ["#CFCBFF", "#A79CFF", "#6C5CE7"]
+                    }
+                    shadow={
+                      heroVariant === "migraine.severity"
+                        ? "0 10px 28px rgba(233, 30, 140, 0.28)"
+                        : "0 10px 28px rgba(108, 92, 231, 0.22)"
+                    }
+                  />
+                  <Text selectable style={[styles.heroValue, { color: accent }]}>
                     {value}
                   </Text>
-                  <View style={styles.heroPill}>
-                    <Text selectable style={styles.heroPillText}>
+                  <View style={[styles.heroPill, { backgroundColor: pillBackground }]}>
+                    <Text selectable style={[styles.heroPillText, { color: accent }]}>
                       {label}
                     </Text>
                   </View>
@@ -266,26 +344,111 @@ export function TrackerFlowRenderer<TFormData extends FormDataConstraint>({
           leftLabel={field.leftLabel}
           rightLabel={field.rightLabel}
           hero={hero}
+          accentColor={
+            heroVariant === "migraine.severity"
+              ? "#E91E8C"
+              : heroVariant === "orthostatic.severity"
+              ? "#6C5CE7"
+              : undefined
+          }
+          textPrimaryColor={
+            heroVariant === "migraine.severity" || heroVariant === "orthostatic.severity"
+              ? "#2F3A34"
+              : undefined
+          }
+          textSecondaryColor={
+            heroVariant === "migraine.severity" || heroVariant === "orthostatic.severity"
+              ? "#7B857F"
+              : undefined
+          }
+          textMutedColor={
+            heroVariant === "migraine.severity" || heroVariant === "orthostatic.severity"
+              ? "#6C7A72"
+              : undefined
+          }
+          pillBackgroundColor={
+            heroVariant === "migraine.severity"
+              ? "#FFF0F6"
+              : heroVariant === "orthostatic.severity"
+              ? "#F0EDFC"
+              : undefined
+          }
+          tickInactiveColor={
+            heroVariant === "migraine.severity" || heroVariant === "orthostatic.severity"
+              ? "#D6DED9"
+              : undefined
+          }
+          tickActiveColor={
+            heroVariant === "migraine.severity"
+              ? "#E91E8C"
+              : heroVariant === "orthostatic.severity"
+              ? "#6C5CE7"
+              : undefined
+          }
           gradientColors={
             heroVariant === "migraine.severity"
               ? ["#8EF2B2", "#FFE082", "#FF8AC7", "#F44336"]
+              : heroVariant === "orthostatic.severity"
+              ? ["#E8E5FF", "#CFCBFF", "#A79CFF", "#6C5CE7"]
               : undefined
           }
           cardGradientColors={
-            heroVariant === "migraine.severity" ? ["#FFFFFF", "#FFF5FA"] : undefined
+            heroVariant === "migraine.severity"
+              ? ["#FFFFFF", "#FFF5FA"]
+              : heroVariant === "orthostatic.severity"
+              ? ["#FFFFFF", "#FAF8FF"]
+              : undefined
           }
-          accentColor={heroVariant === "migraine.severity" ? "#E91E8C" : undefined}
-          textPrimaryColor={heroVariant === "migraine.severity" ? "#2F3A34" : undefined}
-          textSecondaryColor={heroVariant === "migraine.severity" ? "#7B857F" : undefined}
-          textMutedColor={heroVariant === "migraine.severity" ? "#6C7A72" : undefined}
-          pillBackgroundColor={heroVariant === "migraine.severity" ? "#FFF0F6" : undefined}
-          tickInactiveColor={heroVariant === "migraine.severity" ? "#D6DED9" : undefined}
-          tickActiveColor={heroVariant === "migraine.severity" ? "#E91E8C" : undefined}
           cardShadow={
             heroVariant === "migraine.severity"
               ? "0 12px 30px rgba(233, 30, 140, 0.16)"
+              : heroVariant === "orthostatic.severity"
+              ? "0 12px 24px rgba(108, 92, 231, 0.1)"
               : undefined
           }
+        />
+      );
+    }
+
+    if (field.type === "radial_duration") {
+      if (!field.unitKey || !field.durationUnits?.length) {
+        return null;
+      }
+      const currentUnitId = (formData as any)[field.unitKey] as string;
+      const activeUnit =
+        field.durationUnits.find((unit) => unit.id === currentUnitId) ?? field.durationUnits[0];
+      const activeValue = (formData as any)[activeUnit.targetKey] as number;
+      return (
+        <RadialDurationField
+          key={field.id}
+          label={field.label}
+          description={field.description}
+          units={field.durationUnits}
+          selectedUnitId={activeUnit.id}
+          onUnitChange={(nextUnitId) => {
+            const nextUnit =
+              field.durationUnits?.find((unit) => unit.id === nextUnitId) ?? field.durationUnits?.[0];
+            if (!nextUnit) return;
+            const nextRaw = (formData as any)[nextUnit.targetKey] as number;
+            const nextValue = Number.isFinite(nextRaw)
+              ? Math.min(nextUnit.max, Math.max(nextUnit.min, nextRaw))
+              : nextUnit.min;
+            updateField(field.unitKey as any, nextUnit.id as any);
+            updateField(nextUnit.targetKey as any, nextValue as any);
+          }}
+          value={Number.isFinite(activeValue) ? activeValue : activeUnit.min}
+          onChange={(next) =>
+            updateField(
+              activeUnit.targetKey as any,
+              Math.min(activeUnit.max, Math.max(activeUnit.min, next)) as any
+            )
+          }
+          presets={field.durationPresets}
+          accentColor="#6C5CE7"
+          surfaceColor="#FFFFFF"
+          mutedColor="#E6E6F0"
+          textPrimaryColor="#2F3A34"
+          textSecondaryColor="#9AA2A0"
         />
       );
     }
@@ -305,13 +468,69 @@ export function TrackerFlowRenderer<TFormData extends FormDataConstraint>({
           frontSilhouette={field.mapConfig.frontSilhouette}
           backSilhouette={field.mapConfig.backSilhouette}
           regions={field.mapConfig.regions}
-          accentColor={mapTheme === "migraine.map" ? colors.migraine : undefined}
-          accentSoftColor={mapTheme === "migraine.map" ? "#FCE7F3" : undefined}
-          cardColor={mapTheme === "migraine.map" ? "#FFFFFF" : undefined}
-          surfaceColor={mapTheme === "migraine.map" ? "#F3F4F6" : undefined}
-          textPrimaryColor={mapTheme === "migraine.map" ? "#2F3A34" : undefined}
-          textSecondaryColor={mapTheme === "migraine.map" ? "#7B857F" : undefined}
-          mapGradientColors={mapTheme === "migraine.map" ? ["#FDF2F8", "#F3E8F0"] : undefined}
+          accentColor={
+            mapTheme === "migraine.map"
+              ? colors.migraine
+              : mapTheme === "orthostatic.prodrome"
+              ? "#6C5CE7"
+              : undefined
+          }
+          accentSoftColor={
+            mapTheme === "migraine.map"
+              ? "#FCE7F3"
+              : mapTheme === "orthostatic.prodrome"
+              ? "#F0EDFC"
+              : undefined
+          }
+          cardColor={
+            mapTheme === "migraine.map" || mapTheme === "orthostatic.prodrome"
+              ? "#FFFFFF"
+              : undefined
+          }
+          surfaceColor={
+            mapTheme === "migraine.map" ? "#F3F4F6" : mapTheme === "orthostatic.prodrome" ? "#F3F4F6" : undefined
+          }
+          textPrimaryColor={
+            mapTheme === "migraine.map" || mapTheme === "orthostatic.prodrome" ? "#2F3A34" : undefined
+          }
+          textSecondaryColor={
+            mapTheme === "migraine.map" || mapTheme === "orthostatic.prodrome" ? "#7B857F" : undefined
+          }
+          mapGradientColors={
+            mapTheme === "migraine.map"
+              ? ["#FDF2F8", "#F3E8F0"]
+              : mapTheme === "orthostatic.prodrome"
+              ? ["#F8F5FF", "#F0EDFC"]
+              : undefined
+          }
+          showViewToggle={field.mapShowViewToggle}
+          showChips={field.mapShowChips}
+        />
+      );
+    }
+
+    if (field.type === "hotspot_map") {
+      if (!field.hotspots) {
+        return null;
+      }
+      return (
+        <HotspotMapField
+          key={field.id}
+          value={(formData as any)[field.fieldKey] as string[]}
+          onChange={(next) => updateField(field.fieldKey as any, next as any)}
+          hotspots={field.hotspots}
+          accentColor={
+            field.visualizationKey === "orthostatic.prodrome" ? "#6C5CE7" : undefined
+          }
+          accentSoftColor={
+            field.visualizationKey === "orthostatic.prodrome"
+              ? "rgba(108, 92, 231, 0.12)"
+              : undefined
+          }
+          cardColor="#FFFFFF"
+          bodyColor="#F3F4F6"
+          borderColor="#E6E6F0"
+          textPrimaryColor="#2F3A34"
         />
       );
     }
@@ -492,6 +711,10 @@ export function TrackerFlowRenderer<TFormData extends FormDataConstraint>({
         return null;
       }
       const dayPartTheme = field.visualizationKey;
+      const durationSegmentTheme = getSegmentedSelectionStyle(
+        field.durationSegmentVisualizationKey,
+        dayPartTheme === "migraine.day-part" ? colors.migraine : undefined
+      );
       return (
         <DayPartDurationField
           key={field.id}
@@ -524,6 +747,7 @@ export function TrackerFlowRenderer<TFormData extends FormDataConstraint>({
               ? "0 6px 20px rgba(233, 30, 140, 0.06)"
               : undefined
           }
+          durationSegmentOverrides={durationSegmentTheme}
         />
       );
     }
@@ -649,8 +873,40 @@ export function TrackerFlowRenderer<TFormData extends FormDataConstraint>({
                     onPress={() => onPress()}
                   />
                 )
+              : field.visualizationKey === "orthostatic.position"
+              ? ({ option, selected, onPress }) => (
+                  <IllustratedOptionCard
+                    key={option.value}
+                    label={option.label}
+                    selected={selected}
+                    onPress={() => onPress()}
+                    illustration={
+                      option.value === "supine" ? (
+                        <SupineIllustration />
+                      ) : option.value === "sitting" ? (
+                        <SittingIllustration />
+                      ) : null
+                    }
+                  />
+                )
               : visualization?.renderOption
           }
+        />
+      );
+    }
+
+    if (field.type === "segmented_selection") {
+      const segmentedTheme = getSegmentedSelectionStyle(field.visualizationKey);
+      return (
+        <SegmentedSelectionField
+          key={field.id}
+          value={(formData as any)[field.fieldKey] as string}
+          onChange={(next) => updateField(field.fieldKey as any, next as any)}
+          options={field.options ?? []}
+          label={field.label}
+          description={field.description}
+          disabled={false}
+          {...segmentedTheme}
         />
       );
     }
@@ -691,6 +947,20 @@ export function TrackerFlowRenderer<TFormData extends FormDataConstraint>({
                     size={cardSize}
                   />
                 )
+              : field.visualizationKey === "orthostatic.hydration-cards"
+              ? ({ option, selected, onPress }) => {
+                  const [icon, subtitle] = (option.description ?? "").split("|");
+                  return (
+                    <OrthostaticFactorCard
+                      key={option.value}
+                      label={option.label}
+                      subtitle={subtitle}
+                      icon={icon || "help-circle-outline"}
+                      selected={selected}
+                      onPress={() => onPress()}
+                    />
+                  );
+                }
               : visualization?.renderOption
           }
         />
@@ -700,22 +970,8 @@ export function TrackerFlowRenderer<TFormData extends FormDataConstraint>({
     return null;
   };
 
-  const contentBlocks = step.content ?? [];
   const primaryContent = contentBlocks.filter((block) => block.type !== "note");
   const noteContent = contentBlocks.filter((block) => block.type === "note");
-  const weatherBlock = contentBlocks.find((block) => block.type === "weather_summary");
-
-  React.useEffect(() => {
-    if (!weatherBlock || weatherBlock.type !== "weather_summary") return;
-
-    const pressureValue = (formData as any)[weatherBlock.pressureKey];
-    if (pressureValue !== null && pressureValue !== undefined) return;
-
-    const weather = getSimulatedWeather();
-    updateField(weatherBlock.pressureKey as any, weather.pressure as any);
-    updateField(weatherBlock.temperatureKey as any, weather.temperature as any);
-    updateField(weatherBlock.humidityKey as any, weather.humidity as any);
-  }, [weatherBlock, formData, updateField]);
 
   return (
     <View style={[styles.container, theme?.containerStyle]}>

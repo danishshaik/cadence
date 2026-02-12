@@ -26,6 +26,7 @@ interface RegionMapFieldProps extends FieldProps<string[]> {
   strokeColor?: string;
   strokeDasharray?: string;
   showChips?: boolean;
+  showViewToggle?: boolean;
   getRegionLabel?: (id: string) => string | undefined;
   mapGradientColors?: [string, string];
 }
@@ -52,6 +53,7 @@ export function RegionMapField({
   strokeColor = "#8d6e63",
   strokeDasharray = "4,4",
   showChips = true,
+  showViewToggle = true,
   getRegionLabel,
   mapGradientColors = ["#FDF2F8", "#F3E8F0"],
 }: RegionMapFieldProps) {
@@ -66,7 +68,6 @@ export function RegionMapField({
       const sizeKey = `${Math.round(width)}x${Math.round(height)}`;
       if (layoutLogRef.current[label] === sizeKey) return;
       layoutLogRef.current[label] = sizeKey;
-      // eslint-disable-next-line no-console
       console.log(`[MigraineLocation][refactor] ${label}: ${sizeKey}`);
     },
     []
@@ -118,18 +119,20 @@ export function RegionMapField({
         </View>
       )}
 
-      <ExpoSegmentedPicker
-        options={toggleOptions}
-        selectedId={view}
-        onChange={(next) => setView(next as MapView)}
-        disabled={disabled}
-        accentColor={accentColor}
-        surfaceColor={surfaceColor}
-        textPrimaryColor="#FFFFFF"
-        textSecondaryColor={textSecondaryColor}
-        style={[styles.toggleContainer, { maxWidth: MAP_CARD_MAX_WIDTH }]}
-        onLayout={logLayout("toggle")}
-      />
+      {showViewToggle ? (
+        <ExpoSegmentedPicker
+          options={toggleOptions}
+          selectedId={view}
+          onChange={(next) => setView(next as MapView)}
+          disabled={disabled}
+          accentColor={accentColor}
+          surfaceColor={surfaceColor}
+          textPrimaryColor="#FFFFFF"
+          textSecondaryColor={textSecondaryColor}
+          style={[styles.toggleContainer, { maxWidth: MAP_CARD_MAX_WIDTH }]}
+          onLayout={logLayout("toggle")}
+        />
+      ) : null}
 
       <View
         style={[
