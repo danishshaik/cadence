@@ -22,3 +22,10 @@ export interface OrthostaticLog {
   hydrationFactors: OrthostaticHydrationFactor[];
   createdAt: string;
 }
+
+export function getOrthostaticSeverityLabel(severity: number): string {
+  if (severity <= 2) return "Mild";
+  if (severity <= 5) return "Moderate";
+  if (severity <= 7) return "Strong";
+  return "Near fainting";
+}

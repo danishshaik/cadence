@@ -64,6 +64,33 @@ export interface MultiSelectCardOption {
   icon: string;
 }
 
+export interface HotspotMapHotspot {
+  id: string;
+  label: string;
+  x: number;
+  y: number;
+  size?: number;
+  calloutLabel?: string;
+  calloutOffsetX?: number;
+  calloutOffsetY?: number;
+}
+
+export interface RadialDurationUnit {
+  id: string;
+  label: string;
+  min: number;
+  max: number;
+  step?: number;
+  targetKey: string;
+}
+
+export interface RadialDurationPreset {
+  id: string;
+  label: string;
+  value: number;
+  unitId?: string;
+}
+
 export type TrackerFieldType =
   | "axis_grid"
   | "stiffness"
@@ -78,7 +105,10 @@ export type TrackerFieldType =
   | "day_part_duration"
   | "icon_grid"
   | "multi_select_card"
-  | "categorized_chips";
+  | "categorized_chips"
+  | "radial_duration"
+  | "segmented_selection"
+  | "hotspot_map";
 
 export interface TrackerFieldConfig {
   id: string;
@@ -111,10 +141,13 @@ export interface TrackerFieldConfig {
   hintText?: string;
   noneOptionLabel?: string;
   mapConfig?: RegionMapConfig;
+  mapShowViewToggle?: boolean;
+  mapShowChips?: boolean;
   bubbleItems?: BubbleChoiceItem[];
   bubbleLayoutPreset?: "pencil";
   dayParts?: DayPartOption[];
   durationOptions?: DurationOption[];
+  durationSegmentVisualizationKey?: VisualizationKey;
   iconItems?: IconGridItem[];
   iconValueType?: "string" | "object";
   cardOptions?: MultiSelectCardOption[];
@@ -123,6 +156,10 @@ export interface TrackerFieldConfig {
   badgeShowWhenEmpty?: boolean;
   chipCategories?: CategorizedChipCategory[];
   chipItems?: CategorizedChipItem[];
+  unitKey?: string;
+  durationUnits?: RadialDurationUnit[];
+  durationPresets?: RadialDurationPreset[];
+  hotspots?: HotspotMapHotspot[];
 }
 
 export interface HeaderBadgeConfig {

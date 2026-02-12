@@ -1,7 +1,13 @@
 import { ArthritisFormData } from "@/types/arthritis";
 import { MigraineFormData } from "@/types/migraine";
+import {
+  OrthostaticHydrationFactor,
+  OrthostaticPosition,
+  OrthostaticSedentaryDuration,
+  OrthostaticSymptom,
+} from "@/types/orthostatic";
 
-export type ActionKey = "arthritis.save" | "migraine.save";
+export type ActionKey = "arthritis.save" | "migraine.save" | "orthostatic.save";
 
 type ActionHandler<TPayload, TContext> = (payload: TPayload, context: TContext) => void;
 
@@ -39,6 +45,19 @@ interface MigraineSaveContext {
   onComplete: () => void;
 }
 
+interface OrthostaticSaveContext {
+  addLog: (log: {
+    severity: number;
+    durationSeconds: number;
+    durationMinutes: number;
+    symptoms: OrthostaticSymptom[];
+    positionBeforeStanding: OrthostaticPosition;
+    sedentaryDuration: OrthostaticSedentaryDuration;
+    hydrationFactors: OrthostaticHydrationFactor[];
+  }) => void;
+  onComplete: () => void;
+}
+
 const actionRegistry = {
   "arthritis.save": (formData: ArthritisFormData, { addLog, onComplete }: ArthritisSaveContext) => {
     const data = formData;
@@ -71,6 +90,29 @@ const actionRegistry = {
       medicationTaken: data.medications.length > 0,
       medications: data.medications,
       notes: data.notes,
+    });
+    onComplete();
+  },
+  "orthostatic.save": (
+    formData: {
+      severity: number;
+      durationSeconds: number;
+      durationMinutes: number;
+      symptoms: OrthostaticSymptom[];
+      positionBeforeStanding: OrthostaticPosition;
+      sedentaryDuration: OrthostaticSedentaryDuration;
+      hydrationFactors: OrthostaticHydrationFactor[];
+    },
+    { addLog, onComplete }: OrthostaticSaveContext
+  ) => {
+    addLog({
+      severity: formData.severity,
+      durationSeconds: formData.durationSeconds,
+      durationMinutes: formData.durationMinutes,
+      symptoms: formData.symptoms,
+      positionBeforeStanding: formData.positionBeforeStanding,
+      sedentaryDuration: formData.sedentaryDuration,
+      hydrationFactors: formData.hydrationFactors,
     });
     onComplete();
   },

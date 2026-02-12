@@ -13,6 +13,9 @@ import Svg, { Defs, RadialGradient, Stop, Circle } from "react-native-svg";
 interface SeverityCircleProps {
   severity: number; // 0-10
   size?: number;
+  baseGradientColors?: readonly [string, string, string];
+  hotGradientColors?: readonly [string, string, string];
+  shadow?: string;
 }
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
@@ -22,7 +25,13 @@ const ANIMATION_CONFIG = {
   easing: Easing.out(Easing.cubic),
 };
 
-export function SeverityCircle({ severity, size = 160 }: SeverityCircleProps) {
+export function SeverityCircle({
+  severity,
+  size = 160,
+  baseGradientColors = ["#FFE6F3", "#FFB6DA", "#F48BC9"],
+  hotGradientColors = ["#FF8AC7", "#F05FA9", "#C2185B"],
+  shadow = "0 10px 28px rgba(233, 30, 140, 0.28)",
+}: SeverityCircleProps) {
   const normalizedIntensity = Math.min(1, Math.max(0, severity / 10));
   const intensity = useSharedValue(normalizedIntensity);
 
@@ -42,18 +51,20 @@ export function SeverityCircle({ severity, size = 160 }: SeverityCircleProps) {
   }));
 
   return (
-    <Animated.View style={[styles.container, { width: size, height: size }, scaleStyle]}>
+    <Animated.View
+      style={[styles.container, { width: size, height: size, boxShadow: shadow }, scaleStyle]}
+    >
       <Svg width={size} height={size}>
         <Defs>
           <RadialGradient id="migraineBase" cx="50%" cy="50%" rx="50%" ry="50%">
-            <Stop offset="0%" stopColor="#FFE6F3" stopOpacity={0.9} />
-            <Stop offset="60%" stopColor="#FFB6DA" stopOpacity={0.95} />
-            <Stop offset="100%" stopColor="#F48BC9" stopOpacity={1} />
+            <Stop offset="0%" stopColor={baseGradientColors[0]} stopOpacity={0.9} />
+            <Stop offset="60%" stopColor={baseGradientColors[1]} stopOpacity={0.95} />
+            <Stop offset="100%" stopColor={baseGradientColors[2]} stopOpacity={1} />
           </RadialGradient>
           <RadialGradient id="migraineHot" cx="50%" cy="50%" rx="50%" ry="50%">
-            <Stop offset="0%" stopColor="#FF8AC7" stopOpacity={0.9} />
-            <Stop offset="60%" stopColor="#F05FA9" stopOpacity={0.95} />
-            <Stop offset="100%" stopColor="#C2185B" stopOpacity={1} />
+            <Stop offset="0%" stopColor={hotGradientColors[0]} stopOpacity={0.9} />
+            <Stop offset="60%" stopColor={hotGradientColors[1]} stopOpacity={0.95} />
+            <Stop offset="100%" stopColor={hotGradientColors[2]} stopOpacity={1} />
           </RadialGradient>
         </Defs>
         <Circle cx={size / 2} cy={size / 2} r={size / 2} fill="url(#migraineBase)" />
@@ -73,7 +84,6 @@ const styles = StyleSheet.create({
   container: {
     alignItems: "center",
     justifyContent: "center",
-    boxShadow: "0 10px 28px rgba(233, 30, 140, 0.28)",
     borderRadius: 999,
   },
 });

@@ -31,7 +31,13 @@ export type VisualizationKey =
   | "migraine.map"
   | "migraine.bubbles"
   | "migraine.day-part"
-  | "migraine.icon-grid";
+  | "migraine.icon-grid"
+  | "orthostatic.severity"
+  | "orthostatic.duration"
+  | "orthostatic.prodrome"
+  | "orthostatic.position"
+  | "orthostatic.segmented-duration"
+  | "orthostatic.hydration-cards";
 
 const visualizationRegistry: Record<VisualizationKey, VisualizationConfig> = {
   "selection.compact": {
@@ -56,6 +62,19 @@ const visualizationRegistry: Record<VisualizationKey, VisualizationConfig> = {
   "migraine.bubbles": {},
   "migraine.day-part": {},
   "migraine.icon-grid": {},
+  "orthostatic.severity": {},
+  "orthostatic.duration": {},
+  "orthostatic.prodrome": {},
+  "orthostatic.position": {
+    listStyle: {
+      flexDirection: "row",
+      gap: 16,
+    },
+  },
+  "orthostatic.segmented-duration": {
+    variant: "default",
+  },
+  "orthostatic.hydration-cards": {},
 };
 
 export function getVisualization(
