@@ -159,7 +159,6 @@ export function StiffnessField({
           minimumTrackTintColor={colors.arthritis}
           maximumTrackTintColor={colors.arthritisSurface}
           thumbTintColor={colors.arthritis}
-          disabled={disabled}
         />
 
         <View style={[styles.sliderLabels, { width: sliderWidth }]}>

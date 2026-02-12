@@ -1,6 +1,6 @@
 import React from "react";
 import { Platform, PlatformColor, Pressable, Text, View } from "react-native";
-import { SymbolView } from "expo-symbols";
+import { SymbolView, type SymbolViewProps } from "expo-symbols";
 import { GlassView, isLiquidGlassAvailable } from "expo-glass-effect";
 import { colors } from "@theme";
 
@@ -20,6 +20,7 @@ export function GlassIconButton({
   const isGlass = isLiquidGlassAvailable();
   const Container = isGlass ? GlassView : View;
   const iconColor = Platform.OS === "ios" ? PlatformColor("label") : colors.textPrimary;
+  const symbolName = icon as unknown as SymbolViewProps["name"];
 
   return (
     <Container
@@ -40,7 +41,7 @@ export function GlassIconButton({
         style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
       >
         <SymbolView
-          name={icon}
+          name={symbolName}
           size={20}
           tintColor={iconColor}
           fallback={<Text style={{ color: colors.textPrimary, fontSize: 18 }}>•</Text>}

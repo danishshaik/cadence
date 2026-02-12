@@ -25,7 +25,7 @@ interface AxisGridCardProps {
   rightAxisLabel?: string;
   topAxisLabel?: string;
   bottomAxisLabel?: string;
-  cardGradient?: string[];
+  cardGradient?: readonly [string, string, ...string[]];
   borderColor?: string;
   borderWidth?: number;
   accentColor?: string;

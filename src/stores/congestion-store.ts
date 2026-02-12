@@ -44,7 +44,7 @@ const generateSampleData = (): CongestionLog[] => {
 
     const sleepQuality = Math.max(0, Math.min(3, i === 0 ? 1 : Math.floor(Math.random() * 4)));
     const isProductive = Math.random() > 0.5;
-    const coughCharacters = isProductive
+    const coughCharacters: CoughCharacterId[] = isProductive
       ? ["productive", "wet"]
       : [coughOptions[Math.floor(Math.random() * 2)]];
 

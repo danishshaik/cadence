@@ -87,6 +87,7 @@ export interface TrackerFieldConfig {
   secondaryKey?: string;
   dominantKey?: string;
   fill?: boolean;
+  showBadge?: boolean;
   label?: string;
   description?: string;
   required?: boolean;
@@ -98,7 +99,7 @@ export interface TrackerFieldConfig {
   rightLabel?: string;
   topLabel?: string;
   bottomLabel?: string;
-  cardGradient?: string[];
+  cardGradient?: readonly [string, string, ...string[]];
   options?: FlowOption[];
   visualizationKey?: VisualizationKey;
   bilateralKey?: string;
@@ -122,6 +123,15 @@ export interface TrackerFieldConfig {
   badgeShowWhenEmpty?: boolean;
   chipCategories?: CategorizedChipCategory[];
   chipItems?: CategorizedChipItem[];
+}
+
+export interface HeaderBadgeConfig {
+  icon: string;
+  gradient?: [string, string];
+  size?: number;
+  cornerRadius?: number;
+  iconSize?: number;
+  iconColor?: string;
 }
 
 export type FlowContentBlock =
@@ -154,6 +164,7 @@ export interface TrackerStepConfig {
   id: string;
   title?: string;
   subtitle?: string;
+  headerBadge?: HeaderBadgeConfig;
   fields: TrackerFieldConfig[];
   content?: FlowContentBlock[];
   validationKey?: ValidationKey;

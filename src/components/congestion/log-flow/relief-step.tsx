@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, Pressable, StyleSheet } from "react-native";
-import { SymbolView } from "expo-symbols";
+import { SymbolView, type SymbolViewProps } from "expo-symbols";
 import * as Haptics from "expo-haptics";
 import { colors, shadows } from "@theme";
 import { RELIEF_MEASURES, ReliefMeasureId } from "@/types/congestion";
@@ -8,13 +8,13 @@ import { useLogCongestion } from "./log-congestion-provider";
 
 const isIOS = process.env.EXPO_OS === "ios";
 
-const ICONS: Record<ReliefMeasureId, string> = {
-  tea: "cup.and.saucer",
-  steam: "cloud",
-  lozenge: "pills",
-  inhaler: "lungs",
-  propped: "bed.double",
-  chest_rub: "heart",
+const ICONS: Record<ReliefMeasureId, SymbolViewProps["name"]> = {
+  tea: { ios: "cup.and.saucer", android: "local_cafe" } as unknown as SymbolViewProps["name"],
+  steam: { ios: "cloud", android: "cloud" } as unknown as SymbolViewProps["name"],
+  lozenge: { ios: "pills", android: "pill" } as unknown as SymbolViewProps["name"],
+  inhaler: { ios: "lungs", android: "air" } as unknown as SymbolViewProps["name"],
+  propped: { ios: "bed.double", android: "bed" } as unknown as SymbolViewProps["name"],
+  chest_rub: { ios: "heart", android: "favorite" } as unknown as SymbolViewProps["name"],
 };
 
 export function ReliefStep() {

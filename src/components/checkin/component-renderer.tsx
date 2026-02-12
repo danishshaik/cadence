@@ -19,19 +19,15 @@ export function ComponentRenderer({
   disabled,
   previousValue,
 }: ComponentRendererProps) {
-  const baseProps = {
-    id: component.id,
-    prompt: component.prompt,
-    disabled,
-    previousValue,
-  };
-
   switch (component.type) {
     case "severity_scale":
       return (
         <SeverityScale
-          {...baseProps}
+          id={component.id}
+          prompt={component.prompt}
+          disabled={disabled}
           value={value as number | undefined}
+          previousValue={previousValue as number | undefined}
           onChange={(next) => onChange(next)}
           scale_type={component.scale_type as "numeric_1_10" | "numeric_1_5" | "faces" | "visual_analog" | "traffic_light" | "descriptive"}
           min_label={component.min_label as string}
@@ -42,17 +38,23 @@ export function ComponentRenderer({
     case "yes_no":
       return (
         <YesNo
-          {...baseProps}
+          id={component.id}
+          prompt={component.prompt}
+          disabled={disabled}
           value={value as boolean | "maybe" | undefined}
+          previousValue={previousValue as boolean | "maybe" | undefined}
           onChange={(next) => onChange(next)}
-          show_maybe={component.show_maybe}
+          show_maybe={component.show_maybe as boolean | undefined}
         />
       );
     case "single_select":
       return (
         <SingleSelect
-          {...baseProps}
+          id={component.id}
+          prompt={component.prompt}
+          disabled={disabled}
           value={value as string | undefined}
+          previousValue={previousValue as string | undefined}
           onChange={(next) => onChange(next)}
           options={component.options as Array<{ value: string; label: string; icon?: string; description?: string }>}
           display={component.display as "buttons" | "chips" | "list" | "cards" | undefined}
@@ -61,8 +63,11 @@ export function ComponentRenderer({
     case "multi_select":
       return (
         <MultiSelect
-          {...baseProps}
+          id={component.id}
+          prompt={component.prompt}
+          disabled={disabled}
           value={value as string[] | undefined}
+          previousValue={previousValue as string[] | undefined}
           onChange={(next) => onChange(next)}
           options={component.options as Array<{ value: string; label: string; icon?: string }>}
           min_selections={component.min_selections as number | undefined}
@@ -73,8 +78,11 @@ export function ComponentRenderer({
     case "free_text":
       return (
         <FreeText
-          {...baseProps}
+          id={component.id}
+          prompt={component.prompt}
+          disabled={disabled}
           value={value as string | undefined}
+          previousValue={previousValue as string | undefined}
           onChange={(next) => onChange(next)}
           placeholder={component.placeholder as string | undefined}
           max_length={component.max_length as number | undefined}

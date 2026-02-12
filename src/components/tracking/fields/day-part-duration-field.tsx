@@ -230,7 +230,7 @@ export function DayPartDurationField({
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    width: "100%",
     gap: 20,
     alignItems: "center",
   },

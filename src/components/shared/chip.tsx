@@ -1,5 +1,5 @@
 import React from "react";
-import { TouchableOpacity, Text, ViewStyle } from "react-native";
+import { TouchableOpacity, Text, StyleProp, ViewStyle } from "react-native";
 import { colors, radius, spacing, typography } from "@theme";
 
 interface ChipProps {
@@ -8,7 +8,7 @@ interface ChipProps {
   onPress?: () => void;
   disabled?: boolean;
   icon?: React.ReactNode;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 }
 
 export function Chip({

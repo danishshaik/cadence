@@ -131,6 +131,7 @@ export const migraineFlowConfig: TrackerFlowConfig<MigraineFormData> = {
           id: "triggers",
           type: "bubble_choice",
           fieldKey: "triggers",
+          fill: true,
           bubbleItems: migraineTriggerBubbles,
           visualizationKey: "migraine.bubbles",
         },
@@ -159,11 +160,16 @@ export const migraineFlowConfig: TrackerFlowConfig<MigraineFormData> = {
       id: "medication",
       title: "Did you take medication?",
       subtitle: "Tap all that apply",
+      headerBadge: {
+        icon: "pill",
+        gradient: [colors.migraine, "#FF8CCB"],
+      },
       fields: [
         {
           id: "medication",
           type: "icon_grid",
           fieldKey: "medications",
+          showBadge: false,
           iconItems: migraineMedOptions,
           noneSelectedKey: "medicationNoneSelected",
           noneOptionLabel: "No medication taken",

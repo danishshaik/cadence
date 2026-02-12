@@ -1,8 +1,9 @@
 import React from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { LayoutChangeEvent, Pressable, StyleSheet, Text, View } from "react-native";
 import Svg, { Defs, G, LinearGradient, Path, Stop } from "react-native-svg";
 import * as Haptics from "expo-haptics";
 import { FieldProps } from "../types";
+import { ExpoSegmentedPicker } from "@components/ui";
 
 type MapView = "front" | "back";
 
@@ -30,6 +31,8 @@ interface RegionMapFieldProps extends FieldProps<string[]> {
 }
 
 const isIOS = process.env.EXPO_OS === "ios";
+const MAP_CARD_ASPECT_RATIO = 300 / 340;
+const MAP_CARD_MAX_WIDTH = 300;
 
 export function RegionMapField({
   value,
@@ -54,6 +57,20 @@ export function RegionMapField({
 }: RegionMapFieldProps) {
   const [view, setView] = React.useState<MapView>("front");
   const selectedLocations = value ?? [];
+  const layoutLogRef = React.useRef<Record<string, string>>({});
+
+  const logLayout = React.useCallback(
+    (label: string) => (event: LayoutChangeEvent) => {
+      if (!__DEV__) return;
+      const { width, height } = event.nativeEvent.layout;
+      const sizeKey = `${Math.round(width)}x${Math.round(height)}`;
+      if (layoutLogRef.current[label] === sizeKey) return;
+      layoutLogRef.current[label] = sizeKey;
+      // eslint-disable-next-line no-console
+      console.log(`[MigraineLocation][refactor] ${label}: ${sizeKey}`);
+    },
+    []
+  );
 
   const allRegions = React.useMemo(() => [...regions.front, ...regions.back], [regions]);
   const getLabel = React.useCallback(
@@ -74,9 +91,16 @@ export function RegionMapField({
   };
 
   const currentRegions = regions[view];
+  const toggleOptions = React.useMemo(
+    () => [
+      { id: "front", label: "Front" },
+      { id: "back", label: "Back" },
+    ],
+    []
+  );
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} onLayout={logLayout("container")}>
       {(label || description) && (
         <View style={styles.titleArea}>
           {label ? (
@@ -94,44 +118,26 @@ export function RegionMapField({
         </View>
       )}
 
-      <View style={[styles.toggleContainer, { backgroundColor: surfaceColor }]}>
-        <Pressable
-          onPress={() => setView("front")}
-          style={[styles.toggleButton, view === "front" && styles.toggleButtonSelected]}
-          disabled={disabled}
-        >
-          <Text
-            selectable
-            style={[
-              styles.toggleText,
-              { color: textSecondaryColor },
-              view === "front" && styles.toggleTextSelected,
-              view === "front" && { color: textPrimaryColor },
-            ]}
-          >
-            Front
-          </Text>
-        </Pressable>
-        <Pressable
-          onPress={() => setView("back")}
-          style={[styles.toggleButton, view === "back" && styles.toggleButtonSelected]}
-          disabled={disabled}
-        >
-          <Text
-            selectable
-            style={[
-              styles.toggleText,
-              { color: textSecondaryColor },
-              view === "back" && styles.toggleTextSelected,
-              view === "back" && { color: textPrimaryColor },
-            ]}
-          >
-            Back
-          </Text>
-        </Pressable>
-      </View>
+      <ExpoSegmentedPicker
+        options={toggleOptions}
+        selectedId={view}
+        onChange={(next) => setView(next as MapView)}
+        disabled={disabled}
+        accentColor={accentColor}
+        surfaceColor={surfaceColor}
+        textPrimaryColor="#FFFFFF"
+        textSecondaryColor={textSecondaryColor}
+        style={[styles.toggleContainer, { maxWidth: MAP_CARD_MAX_WIDTH }]}
+        onLayout={logLayout("toggle")}
+      />
 
-      <View style={[styles.mapCard, { backgroundColor: cardColor }]}>
+      <View
+        style={[
+          styles.mapCard,
+          { backgroundColor: cardColor, maxWidth: MAP_CARD_MAX_WIDTH },
+        ]}
+        onLayout={logLayout("mapCard")}
+      >
         <Svg width="100%" height="100%" viewBox="0 0 300 400">
           <Defs>
             <LinearGradient id="regionMapSkin" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -207,7 +213,7 @@ export function RegionMapField({
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    width: "100%",
     alignItems: "center",
     gap: 20,
   },
@@ -227,33 +233,15 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   toggleContainer: {
-    flexDirection: "row",
-    gap: 4,
-    borderRadius: 12,
-    padding: 4,
-  },
-  toggleButton: {
-    flex: 1,
-    borderRadius: 10,
-    paddingVertical: 8,
-    paddingHorizontal: 24,
-    alignItems: "center",
-  },
-  toggleButtonSelected: {
-    backgroundColor: "#FFFFFF",
-  },
-  toggleText: {
-    fontFamily: isIOS ? "SF Pro Text" : "sans-serif",
-    fontSize: 14,
-    fontWeight: "600",
-  },
-  toggleTextSelected: {
-    color: "#111827",
+    width: "100%",
+    maxWidth: MAP_CARD_MAX_WIDTH,
+    alignSelf: "center",
   },
   mapCard: {
-    width: 300,
-    height: 340,
+    width: "100%",
+    aspectRatio: MAP_CARD_ASPECT_RATIO,
     borderRadius: 32,
+    borderCurve: "continuous",
     justifyContent: "center",
     alignItems: "center",
   },

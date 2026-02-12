@@ -12,8 +12,8 @@ interface HeroScaleFieldProps extends FieldProps<number> {
   step?: number;
   leftLabel?: string;
   rightLabel?: string;
-  gradientColors?: string[];
-  cardGradientColors?: string[];
+  gradientColors?: readonly [string, string, ...string[]];
+  cardGradientColors?: readonly [string, string, ...string[]];
   accentColor?: string;
   textPrimaryColor?: string;
   textSecondaryColor?: string;

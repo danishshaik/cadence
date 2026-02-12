@@ -1,12 +1,6 @@
-export { LogMigraineFlow } from "./log-migraine-flow";
-export { LogMigraineFlowRefactor } from "./log-migraine-flow-refactor";
-export { LogMigraineProvider, useLogMigraine } from "./log-migraine-provider";
-export { ProgressBar } from "./progress-bar";
-export { StepHeader } from "./step-header";
-export { SeverityStep } from "./severity-step";
-export { WhenStep } from "./when-step";
-export { DurationStep } from "./duration-step";
-export { LocationStep } from "./location-step";
-export { TriggersStep } from "./triggers-step";
-export { MedicationStep } from "./medication-step";
-export { NotesStep } from "./notes-step";
+export { LogMigraineFlow } from "./log-migraine-flow-refactor";
+export {
+  migraineFlowConfig,
+  migraineInitialFormData,
+  normalizeMigraineFormData,
+} from "./migraine-flow-config";

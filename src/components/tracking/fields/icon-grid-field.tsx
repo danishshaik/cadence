@@ -26,6 +26,7 @@ interface IconGridFieldProps {
   onToggle: (id: string) => void;
   noneOption?: IconGridNoneOption;
   disabled?: boolean;
+  showBadge?: boolean;
   accentColor?: string;
   accentSoftColor?: string;
   textPrimaryColor?: string;
@@ -45,6 +46,7 @@ export function IconGridField({
   onToggle,
   noneOption,
   disabled,
+  showBadge = true,
   accentColor = "#0F172A",
   accentSoftColor = "#EEF2FF",
   textPrimaryColor = "#111827",
@@ -60,34 +62,40 @@ export function IconGridField({
     items.slice(4, 6),
   ];
 
+  const showTitleArea = showBadge || label || description;
+
   return (
     <View style={styles.container}>
-      <View style={styles.titleArea}>
-        <View style={styles.badge}>
-          <Svg width={56} height={56} style={StyleSheet.absoluteFill}>
-            <Defs>
-              <RadialGradient id="iconGridBadge" cx="50%" cy="50%" rx="50%" ry="50%">
-                <Stop offset="0%" stopColor={badgeGradient[0]} />
-                <Stop offset="100%" stopColor={badgeGradient[1]} />
-              </RadialGradient>
-            </Defs>
-            <Rect width={56} height={56} rx={16} fill="url(#iconGridBadge)" />
-          </Svg>
-          <Icon name={badgeIcon} size={24} color="#FFFFFF" />
+      {showTitleArea ? (
+        <View style={styles.titleArea}>
+          {showBadge ? (
+            <View style={styles.badge}>
+              <Svg width={56} height={56} style={StyleSheet.absoluteFill}>
+                <Defs>
+                  <RadialGradient id="iconGridBadge" cx="50%" cy="50%" rx="50%" ry="50%">
+                    <Stop offset="0%" stopColor={badgeGradient[0]} />
+                    <Stop offset="100%" stopColor={badgeGradient[1]} />
+                  </RadialGradient>
+                </Defs>
+                <Rect width={56} height={56} rx={16} fill="url(#iconGridBadge)" />
+              </Svg>
+              <Icon name={badgeIcon} size={24} color="#FFFFFF" />
+            </View>
+          ) : null}
+          {label ? (
+            <Text selectable style={[styles.title, { color: textPrimaryColor }]}
+            >
+              {label}
+            </Text>
+          ) : null}
+          {description ? (
+            <Text selectable style={[styles.subtitle, { color: textSecondaryColor }]}
+            >
+              {description}
+            </Text>
+          ) : null}
         </View>
-        {label ? (
-          <Text selectable style={[styles.title, { color: textPrimaryColor }]}
-          >
-            {label}
-          </Text>
-        ) : null}
-        {description ? (
-          <Text selectable style={[styles.subtitle, { color: textSecondaryColor }]}
-          >
-            {description}
-          </Text>
-        ) : null}
-      </View>
+      ) : null}
 
       <View style={styles.grid}>
         {gridRows.map((row) => (
@@ -157,7 +165,7 @@ export function IconGridField({
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    width: "100%",
   },
   titleArea: {
     alignItems: "center",
@@ -184,9 +192,11 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   grid: {
+    width: "100%",
     gap: 12,
   },
   row: {
+    width: "100%",
     flexDirection: "row",
     gap: 12,
   },
