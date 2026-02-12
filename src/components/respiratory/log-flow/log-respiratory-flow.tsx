@@ -113,7 +113,6 @@ function LogRespiratoryFlowContent() {
 
     addLog({
       constriction: formData.constriction,
-      constrictionLabel: formData.constrictionLabel,
       symptoms: derivedSymptoms,
       breathingSound: formData.breathingSound,
       triggers: formData.triggers,

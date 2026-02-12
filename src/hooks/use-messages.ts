@@ -70,7 +70,9 @@ export function useMessages(threadId: string | null): UseMessagesReturn {
   }, []);
 
   const updateMessage = useCallback((id: string, updates: Partial<ChatMessage>) => {
-    setMessages((prev) => prev.map((msg) => (msg.id === id ? { ...msg, ...updates } : msg)));
+    setMessages((prev) =>
+      prev.map((msg) => (msg.id === id ? ({ ...msg, ...updates } as ChatMessage) : msg))
+    );
   }, []);
 
   const mutation = useMutation({

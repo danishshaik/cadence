@@ -13,7 +13,7 @@ interface ProgressIndicatorProps {
   dotSize?: number;
   dotInactiveSize?: number;
   dotSpacing?: number;
-  width?: number | string;
+  width?: number | `${number}%`;
 }
 
 export function ProgressIndicator({

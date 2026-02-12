@@ -57,7 +57,9 @@ function DropletIcon({ color }: { color: string }) {
   );
 }
 
-const ICONS: Record<CoughCharacterId, React.ReactNode> = {
+type ColorIconElement = React.ReactElement<{ color: string }>;
+
+const ICONS: Record<CoughCharacterId, ColorIconElement> = {
   dry: <FeatherIcon color={colors.restorativeSage} />,
   barking: <BarkIcon color={colors.textSecondary} />,
   wet: <WaveIcon color={colors.restorativeSage} />,
@@ -109,7 +111,7 @@ export function CoughCharacterStep() {
           {leftColumn.map((cough) => {
             const isSelected = formData.coughCharacters.includes(cough.id);
             const { accent: accentColor, glow: glowColor } = ACCENT_MAP[cough.id];
-            const icon = React.cloneElement(ICONS[cough.id] as React.ReactElement, {
+            const icon = React.cloneElement(ICONS[cough.id], {
               color: accentColor,
             });
 
@@ -141,7 +143,7 @@ export function CoughCharacterStep() {
           {rightColumn.map((cough) => {
             const isSelected = formData.coughCharacters.includes(cough.id);
             const { accent: accentColor, glow: glowColor } = ACCENT_MAP[cough.id];
-            const icon = React.cloneElement(ICONS[cough.id] as React.ReactElement, {
+            const icon = React.cloneElement(ICONS[cough.id], {
               color: accentColor,
             });
 

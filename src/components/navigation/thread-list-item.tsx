@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
-import { SymbolView } from "expo-symbols";
+import { SymbolView, type SymbolViewProps } from "expo-symbols";
 import { Badge } from "@components/shared";
 import { Thread } from "@stores/thread-store";
 import { colors, spacing, radius, typography } from "@theme";
@@ -11,13 +11,13 @@ interface ThreadListItemProps {
   onPress: () => void;
 }
 
-const STATUS_SYMBOLS: Record<Thread["phase"], string> = {
-  intake: "bubble.left.and.bubble.right",
-  clarifying: "questionmark.circle",
-  tracking: "waveform.path.ecg",
-  insight_ready: "lightbulb",
-  designing: "sparkles",
-  scheduling: "calendar",
+const STATUS_SYMBOLS: Record<Thread["phase"], SymbolViewProps["name"]> = {
+  intake: { ios: "bubble.left.and.bubble.right", android: "chat" } as unknown as SymbolViewProps["name"],
+  clarifying: { ios: "questionmark.circle", android: "help" } as unknown as SymbolViewProps["name"],
+  tracking: { ios: "waveform.path.ecg", android: "monitor_heart" } as unknown as SymbolViewProps["name"],
+  insight_ready: { ios: "lightbulb", android: "lightbulb" } as unknown as SymbolViewProps["name"],
+  designing: { ios: "sparkles", android: "auto_awesome" } as unknown as SymbolViewProps["name"],
+  scheduling: { ios: "calendar", android: "calendar_today" } as unknown as SymbolViewProps["name"],
 };
 
 const CATEGORY_ICONS: Record<string, string> = {

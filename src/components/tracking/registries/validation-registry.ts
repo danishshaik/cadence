@@ -6,7 +6,7 @@ export type ValidationKey = "arthritis.location";
 type ValidationHandler = (data: ArthritisFormData) => ValidationResult;
 
 const validationRegistry: Record<ValidationKey, ValidationHandler> = {
-  "arthritis.location": (data) => {
+  "arthritis.location": (data): ValidationResult => {
     if (data.affectedJoints.length === 0) {
       return {
         isValid: false,

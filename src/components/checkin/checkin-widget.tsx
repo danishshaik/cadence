@@ -45,9 +45,9 @@ export function CheckinWidget({
       case "contains":
         return Array.isArray(currentValue) && currentValue.includes(targetValue);
       case "gt":
-        return typeof currentValue === "number" && currentValue > targetValue;
+        return typeof currentValue === "number" && typeof targetValue === "number" && currentValue > targetValue;
       case "lt":
-        return typeof currentValue === "number" && currentValue < targetValue;
+        return typeof currentValue === "number" && typeof targetValue === "number" && currentValue < targetValue;
       default:
         return true;
     }

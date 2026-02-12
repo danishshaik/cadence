@@ -39,12 +39,9 @@ interface MigraineSaveContext {
   onComplete: () => void;
 }
 
-const actionRegistry: Record<
-  ActionKey,
-  ActionHandler<ArthritisFormData | MigraineFormData, ArthritisSaveContext | MigraineSaveContext>
-> = {
-  "arthritis.save": (formData, { addLog, onComplete }) => {
-    const data = formData as ArthritisFormData;
+const actionRegistry = {
+  "arthritis.save": (formData: ArthritisFormData, { addLog, onComplete }: ArthritisSaveContext) => {
+    const data = formData;
     addLog({
       stiffness: data.stiffness,
       morningStiffness: data.morningStiffness,
@@ -60,8 +57,8 @@ const actionRegistry: Record<
     });
     onComplete();
   },
-  "migraine.save": (formData, { addLog, onComplete }) => {
-    const data = formData as MigraineFormData;
+  "migraine.save": (formData: MigraineFormData, { addLog, onComplete }: MigraineSaveContext) => {
+    const data = formData;
     addLog({
       severity: data.severity,
       severityLabel: data.severityLabel,
@@ -77,7 +74,7 @@ const actionRegistry: Record<
     });
     onComplete();
   },
-};
+} as const;
 
 export function getAction<TPayload, TContext>(
   key: ActionKey

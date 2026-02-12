@@ -31,12 +31,22 @@ function LogMigraineFlowContent({ onClose, closing }: LogMigraineFlowContentProp
     goToPreviousStep,
     canGoBack,
     isLastStep,
+    isFirstStep,
     save,
   } = useTrackerFlow<MigraineFormData>();
+  const loggedRef = React.useRef(false);
+
+  React.useEffect(() => {
+    if (!__DEV__ || loggedRef.current) return;
+    loggedRef.current = true;
+    console.log("[MigraineFlow] refactor mounted");
+  }, []);
 
   const step = migraineFlowConfig.steps[currentStep - 1];
-  const isMedicationStep = step?.id === "medication";
   const isSeverityStep = step?.id === "severity";
+
+  const primaryLabel = isLastStep ? "Complete" : "Continue";
+  const showSecondary = !isFirstStep && !isLastStep;
 
   useNativeFlowHeader({
     currentStep,
@@ -52,77 +62,59 @@ function LogMigraineFlowContent({ onClose, closing }: LogMigraineFlowContentProp
     disabled: closing,
   });
 
-  const handleContinue = () => {
+  const handleContinue = React.useCallback(() => {
     if (isLastStep) {
-      save();
+      void save();
     } else {
       goToNextStep();
     }
-  };
+  }, [goToNextStep, isLastStep, save]);
 
-  const handleSkip = () => {
-    if (isLastStep) {
-      save();
-      return;
-    }
-    goToNextStep();
-  };
+  const handleSaveAndExit = React.useCallback(() => {
+    void save();
+  }, [save]);
 
   return (
-    <FlowScaffold
-      backgroundColor={colors.migraineLight}
-      scrollEnabled={false}
-      footer={
-        <FlowFooter
-          primaryAction={{
-            label: "Continue",
-            onPress: handleContinue,
-          }}
-          secondaryAction={{
-            label: "Skip",
-            onPress: handleSkip,
-          }}
-          containerStyle={styles.footer}
-          buttonRowStyle={styles.buttonRow}
-          primaryButtonStyle={[
-            styles.continueButton,
-            isMedicationStep && styles.continueButtonMedication,
-          ]}
-          primaryTextStyle={[
-            styles.continueText,
-            isMedicationStep && styles.continueTextMedication,
-          ]}
-          secondaryButtonStyle={[
-            styles.skipButton,
-            isMedicationStep && styles.skipButtonMedication,
-          ]}
-          secondaryTextStyle={[
-            styles.skipButtonText,
-            isMedicationStep && styles.skipButtonTextMedication,
-          ]}
-          fullWidthPrimaryWhenSolo={false}
+    <View style={styles.container}>
+      {isSeverityStep && (
+        <LinearGradient
+          colors={["#FFF7FB", "#FDE7F2"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
+          style={styles.severityBackground}
+          pointerEvents="none"
         />
-      }
-    >
-      <View style={styles.content}>
-        {isSeverityStep && (
-          <LinearGradient
-            colors={["#FFF7FB", "#FDE7F2"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 0, y: 1 }}
-            style={styles.severityBackground}
-            pointerEvents="none"
+      )}
+      <FlowScaffold
+        backgroundColor={colors.migraineLight}
+        scrollEnabled={false}
+        footer={
+          <FlowFooter
+            primaryAction={{ label: primaryLabel, onPress: handleContinue }}
+            secondaryAction={
+              showSecondary ? { label: "Save", onPress: handleSaveAndExit } : undefined
+            }
+            containerStyle={styles.footer}
+            buttonRowStyle={styles.buttonRow}
+            primaryButtonStyle={styles.primaryButton}
+            primaryPressedStyle={styles.buttonPressed}
+            primaryTextStyle={styles.primaryText}
+            secondaryButtonStyle={styles.secondaryButton}
+            secondaryPressedStyle={styles.buttonPressed}
+            secondaryTextStyle={styles.secondaryText}
+            fullWidthPrimaryWhenSolo={!showSecondary}
           />
-        )}
+        }
+      >
         <StepLayout style={styles.stepLayout}>
           <TrackerFlowRenderer config={migraineFlowConfig} />
         </StepLayout>
-      </View>
-    </FlowScaffold>
+      </FlowScaffold>
+    </View>
   );
 }
 
-export function LogMigraineFlowRefactor() {
+export function LogMigraineFlow() {
   const router = useRouter();
   const addLog = useMigraineStore((state) => state.addLog);
   const [closing, setClosing] = React.useState(false);
@@ -158,9 +150,10 @@ export function LogMigraineFlowRefactor() {
 }
 
 const styles = StyleSheet.create({
-  content: {
+  container: {
     flex: 1,
     position: "relative",
+    backgroundColor: colors.migraineLight,
   },
   severityBackground: {
     ...StyleSheet.absoluteFillObject,
@@ -172,12 +165,13 @@ const styles = StyleSheet.create({
   footer: {
     paddingHorizontal: 24,
     paddingTop: 12,
+    backgroundColor: "transparent",
   },
   buttonRow: {
     flexDirection: "row",
     gap: 12,
   },
-  skipButton: {
+  secondaryButton: {
     flex: 1,
     backgroundColor: "#F3F4F6",
     borderRadius: 12,
@@ -185,21 +179,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     height: 50,
   },
-  skipButtonMedication: {
-    flex: 0,
-    width: 100,
-    height: 48,
-  },
-  skipButtonText: {
+  secondaryText: {
     fontFamily: isIOS ? "SF Pro Text" : "sans-serif",
     fontSize: 16,
     fontWeight: "600",
     color: "#4A5A52",
   },
-  skipButtonTextMedication: {
-    fontSize: 14,
-  },
-  continueButton: {
+  primaryButton: {
     backgroundColor: colors.migraine,
     borderRadius: 12,
     alignItems: "center",
@@ -207,16 +193,14 @@ const styles = StyleSheet.create({
     height: 50,
     flex: 1,
   },
-  continueButtonMedication: {
-    height: 48,
-  },
-  continueText: {
+  primaryText: {
     fontFamily: isIOS ? "SF Pro Text" : "sans-serif",
     fontSize: 16,
     fontWeight: "600",
     color: "#FFFFFF",
   },
-  continueTextMedication: {
-    fontSize: 14,
+  buttonPressed: {
+    opacity: 0.9,
+    transform: [{ scale: 0.98 }],
   },
 });

@@ -7,7 +7,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
  * Each tracker can independently toggle between legacy and new flows.
  */
 export type TrackerName =
-  | "migraine"
   | "mood"
   | "gi"
   | "respiratory"
@@ -48,7 +47,6 @@ interface FeatureFlagsStore {
 }
 
 const DEFAULT_FLAGS: Record<TrackerName, boolean> = {
-  migraine: false,
   mood: false,
   gi: false,
   respiratory: false,
@@ -86,7 +84,6 @@ export const useFeatureFlagsStore = create<FeatureFlagsStore>()(
       enableAllNewFlows: () =>
         set({
           useNewFlow: {
-            migraine: true,
             mood: true,
             gi: true,
             respiratory: true,
@@ -111,7 +108,7 @@ export const useFeatureFlagsStore = create<FeatureFlagsStore>()(
 
 /**
  * Hook to check if a specific tracker should use the new flow.
- * Usage: const useNew = useTrackerFeatureFlag('migraine');
+ * Usage: const useNew = useTrackerFeatureFlag('mood');
  */
 export function useTrackerFeatureFlag(tracker: TrackerName): boolean {
   return useFeatureFlagsStore((state) => state.useNewFlow[tracker]);

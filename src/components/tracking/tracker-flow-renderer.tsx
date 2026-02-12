@@ -1,5 +1,6 @@
 import React from "react";
 import { StyleSheet, Text, View, useWindowDimensions } from "react-native";
+import Svg, { Defs, RadialGradient, Rect, Stop } from "react-native-svg";
 import { colors, mentalWeatherColors, mentalWeatherFonts } from "@theme";
 import { FlowContentBlock, TrackerFlowConfig } from "./flow-config";
 import { FormDataConstraint } from "./types";
@@ -30,6 +31,7 @@ import {
 import { WeatherConfirmationId } from "@/types/arthritis";
 import { getMigraineSeverityLabel } from "@/types/migraine";
 import { SeverityCircle } from "@components/migraine/severity-circle";
+import { Icon } from "@components/ui";
 
 const isIOS = process.env.EXPO_OS === "ios";
 
@@ -56,6 +58,12 @@ export function TrackerFlowRenderer<TFormData extends FormDataConstraint>({
   const { width } = useWindowDimensions();
   const step = config.steps[currentStep - 1];
   const theme = config.theme;
+  const headerBadge = step?.headerBadge;
+  const headerBadgeGradient = headerBadge?.gradient ?? ["#0F172A", "#334155"];
+  const headerBadgeSize = headerBadge?.size ?? 56;
+  const headerBadgeRadius = headerBadge?.cornerRadius ?? 16;
+  const headerBadgeIconSize = headerBadge?.iconSize ?? 24;
+  const headerBadgeIconColor = headerBadge?.iconColor ?? "#FFFFFF";
 
   if (!step) {
     return null;
@@ -540,6 +548,7 @@ export function TrackerFlowRenderer<TFormData extends FormDataConstraint>({
           key={field.id}
           label={field.label}
           description={field.description}
+          showBadge={field.showBadge}
           items={field.iconItems}
           selectedIds={selectedIds}
           onToggle={(id) => {
@@ -710,8 +719,36 @@ export function TrackerFlowRenderer<TFormData extends FormDataConstraint>({
 
   return (
     <View style={[styles.container, theme?.containerStyle]}>
-      {(step.title || step.subtitle) && (
+      {(step.title || step.subtitle || headerBadge) && (
         <View style={[styles.header, theme?.headerStyle]}>
+          {headerBadge ? (
+            <View
+              style={[
+                styles.headerBadge,
+                {
+                  width: headerBadgeSize,
+                  height: headerBadgeSize,
+                  borderRadius: headerBadgeRadius,
+                },
+              ]}
+            >
+              <Svg width={headerBadgeSize} height={headerBadgeSize} style={StyleSheet.absoluteFill}>
+                <Defs>
+                  <RadialGradient id="headerBadgeGradient" cx="50%" cy="50%" rx="50%" ry="50%">
+                    <Stop offset="0%" stopColor={headerBadgeGradient[0]} />
+                    <Stop offset="100%" stopColor={headerBadgeGradient[1]} />
+                  </RadialGradient>
+                </Defs>
+                <Rect
+                  width={headerBadgeSize}
+                  height={headerBadgeSize}
+                  rx={headerBadgeRadius}
+                  fill="url(#headerBadgeGradient)"
+                />
+              </Svg>
+              <Icon name={headerBadge.icon} size={headerBadgeIconSize} color={headerBadgeIconColor} />
+            </View>
+          ) : null}
           {step.title && <Text style={[styles.title, theme?.titleStyle]}>{step.title}</Text>}
           {step.subtitle && (
             <Text style={[styles.subtitle, theme?.subtitleStyle]}>{step.subtitle}</Text>
@@ -754,6 +791,13 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: "center",
+    width: "100%",
+  },
+  headerBadge: {
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden",
+    marginBottom: 10,
   },
   title: {
     fontFamily: isIOS ? "SF Pro Rounded" : "sans-serif",
