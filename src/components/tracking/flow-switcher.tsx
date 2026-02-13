@@ -19,9 +19,9 @@ interface FlowSwitcherProps {
  * Usage:
  * ```tsx
  * <FlowSwitcher
- *   tracker="respiratory"
- *   legacyFlow={<LogRespiratoryFlow />}
- *   newFlow={<NewRespiratoryFlow />}  // Add when implemented
+ *   tracker="congestion"
+ *   legacyFlow={<LogCongestionFlow />}
+ *   newFlow={<NewCongestionFlow />}  // Add when implemented
  * />
  * ```
  *

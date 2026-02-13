@@ -26,13 +26,6 @@ export const colors = {
   migraineLight: "#FDF2F8",
   migraineMuted: "#F9A8D4",
 
-  // GI/Digestive health theme
-  gi: "#88C9A1", // Soft Sage Green
-  giLight: "#E8F5ED",
-  giMuted: "#B8DFCA",
-  giSevere: "#FF8C94", // Muted Coral for flare-ups
-  giSevereLight: "#FFE5E7",
-
   // Mood/Mental health theme (Periwinkle Blue)
   mood: "#6C5CE7",
   moodLight: "#EDE9FC",
@@ -48,16 +41,6 @@ export const colors = {
   skinAlert: "#E89893", // Soft Clay - severity/inflammation
   skinAlertLight: "#FDF2F1",
   skinCalm: "#7FCDCD", // Cooling blue-teal for low severity
-
-  // Respiratory/Allergy theme
-  respiratory: "#4FC3F7", // Oxygen Blue - clear, open breathing
-  respiratoryLight: "#E1F5FE",
-  respiratoryMuted: "#81D4FA",
-  respiratoryIndigo: "#5C6BC0", // Calm Indigo - active/selected
-  respiratoryIndigoLight: "#E8EAF6",
-  respiratoryAlert: "#FFB74D", // Alert Amber - constriction/warning
-  respiratoryAlertLight: "#FFF3E0",
-  respiratorySevere: "#EF5350", // For severe/emergency states
 
   // Congestion/Recovery theme (Resonance)
   restorativeSage: "#88D8B0",
