@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Switch, Text, View } from "react-native";
+import { StyleProp, StyleSheet, Switch, Text, View, ViewStyle } from "react-native";
 import { colors } from "@theme";
 import { FieldProps } from "../types";
 import { FieldWrapper } from "./field-wrapper";
@@ -8,6 +8,15 @@ const isIOS = process.env.EXPO_OS === "ios";
 
 interface ToggleFieldProps extends FieldProps<boolean> {
   labelPlacement?: "row" | "stack";
+  variant?: "default" | "card";
+  trackOffColor?: string;
+  trackOnColor?: string;
+  thumbColorOn?: string;
+  thumbColorOff?: string;
+  iosBackgroundColor?: string;
+  labelColor?: string;
+  descriptionColor?: string;
+  cardStyle?: StyleProp<ViewStyle>;
 }
 
 export function ToggleField({
@@ -19,7 +28,42 @@ export function ToggleField({
   label,
   description,
   labelPlacement = "row",
+  variant = "default",
+  trackOffColor = colors.arthritisBorder,
+  trackOnColor = colors.arthritisMuted,
+  thumbColorOn = colors.arthritis,
+  thumbColorOff = "#FFFFFF",
+  iosBackgroundColor = colors.arthritisBorder,
+  labelColor = colors.arthritisText,
+  descriptionColor = colors.arthritisTextSecondary,
+  cardStyle,
 }: ToggleFieldProps) {
+  const rowContent = (
+    <View style={[styles.row, labelPlacement === "stack" && styles.rowStack]}>
+      {labelPlacement === "row" && label ? (
+        <View style={styles.textBlock}>
+          <Text selectable style={[styles.label, { color: labelColor }]}>
+            {label}
+            {required ? " *" : ""}
+          </Text>
+          {description ? (
+            <Text selectable style={[styles.description, { color: descriptionColor }]}>
+              {description}
+            </Text>
+          ) : null}
+        </View>
+      ) : null}
+      <Switch
+        value={value}
+        onValueChange={onChange}
+        disabled={disabled}
+        trackColor={{ false: trackOffColor, true: trackOnColor }}
+        thumbColor={value ? thumbColorOn : thumbColorOff}
+        ios_backgroundColor={iosBackgroundColor}
+      />
+    </View>
+  );
+
   return (
     <FieldWrapper
       label={labelPlacement === "stack" ? label : undefined}
@@ -28,29 +72,11 @@ export function ToggleField({
       error={error}
       disabled={disabled}
     >
-      <View style={[styles.row, labelPlacement === "stack" && styles.rowStack]}>
-        {labelPlacement === "row" && label ? (
-          <View style={styles.textBlock}>
-            <Text selectable style={styles.label}>
-              {label}
-              {required ? " *" : ""}
-            </Text>
-            {description ? (
-              <Text selectable style={styles.description}>
-                {description}
-              </Text>
-            ) : null}
-          </View>
-        ) : null}
-        <Switch
-          value={value}
-          onValueChange={onChange}
-          disabled={disabled}
-          trackColor={{ false: colors.arthritisBorder, true: colors.arthritisMuted }}
-          thumbColor={value ? colors.arthritis : "#FFFFFF"}
-          ios_backgroundColor={colors.arthritisBorder}
-        />
-      </View>
+      {variant === "card" ? (
+        <View style={[styles.card, cardStyle]}>{rowContent}</View>
+      ) : (
+        rowContent
+      )}
     </FieldWrapper>
   );
 }
@@ -78,6 +104,14 @@ const styles = StyleSheet.create({
   description: {
     fontFamily: isIOS ? "SF Pro Text" : "sans-serif",
     fontSize: 12,
-    color: colors.arthritisTextSecondary,
+  },
+  card: {
+    width: "100%",
+    borderRadius: 18,
+    borderCurve: "continuous",
+    backgroundColor: "#FFFFFF",
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    boxShadow: "0 4px 16px rgba(47, 58, 52, 0.08)",
   },
 });

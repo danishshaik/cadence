@@ -1,113 +1,132 @@
-import React, { useState } from "react";
-import { View, Text, Pressable, StyleSheet, useWindowDimensions, LayoutChangeEvent } from "react-native";
-import { colors, shadows } from "@theme";
+import React from "react";
+import { Pressable, StyleSheet, Text, View, useWindowDimensions } from "react-native";
+import * as Haptics from "expo-haptics";
+import { colors } from "@theme";
 import { CONGESTION_SOURCES, CongestionSourceId } from "@/types/congestion";
 import { useLogCongestion } from "./log-congestion-provider";
+import { ResonanceStepHeader } from "./resonance-step-header";
 
 const isIOS = process.env.EXPO_OS === "ios";
 
-// Design coordinate system
-const DESIGN_WIDTH = 260;
-const DESIGN_HEIGHT = 380;
+const DESIGN_WIDTH = 302;
+const DESIGN_HEIGHT = 420;
+const MAP_HEIGHT = 420;
+const DOT_RADIUS = 12;
+const PULSE_RADIUS = 24;
 
-// Configuration for each source node (position and size based on design)
-const SOURCE_CONFIG: Record<CongestionSourceId, { cx: number; cy: number; w: number; h: number; r?: number }> = {
-  throat: { 
-    cx: 0.5, cy: 60 / DESIGN_HEIGHT, 
-    w: 60 / DESIGN_WIDTH, h: 60 / DESIGN_HEIGHT, 
-    r: 999 
-  },
-  bronchi: { 
-    cx: 0.5, cy: 160 / DESIGN_HEIGHT, 
-    w: 100 / DESIGN_WIDTH, h: 100 / DESIGN_HEIGHT, 
-    r: 999 
-  },
-  deep_lungs: { 
-    cx: 0.5, cy: 280 / DESIGN_HEIGHT, 
-    w: 140 / DESIGN_WIDTH, h: 80 / DESIGN_HEIGHT, 
-    r: 40 / DESIGN_WIDTH // Scaled radius
-  },
+const SOURCE_POINTS: Record<
+  CongestionSourceId,
+  { cx: number; cy: number; label: string }
+> = {
+  head: { cx: 156, cy: 58, label: "Head" },
+  throat: { cx: 156, cy: 122, label: "Throat" },
+  bronchi: { cx: 156, cy: 168, label: "Bronchi" },
+  deep_lungs: { cx: 156, cy: 284, label: "Deep Lungs" },
 };
 
-function BodySilhouette({ width, height }: { width: number; height: number }) {
-  const scaleX = width / DESIGN_WIDTH;
-  const scaleY = height / DESIGN_HEIGHT;
+const DECORATIVE_POINTS = [
+  { key: "lung_l", cx: 120, cy: 210 },
+  { key: "lung_r", cx: 192, cy: 210 },
+];
 
-  const s = (val: number, scale: number) => val * scale;
-  const sx = (val: number) => s(val, scaleX);
-  const sy = (val: number) => s(val, scaleY);
+function BodySilhouette({ width, height }: { width: number; height: number }) {
+  const scale = Math.min(width / DESIGN_WIDTH, height / DESIGN_HEIGHT);
+  const offsetX = (width - DESIGN_WIDTH * scale) / 2;
+  const offsetY = (height - DESIGN_HEIGHT * scale) / 2;
+
+  const sx = (value: number) => offsetX + value * scale;
+  const sy = (value: number) => offsetY + value * scale;
+  const ss = (value: number) => value * scale;
 
   return (
     <View style={StyleSheet.absoluteFill}>
-      {/* Head: x: 103, y: 6, w: 54, h: 54 */}
       <View
-        style={{
-          position: "absolute",
-          left: sx(103),
-          top: sy(6),
-          width: sx(54),
-          height: sy(54),
-          borderRadius: sx(27),
-          backgroundColor: "#F7FAFC",
-          borderColor: "#E2E8F0",
-          borderWidth: 1,
-        }}
+        style={[
+          styles.shapeHead,
+          {
+            left: sx(120),
+            top: sy(30),
+            width: ss(72),
+            height: ss(72),
+            borderRadius: ss(36),
+            backgroundColor: "#E2E8E5",
+          },
+        ]}
       />
-      {/* Neck: x: 117, y: 56, w: 26, h: 22 */}
       <View
-        style={{
-          position: "absolute",
-          left: sx(117),
-          top: sy(56),
-          width: sx(26),
-          height: sy(22),
-          borderRadius: sx(10),
-          backgroundColor: "#F7FAFC",
-          borderColor: "#E2E8F0",
-          borderWidth: 1,
-        }}
+        style={[
+          styles.shapeNeck,
+          { left: sx(143), top: sy(98), width: ss(26), height: ss(44), borderRadius: ss(6) },
+        ]}
       />
-      {/* Shoulders: x: 35, y: 74, w: 190, h: 46 */}
       <View
-        style={{
-          position: "absolute",
-          left: sx(35),
-          top: sy(74),
-          width: sx(190),
-          height: sy(46),
-          borderRadius: sx(24),
-          backgroundColor: "#F7FAFC",
-          borderColor: "#E2E8F0",
-          borderWidth: 1,
-        }}
+        style={[
+          styles.shapeArm,
+          { left: sx(44), top: sy(148), width: ss(32), height: ss(160), borderRadius: ss(14) },
+        ]}
       />
-      {/* Torso: x: 35, y: 110, w: 190, h: 230 */}
       <View
-        style={{
-          position: "absolute",
-          left: sx(35),
-          top: sy(110),
-          width: sx(190),
-          height: sy(230),
-          borderRadius: sx(28),
-          backgroundColor: "#F7FAFC",
-          borderColor: "#E2E8F0",
-          borderWidth: 1,
-        }}
+        style={[
+          styles.shapeArm,
+          { left: sx(236), top: sy(148), width: ss(32), height: ss(160), borderRadius: ss(14) },
+        ]}
       />
-      {/* Abdomen: x: 55, y: 260, w: 150, h: 90 */}
       <View
-        style={{
-          position: "absolute",
-          left: sx(55),
-          top: sy(260),
-          width: sx(150),
-          height: sy(90),
-          borderRadius: sx(75), // rough approximation for ellipse
-          backgroundColor: "#F7FAFC",
-          borderColor: "#E2E8F0",
-          borderWidth: 1,
-        }}
+        style={[
+          styles.shapeTorso,
+          {
+            left: sx(82),
+            top: sy(138),
+            width: ss(148),
+            height: ss(210),
+            borderRadius: ss(24),
+            backgroundColor: "#D4DBD7",
+          },
+        ]}
+      />
+      <View
+        style={[
+          styles.shapeLung,
+          {
+            left: sx(94),
+            top: sy(168),
+            width: ss(58),
+            height: ss(92),
+            borderTopLeftRadius: ss(8),
+            borderTopRightRadius: ss(18),
+            borderBottomRightRadius: ss(8),
+            borderBottomLeftRadius: ss(18),
+            backgroundColor: "#BEC7C2",
+          },
+        ]}
+      />
+      <View
+        style={[
+          styles.shapeLung,
+          {
+            left: sx(160),
+            top: sy(168),
+            width: ss(58),
+            height: ss(92),
+            borderTopLeftRadius: ss(18),
+            borderTopRightRadius: ss(8),
+            borderBottomRightRadius: ss(18),
+            borderBottomLeftRadius: ss(8),
+            backgroundColor: "#BEC7C2",
+          },
+        ]}
+      />
+      <View
+        style={[
+          styles.shapeTrachea,
+          {
+            left: sx(150),
+            top: sy(128),
+            width: ss(14),
+            height: ss(50),
+            borderRadius: ss(4),
+          },
+        ]}
       />
     </View>
   );
@@ -115,84 +134,123 @@ function BodySilhouette({ width, height }: { width: number; height: number }) {
 
 export function SourceStep() {
   const { formData, updateFormData } = useLogCongestion();
-  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
-  const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
+  const { width } = useWindowDimensions();
 
-  const handleLayout = (event: LayoutChangeEvent) => {
-    const { width, height } = event.nativeEvent.layout;
-    setContainerSize({ width, height });
-  };
-
-  // Calculate dimensions to fit in container while maintaining aspect ratio
-  // Default to window based calculation if container size not yet available
-  const availableWidth = containerSize.width || windowWidth - 32;
-  const availableHeight = containerSize.height || windowHeight * 0.5;
-
-  const aspectRatio = DESIGN_WIDTH / DESIGN_HEIGHT;
-  
-  let cardWidth = availableWidth;
-  let cardHeight = cardWidth / aspectRatio;
-
-  if (cardHeight > availableHeight) {
-    cardHeight = availableHeight;
-    cardWidth = cardHeight * aspectRatio;
-  }
-
-  // Cap max size to not be enormous on tablets/desktop
-  if (cardWidth > 320) {
-    cardWidth = 320;
-    cardHeight = cardWidth / aspectRatio;
-  }
+  const cardWidth = Math.min(342, width - 48);
+  const cardHeight = MAP_HEIGHT;
+  const mapScale = Math.min(cardWidth / DESIGN_WIDTH, cardHeight / DESIGN_HEIGHT);
+  const mapOffsetX = (cardWidth - DESIGN_WIDTH * mapScale) / 2;
+  const mapOffsetY = (cardHeight - DESIGN_HEIGHT * mapScale) / 2;
+  const mapX = (value: number) => mapOffsetX + value * mapScale;
+  const mapY = (value: number) => mapOffsetY + value * mapScale;
+  const dotRadius = DOT_RADIUS * mapScale;
+  const pulseRadius = PULSE_RADIUS * mapScale;
 
   const handleSelect = (id: CongestionSourceId) => {
-    updateFormData({ congestionSource: id });
+    Haptics.selectionAsync();
+    const selected = formData.congestionSource.includes(id);
+    updateFormData({
+      congestionSource: selected
+        ? formData.congestionSource.filter((item) => item !== id)
+        : [...formData.congestionSource, id],
+    });
   };
+
+  const selectedSources = formData.congestionSource;
+  const selectedLabel =
+    selectedSources.length === 1 ? SOURCE_POINTS[selectedSources[0]]?.label : null;
+  const pillText =
+    selectedSources.length === 0
+      ? "Select a zone"
+      : selectedLabel
+      ? `${selectedLabel} • Selected`
+      : `${selectedSources.length} areas selected`;
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Where is the congestion sitting?</Text>
-        <Text style={styles.subtitle}>Tap to select the affected area</Text>
-      </View>
+      <ResonanceStepHeader
+        title="Where is the congestion sitting?"
+        subtitle="Tap to select the affected area"
+      />
 
-      <View style={styles.body} onLayout={handleLayout}>
-        <View style={[styles.torsoCard, { width: cardWidth, height: cardHeight }]}>
+      <View style={styles.mapWrap}>
+        <View style={[styles.mapCard, { width: cardWidth, height: cardHeight }]}>
+          <View style={styles.mapCardBackground} />
+
           <BodySilhouette width={cardWidth} height={cardHeight} />
-          
+
+          {DECORATIVE_POINTS.map((point) => {
+            const left = mapX(point.cx);
+            const top = mapY(point.cy);
+            return (
+              <View
+                key={point.key}
+                style={[
+                  styles.decorativeDot,
+                  {
+                    left: left - dotRadius,
+                    top: top - dotRadius,
+                    width: dotRadius * 2,
+                    height: dotRadius * 2,
+                    borderRadius: dotRadius,
+                  },
+                ]}
+              />
+            );
+          })}
+
           {CONGESTION_SOURCES.map((source) => {
-            const isSelected = formData.congestionSource === source.id;
-            const config = SOURCE_CONFIG[source.id];
-            
-            const width = config.w * cardWidth;
-            const height = config.h * cardHeight;
-            const left = config.cx * cardWidth - width / 2;
-            const top = config.cy * cardHeight - height / 2;
-            const borderRadius = config.r === 999 ? 999 : (config.r || 0) * cardWidth;
+            const config = SOURCE_POINTS[source.id];
+            const isSelected = selectedSources.includes(source.id);
+            const left = mapX(config.cx);
+            const top = mapY(config.cy);
 
             return (
-              <Pressable
-                key={source.id}
-                onPress={() => handleSelect(source.id)}
-                style={({ pressed }) => [
-                  styles.node,
-                  {
-                    width,
-                    height,
-                    borderRadius,
-                    left,
-                    top,
-                  },
-                  isSelected && styles.nodeSelected,
-                  pressed && styles.nodePressed,
-                ]}
-              >
-                <Text style={[styles.nodeText, isSelected && styles.nodeTextSelected]}>
-                  {source.label}
-                </Text>
-              </Pressable>
+              <View key={source.id} style={{ position: "absolute", left, top }}>
+                {isSelected ? (
+                  <View
+                    style={[
+                      styles.pulseRing,
+                      {
+                        left: -pulseRadius,
+                        top: -pulseRadius,
+                        width: pulseRadius * 2,
+                        height: pulseRadius * 2,
+                        borderRadius: pulseRadius,
+                      },
+                    ]}
+                  />
+                ) : null}
+                <Pressable
+                  onPress={() => handleSelect(source.id)}
+                  hitSlop={10}
+                  style={({ pressed }) => [
+                    styles.dot,
+                    {
+                      width: dotRadius * 2,
+                      height: dotRadius * 2,
+                      borderRadius: dotRadius,
+                      transform: [{ translateX: -dotRadius }, { translateY: -dotRadius }],
+                    },
+                    isSelected && styles.dotSelected,
+                    pressed && {
+                      opacity: 0.9,
+                      transform: [{ translateX: -dotRadius }, { translateY: -dotRadius }, { scale: 0.95 }],
+                    },
+                  ]}
+                >
+                  {isSelected ? <View style={styles.dotCore} /> : null}
+                </Pressable>
+              </View>
             );
           })}
         </View>
+      </View>
+
+      <View style={[styles.selectedPill, !selectedLabel && styles.selectedPillIdle]}>
+        <Text selectable style={[styles.selectedPillText, !selectedLabel && styles.selectedPillTextIdle]}>
+          {pillText}
+        </Text>
       </View>
     </View>
   );
@@ -202,68 +260,104 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    gap: 16,
-    paddingTop: 4,
+    gap: 20,
+    paddingTop: 2,
   },
-  header: {
-    alignItems: "center",
-    gap: 6,
-    paddingHorizontal: 16,
-  },
-  body: {
+  mapWrap: {
     flex: 1,
     width: "100%",
     alignItems: "center",
-    justifyContent: "center",
-    paddingBottom: 8,
+    justifyContent: "flex-start",
   },
-  title: {
-    fontFamily: isIOS ? "SF Pro Rounded" : "sans-serif",
-    fontSize: 24,
-    fontWeight: "700",
-    color: colors.textPrimary,
-    textAlign: "center",
-  },
-  subtitle: {
-    fontFamily: isIOS ? "SF Pro Rounded" : "sans-serif",
-    fontSize: 14,
-    color: colors.textSecondary,
-    textAlign: "center",
-  },
-  torsoCard: {
-    backgroundColor: "#FFFFFF",
-    borderRadius: 34,
+  mapCard: {
+    borderRadius: 24,
     borderCurve: "continuous",
+    overflow: "hidden",
     borderWidth: 1,
-    borderColor: "#E2E8F0",
-    position: "relative",
-    ...shadows.sm,
+    borderColor: "#E5EBE5",
+    boxShadow: "0 12px 32px rgba(136, 216, 176, 0.09)",
   },
-  node: {
+  mapCardBackground: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "#FFFFFF",
+  },
+  shapeHead: {
     position: "absolute",
-    backgroundColor: colors.vaporWhite,
-    borderWidth: 2,
-    borderColor: "#D6E3F0",
+  },
+  shapeNeck: {
+    position: "absolute",
+    backgroundColor: "#E2E8E5",
+  },
+  shapeTorso: {
+    position: "absolute",
+  },
+  shapeArm: {
+    position: "absolute",
+    backgroundColor: "#E2E8E5",
+  },
+  shapeLung: {
+    position: "absolute",
+  },
+  shapeTrachea: {
+    position: "absolute",
+    backgroundColor: "#CBD4CF",
+  },
+  pulseRing: {
+    position: "absolute",
+    borderWidth: 1.5,
+    borderColor: "rgba(136, 216, 176, 0.5)",
+    backgroundColor: "rgba(136, 216, 176, 0.08)",
+    boxShadow: "0 0 10px rgba(136, 216, 176, 0.3)",
+  },
+  decorativeDot: {
+    position: "absolute",
+    backgroundColor: "#F5FAF8",
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+    boxShadow: "0 2px 6px rgba(136, 216, 176, 0.1)",
+  },
+  dot: {
+    backgroundColor: "#F5FAF8",
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+    boxShadow: "0 2px 6px rgba(136, 216, 176, 0.1)",
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 6,
   },
-  nodeSelected: {
-    borderColor: colors.honeyAmber,
-    backgroundColor: "#FFF7E2",
-    boxShadow: "0 0 12px rgba(255, 193, 7, 0.5)",
+  dotSelected: {
+    backgroundColor: colors.restorativeSage,
+    borderColor: colors.restorativeSage,
+    boxShadow: "0 0 12px rgba(136, 216, 176, 0.45)",
   },
-  nodePressed: {
-    transform: [{ scale: 0.97 }],
+  dotCore: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "#FFFFFF",
   },
-  nodeText: {
-    fontFamily: isIOS ? "SF Pro Rounded" : "sans-serif",
+  selectedPill: {
+    borderRadius: 100,
+    borderCurve: "continuous",
+    backgroundColor: "#E0F2F1",
+    borderWidth: 1,
+    borderColor: "#E5EBE5",
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    marginBottom: 4,
+    boxShadow: "0 2px 8px rgba(136, 216, 176, 0.12)",
+  },
+  selectedPillIdle: {
+    backgroundColor: "#F3F6F4",
+    borderColor: "#E5EBE5",
+  },
+  selectedPillText: {
+    fontFamily: isIOS ? "SF Pro Text" : "sans-serif",
     fontSize: 12,
     fontWeight: "600",
-    color: colors.textSecondary,
-    textAlign: "center",
+    color: "#4A5A52",
   },
-  nodeTextSelected: {
-    color: colors.honeyAmber,
+  selectedPillTextIdle: {
+    color: "#7B857F",
+    fontWeight: "500",
   },
 });

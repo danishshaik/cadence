@@ -5,6 +5,7 @@ import { colors, mentalWeatherColors, mentalWeatherFonts } from "@theme";
 import { FlowContentBlock, TrackerFlowConfig } from "./flow-config";
 import { FormDataConstraint } from "./types";
 import {
+  AnatomyHotspotField,
   AxisGridField,
   CategorizedChipField,
   BubbleChoiceField,
@@ -21,6 +22,7 @@ import {
   SegmentedSelectionField,
   SelectionField,
   StiffnessField,
+  SwatchSelectionField,
   ToggleField,
 } from "./fields";
 import { useTrackerFlow } from "./tracker-flow-provider";
@@ -38,12 +40,14 @@ import {
   SupineIllustration,
 } from "./visuals/illustrated-option-card";
 import {
+  IconTileOptionCard,
+} from "./visuals/icon-tile-option-card";
+import {
   OrthostaticFactorCard,
 } from "./visuals/orthostatic-visuals";
 import { WeatherConfirmationId } from "@/types/arthritis";
 import { getMigraineSeverityLabel } from "@/types/migraine";
 import { getOrthostaticSeverityLabel } from "@/types/orthostatic";
-import { SeverityCircle } from "@components/migraine/severity-circle";
 import { Icon } from "@components/ui";
 import type { SegmentedSelectionFieldProps } from "./fields/segmented-selection-field";
 
@@ -272,6 +276,7 @@ export function TrackerFlowRenderer<TFormData extends FormDataConstraint>({
     }
 
     if (field.type === "toggle") {
+      const toggleTheme = field.visualizationKey;
       return (
         <ToggleField
           key={field.id}
@@ -281,60 +286,105 @@ export function TrackerFlowRenderer<TFormData extends FormDataConstraint>({
           description={field.description}
           required={field.required}
           error={error}
+          variant={toggleTheme === "congestion.sleep" ? "card" : "default"}
+          trackOffColor={toggleTheme === "congestion.sleep" ? "#D6DED9" : undefined}
+          trackOnColor={toggleTheme === "congestion.sleep" ? "#4DB6AC" : undefined}
+          thumbColorOn={toggleTheme === "congestion.sleep" ? "#FFFFFF" : undefined}
+          thumbColorOff={toggleTheme === "congestion.sleep" ? "#FFFFFF" : undefined}
+          iosBackgroundColor={toggleTheme === "congestion.sleep" ? "#D6DED9" : undefined}
+          labelColor={toggleTheme === "congestion.sleep" ? "#2F3A34" : undefined}
+          descriptionColor={toggleTheme === "congestion.sleep" ? "#6C7A72" : undefined}
+          cardStyle={
+            toggleTheme === "congestion.sleep"
+              ? {
+                  borderRadius: 18,
+                  borderCurve: "continuous",
+                  backgroundColor: "#FFFFFF",
+                  paddingHorizontal: 16,
+                  paddingVertical: 10,
+                  boxShadow: "0 4px 16px rgba(77, 182, 172, 0.08)",
+                }
+              : undefined
+          }
         />
       );
     }
 
     if (field.type === "hero_scale") {
       const heroVariant = field.visualizationKey;
-      const hero =
-        heroVariant === "migraine.severity" || heroVariant === "orthostatic.severity"
-          ? (value: number) => {
-              const label =
-                heroVariant === "migraine.severity"
-                  ? `${getMigraineSeverityLabel(value).charAt(0).toUpperCase()}${getMigraineSeverityLabel(value).slice(1)}`
-                  : getOrthostaticSeverityLabel(value);
-              const accent = heroVariant === "migraine.severity" ? "#E91E8C" : "#6C5CE7";
-              const pillBackground =
-                heroVariant === "migraine.severity" ? "#FFF0F6" : "#F0EDFC";
-              return (
-                <View style={styles.heroStack}>
-                  <SeverityCircle
-                    severity={value}
-                    size={180}
-                    baseGradientColors={
-                      heroVariant === "migraine.severity"
-                        ? ["#FFE6F3", "#FFB6DA", "#F48BC9"]
-                        : ["#E8E5FF", "#CFCBFF", "#A79CFF"]
-                    }
-                    hotGradientColors={
-                      heroVariant === "migraine.severity"
-                        ? ["#FF8AC7", "#F05FA9", "#C2185B"]
-                        : ["#CFCBFF", "#A79CFF", "#6C5CE7"]
-                    }
-                    shadow={
-                      heroVariant === "migraine.severity"
-                        ? "0 10px 28px rgba(233, 30, 140, 0.28)"
-                        : "0 10px 28px rgba(108, 92, 231, 0.22)"
-                    }
-                  />
-                  <Text selectable style={[styles.heroValue, { color: accent }]}>
-                    {value}
-                  </Text>
-                  <View style={[styles.heroPill, { backgroundColor: pillBackground }]}>
-                    <Text selectable style={[styles.heroPillText, { color: accent }]}>
-                      {label}
-                    </Text>
-                  </View>
-                </View>
-              );
+      const heroValue = (formData as any)[field.fieldKey] as number;
+      const derivedLabelKey = field.secondaryKey ?? `${field.fieldKey}Label`;
+      const isOrbHero =
+        heroVariant === "migraine.severity" ||
+        heroVariant === "orthostatic.severity" ||
+        heroVariant === "congestion.sleep";
+      const heroValueLabel =
+        heroVariant === "migraine.severity"
+          ? `${getMigraineSeverityLabel(heroValue).charAt(0).toUpperCase()}${getMigraineSeverityLabel(heroValue).slice(1)}`
+          : heroVariant === "orthostatic.severity"
+          ? getOrthostaticSeverityLabel(heroValue)
+          : heroVariant === "congestion.sleep"
+          ? ((formData as any)[derivedLabelKey] as string | undefined)
+          : undefined;
+
+      const heroTheme =
+        heroVariant === "migraine.severity"
+          ? {
+              orbSize: 180,
+              orbGradientColors: ["#FFE6F3", "#FFB6DA", "#F48BC9"] as const,
+              orbHotGradientColors: ["#FF8AC7", "#F05FA9", "#C2185B"] as const,
+              orbShadow: "0 10px 28px rgba(233, 30, 140, 0.28)",
+              accentColor: "#E91E8C",
+              textPrimaryColor: "#2F3A34",
+              textSecondaryColor: "#7B857F",
+              textMutedColor: "#6C7A72",
+              pillBackgroundColor: "#FFF0F6",
+              tickInactiveColor: "#D6DED9",
+              tickActiveColor: "#E91E8C",
+              gradientColors: ["#8EF2B2", "#FFE082", "#FF8AC7", "#F44336"] as const,
+              cardGradientColors: ["#FFFFFF", "#FFF5FA"] as const,
+              cardShadow: "0 12px 30px rgba(233, 30, 140, 0.16)",
+            }
+          : heroVariant === "orthostatic.severity"
+          ? {
+              orbSize: 180,
+              orbGradientColors: ["#E8E5FF", "#CFCBFF", "#A79CFF"] as const,
+              orbHotGradientColors: ["#CFCBFF", "#A79CFF", "#6C5CE7"] as const,
+              orbShadow: "0 10px 28px rgba(108, 92, 231, 0.22)",
+              accentColor: "#6C5CE7",
+              textPrimaryColor: "#2F3A34",
+              textSecondaryColor: "#7B857F",
+              textMutedColor: "#6C7A72",
+              pillBackgroundColor: "#F0EDFC",
+              tickInactiveColor: "#D6DED9",
+              tickActiveColor: "#6C5CE7",
+              gradientColors: ["#E8E5FF", "#CFCBFF", "#A79CFF", "#6C5CE7"] as const,
+              cardGradientColors: ["#FFFFFF", "#FAF8FF"] as const,
+              cardShadow: "0 12px 24px rgba(108, 92, 231, 0.1)",
+            }
+          : heroVariant === "congestion.sleep"
+          ? {
+              orbSize: 180,
+              orbGradientColors: ["#DFF7EE", "#88D8B0", "#4DB6AC"] as const,
+              orbHotGradientColors: ["#BEEBDD", "#5CC8AF", "#2F9D8F"] as const,
+              orbShadow: "0 10px 28px rgba(77, 182, 172, 0.28)",
+              accentColor: "#4DB6AC",
+              textPrimaryColor: "#2F3A34",
+              textSecondaryColor: "#7B857F",
+              textMutedColor: "#6C7A72",
+              pillBackgroundColor: "#E0F2F1",
+              tickInactiveColor: "#D6DED9",
+              tickActiveColor: "#4DB6AC",
+              gradientColors: ["#E0F2F1", "#88D8B0", "#4DB6AC"] as const,
+              cardGradientColors: ["#FFFFFF", "#F4F8F6"] as const,
+              cardShadow: "0 12px 24px rgba(136, 216, 176, 0.12)",
             }
           : undefined;
 
       return (
         <HeroScaleField
           key={field.id}
-          value={(formData as any)[field.fieldKey] as number}
+          value={heroValue}
           onChange={(next) => updateField(field.fieldKey as any, next as any)}
           label={field.label}
           description={field.description}
@@ -343,69 +393,10 @@ export function TrackerFlowRenderer<TFormData extends FormDataConstraint>({
           step={field.step ?? 1}
           leftLabel={field.leftLabel}
           rightLabel={field.rightLabel}
-          hero={hero}
-          accentColor={
-            heroVariant === "migraine.severity"
-              ? "#E91E8C"
-              : heroVariant === "orthostatic.severity"
-              ? "#6C5CE7"
-              : undefined
-          }
-          textPrimaryColor={
-            heroVariant === "migraine.severity" || heroVariant === "orthostatic.severity"
-              ? "#2F3A34"
-              : undefined
-          }
-          textSecondaryColor={
-            heroVariant === "migraine.severity" || heroVariant === "orthostatic.severity"
-              ? "#7B857F"
-              : undefined
-          }
-          textMutedColor={
-            heroVariant === "migraine.severity" || heroVariant === "orthostatic.severity"
-              ? "#6C7A72"
-              : undefined
-          }
-          pillBackgroundColor={
-            heroVariant === "migraine.severity"
-              ? "#FFF0F6"
-              : heroVariant === "orthostatic.severity"
-              ? "#F0EDFC"
-              : undefined
-          }
-          tickInactiveColor={
-            heroVariant === "migraine.severity" || heroVariant === "orthostatic.severity"
-              ? "#D6DED9"
-              : undefined
-          }
-          tickActiveColor={
-            heroVariant === "migraine.severity"
-              ? "#E91E8C"
-              : heroVariant === "orthostatic.severity"
-              ? "#6C5CE7"
-              : undefined
-          }
-          gradientColors={
-            heroVariant === "migraine.severity"
-              ? ["#8EF2B2", "#FFE082", "#FF8AC7", "#F44336"]
-              : heroVariant === "orthostatic.severity"
-              ? ["#E8E5FF", "#CFCBFF", "#A79CFF", "#6C5CE7"]
-              : undefined
-          }
-          cardGradientColors={
-            heroVariant === "migraine.severity"
-              ? ["#FFFFFF", "#FFF5FA"]
-              : heroVariant === "orthostatic.severity"
-              ? ["#FFFFFF", "#FAF8FF"]
-              : undefined
-          }
-          cardShadow={
-            heroVariant === "migraine.severity"
-              ? "0 12px 30px rgba(233, 30, 140, 0.16)"
-              : heroVariant === "orthostatic.severity"
-              ? "0 12px 24px rgba(108, 92, 231, 0.1)"
-              : undefined
-          }
+          heroVariant={isOrbHero ? "orb" : undefined}
+          orbAnimation={heroVariant === "congestion.sleep" ? "shake" : undefined}
+          valueLabel={heroValueLabel}
+          {...heroTheme}
         />
       );
     }
@@ -535,6 +526,68 @@ export function TrackerFlowRenderer<TFormData extends FormDataConstraint>({
       );
     }
 
+    if (field.type === "anatomy_hotspot") {
+      if (!field.anatomyMapConfig) {
+        return null;
+      }
+      const anatomyTheme = field.visualizationKey;
+      return (
+        <AnatomyHotspotField
+          key={field.id}
+          value={(formData as any)[field.fieldKey] as string | null | string[]}
+          onChange={(next) => updateField(field.fieldKey as any, next as any)}
+          mapConfig={field.anatomyMapConfig}
+          selectionMode={field.anatomySelectionMode}
+          maxSelections={field.anatomyMaxSelections}
+          accentColor={anatomyTheme === "congestion.source" ? "#88D8B0" : undefined}
+          accentSoftColor={
+            anatomyTheme === "congestion.source" ? "rgba(136, 216, 176, 0.24)" : undefined
+          }
+          decorativeDotColor={anatomyTheme === "congestion.source" ? "#E5EBE7" : undefined}
+          hotspotIdleColor={anatomyTheme === "congestion.source" ? "#FFFFFF" : undefined}
+          hotspotCoreColor={anatomyTheme === "congestion.source" ? "#FFFFFF" : undefined}
+          selectionPillBackgroundColor={anatomyTheme === "congestion.source" ? "#E5F3ED" : undefined}
+          selectionPillTextColor={anatomyTheme === "congestion.source" ? "#5C7469" : undefined}
+          selectionPillIdleBackgroundColor={anatomyTheme === "congestion.source" ? "#F1F4F2" : undefined}
+          selectionPillIdleTextColor={anatomyTheme === "congestion.source" ? "#8B948F" : undefined}
+          selectionPillTemplate="{label} • Selected"
+          selectionCountTemplate="{count} areas selected"
+          selectionPlaceholderText="Select a zone"
+        />
+      );
+    }
+
+    if (field.type === "swatch_selection") {
+      if (!field.swatchOptions) {
+        return null;
+      }
+      const swatchTheme = field.visualizationKey;
+      return (
+        <SwatchSelectionField
+          key={field.id}
+          value={(formData as any)[field.fieldKey] as string | null}
+          onChange={(next) => updateField(field.fieldKey as any, next as any)}
+          options={field.swatchOptions}
+          insights={field.swatchInsightByValue}
+          accentColor={swatchTheme === "congestion.phlegm-swatches" ? colors.restorativeSage : undefined}
+          cardColor={swatchTheme === "congestion.phlegm-swatches" ? "#FFFFFF" : undefined}
+          cardBorderColor={swatchTheme === "congestion.phlegm-swatches" ? "#E5EBE5" : undefined}
+          cardShadow={
+            swatchTheme === "congestion.phlegm-swatches"
+              ? "0 8px 20px rgba(136, 216, 176, 0.1)"
+              : undefined
+          }
+          labelColor={swatchTheme === "congestion.phlegm-swatches" ? "#6C7A72" : undefined}
+          labelSelectedColor={swatchTheme === "congestion.phlegm-swatches" ? "#2F3A34" : undefined}
+          insightBackgroundColor={
+            swatchTheme === "congestion.phlegm-swatches" ? "rgba(255, 249, 196, 0.18)" : undefined
+          }
+          insightTextColor={swatchTheme === "congestion.phlegm-swatches" ? "#6C7A72" : undefined}
+          insightIconColor={swatchTheme === "congestion.phlegm-swatches" ? "#F9A825" : undefined}
+        />
+      );
+    }
+
     if (field.type === "bubble_choice") {
       if (!field.bubbleItems) {
         return null;
@@ -621,6 +674,8 @@ export function TrackerFlowRenderer<TFormData extends FormDataConstraint>({
         return null;
       }
       const cardTheme = field.visualizationKey;
+      const isMoodSelfcare = cardTheme === "mood.selfcare";
+      const isCongestionRelief = cardTheme === "congestion.relief-cards";
       const selected = (formData as any)[field.fieldKey] as string[];
       const selectedCount = selected?.length ?? 0;
       const badgeText = field.badgeTemplate
@@ -649,52 +704,114 @@ export function TrackerFlowRenderer<TFormData extends FormDataConstraint>({
                 }
               : undefined
           }
-          accentColor={cardTheme === "mood.selfcare" ? mentalWeatherColors.accent : undefined}
+          accentColor={
+            isMoodSelfcare
+              ? mentalWeatherColors.accent
+              : isCongestionRelief
+              ? colors.restorativeSage
+              : undefined
+          }
           accentSoftColor={
-            cardTheme === "mood.selfcare" ? mentalWeatherColors.accentLight : undefined
+            isMoodSelfcare
+              ? mentalWeatherColors.accentLight
+              : isCongestionRelief
+              ? "#E0F2F1"
+              : undefined
           }
           cardBackgroundColor={
-            cardTheme === "mood.selfcare" ? mentalWeatherColors.surface : undefined
+            isMoodSelfcare
+              ? mentalWeatherColors.surface
+              : isCongestionRelief
+              ? "#FFFFFF"
+              : undefined
           }
           cardBorderColor={
-            cardTheme === "mood.selfcare" ? mentalWeatherColors.borderSoft : undefined
+            isMoodSelfcare
+              ? mentalWeatherColors.borderSoft
+              : isCongestionRelief
+              ? "#E5EBE5"
+              : undefined
           }
           cardSelectedBorderColor={
-            cardTheme === "mood.selfcare" ? mentalWeatherColors.accent : undefined
+            isMoodSelfcare
+              ? mentalWeatherColors.accent
+              : isCongestionRelief
+              ? colors.restorativeSage
+              : undefined
           }
           iconBackgroundColor={
-            cardTheme === "mood.selfcare" ? mentalWeatherColors.accentLight : undefined
+            isMoodSelfcare
+              ? mentalWeatherColors.accentLight
+              : isCongestionRelief
+              ? "#E0F2F1"
+              : undefined
           }
           iconMutedColor={
-            cardTheme === "mood.selfcare" ? mentalWeatherColors.textSecondary : undefined
+            isMoodSelfcare
+              ? mentalWeatherColors.textSecondary
+              : isCongestionRelief
+              ? colors.restorativeSage
+              : undefined
           }
           iconSelectedColor={
-            cardTheme === "mood.selfcare" ? mentalWeatherColors.accent : undefined
+            isMoodSelfcare
+              ? mentalWeatherColors.accent
+              : isCongestionRelief
+              ? colors.restorativeSage
+              : undefined
           }
           textPrimaryColor={
-            cardTheme === "mood.selfcare" ? mentalWeatherColors.textPrimary : undefined
+            isMoodSelfcare
+              ? mentalWeatherColors.textPrimary
+              : isCongestionRelief
+              ? "#2F3A34"
+              : undefined
           }
           textSecondaryColor={
-            cardTheme === "mood.selfcare" ? mentalWeatherColors.textSecondary : undefined
+            isMoodSelfcare
+              ? mentalWeatherColors.textSecondary
+              : isCongestionRelief
+              ? "#6C7A72"
+              : undefined
           }
           checkBorderColor={
-            cardTheme === "mood.selfcare" ? mentalWeatherColors.borderMuted : undefined
+            isMoodSelfcare
+              ? mentalWeatherColors.borderMuted
+              : isCongestionRelief
+              ? "#E5EBE5"
+              : undefined
           }
           checkSelectedColor={
-            cardTheme === "mood.selfcare" ? mentalWeatherColors.accent : undefined
+            isMoodSelfcare
+              ? mentalWeatherColors.accent
+              : isCongestionRelief
+              ? colors.restorativeSage
+              : undefined
           }
           badgeBackgroundColor={
-            cardTheme === "mood.selfcare" ? mentalWeatherColors.accentLight : undefined
+            isMoodSelfcare
+              ? mentalWeatherColors.accentLight
+              : isCongestionRelief
+              ? "#E0F2F1"
+              : undefined
           }
           badgeTextColor={
-            cardTheme === "mood.selfcare" ? mentalWeatherColors.accent : undefined
+            isMoodSelfcare
+              ? mentalWeatherColors.accent
+              : isCongestionRelief
+              ? colors.restorativeSage
+              : undefined
           }
           badgeIconColor={
-            cardTheme === "mood.selfcare" ? mentalWeatherColors.accent : undefined
+            isMoodSelfcare
+              ? mentalWeatherColors.accent
+              : isCongestionRelief
+              ? colors.restorativeSage
+              : undefined
           }
-          titleFontFamily={cardTheme === "mood.selfcare" ? mentalWeatherFonts.text : undefined}
-          subtitleFontFamily={cardTheme === "mood.selfcare" ? mentalWeatherFonts.text : undefined}
-          badgeFontFamily={cardTheme === "mood.selfcare" ? mentalWeatherFonts.text : undefined}
+          titleFontFamily={isMoodSelfcare ? mentalWeatherFonts.text : undefined}
+          subtitleFontFamily={isMoodSelfcare ? mentalWeatherFonts.text : undefined}
+          badgeFontFamily={isMoodSelfcare ? mentalWeatherFonts.text : undefined}
           containerStyle={
             field.fill ? [styles.fieldFill, styles.fieldFillPinned] : undefined
           }
@@ -961,6 +1078,25 @@ export function TrackerFlowRenderer<TFormData extends FormDataConstraint>({
                     />
                   );
                 }
+              : field.visualizationKey === "choice.icon-tiles"
+              ? ({ option, selected, onPress }) => (
+                  <IconTileOptionCard
+                    key={option.value}
+                    label={option.label}
+                    subtitle={option.subtitle ?? option.description}
+                    icon={option.icon}
+                    selected={selected}
+                    onPress={() => onPress()}
+                    width={cardSize}
+                    height={150}
+                    accentColor={option.accentColor ?? colors.restorativeSage}
+                    iconBackgroundColor={option.iconBackgroundColor ?? "#E8F5F2"}
+                    selectedBackgroundColor={option.selectedBackgroundColor ?? "#FFFFFF"}
+                    glowColor={option.glowColor ?? "rgba(136, 216, 176, 0.18)"}
+                    textColor="#2F3A34"
+                    subtitleColor="rgba(123, 133, 127, 0.6)"
+                  />
+                )
               : visualization?.renderOption
           }
         />

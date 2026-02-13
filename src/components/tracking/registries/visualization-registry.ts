@@ -19,6 +19,7 @@ export interface VisualizationConfig {
 }
 
 export type VisualizationKey =
+  | "choice.icon-tiles"
   | "selection.compact"
   | "weather.pill"
   | "activity.pill"
@@ -32,6 +33,10 @@ export type VisualizationKey =
   | "migraine.bubbles"
   | "migraine.day-part"
   | "migraine.icon-grid"
+  | "congestion.sleep"
+  | "congestion.source"
+  | "congestion.phlegm-swatches"
+  | "congestion.relief-cards"
   | "orthostatic.severity"
   | "orthostatic.duration"
   | "orthostatic.prodrome"
@@ -40,6 +45,14 @@ export type VisualizationKey =
   | "orthostatic.hydration-cards";
 
 const visualizationRegistry: Record<VisualizationKey, VisualizationConfig> = {
+  "choice.icon-tiles": {
+    listStyle: {
+      flexDirection: "row",
+      flexWrap: "wrap",
+      justifyContent: "center",
+      gap: 12,
+    },
+  },
   "selection.compact": {
     variant: "compact",
   },
@@ -62,6 +75,10 @@ const visualizationRegistry: Record<VisualizationKey, VisualizationConfig> = {
   "migraine.bubbles": {},
   "migraine.day-part": {},
   "migraine.icon-grid": {},
+  "congestion.sleep": {},
+  "congestion.source": {},
+  "congestion.phlegm-swatches": {},
+  "congestion.relief-cards": {},
   "orthostatic.severity": {},
   "orthostatic.duration": {},
   "orthostatic.prodrome": {},

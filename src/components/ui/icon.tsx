@@ -70,6 +70,7 @@ const ICON_MAP: Record<string, SymbolName> = {
     ios: "exclamationmark.circle",
     android: "warning",
   } as unknown as SymbolName,
+  info: { ios: "info.circle", android: "info" } as unknown as SymbolName,
   "bed-outline": { ios: "bed.double", android: "bed" } as unknown as SymbolName,
   "hand-left-outline": { ios: "hand.raised", android: "pan_tool" } as unknown as SymbolName,
   "flask-outline": { ios: "flask", android: "science" } as unknown as SymbolName,

@@ -19,8 +19,9 @@ const TOTAL_STEPS = 5;
 const initialFormData: CongestionFormData = {
   sleepQuality: 0,
   sleepLabel: getSleepLabel(0),
+  wokeDuringNight: false,
   coughCharacters: [],
-  congestionSource: null,
+  congestionSource: ["throat"],
   phlegmColor: null,
   reliefMeasures: [],
   notes: "",

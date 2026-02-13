@@ -11,6 +11,12 @@ export interface ChoiceOption {
   value: string;
   label: string;
   description?: string;
+  icon?: string;
+  subtitle?: string;
+  accentColor?: string;
+  iconBackgroundColor?: string;
+  selectedBackgroundColor?: string;
+  glowColor?: string;
 }
 
 interface ChoiceFieldProps extends FieldPropsWithVariant<string[]> {

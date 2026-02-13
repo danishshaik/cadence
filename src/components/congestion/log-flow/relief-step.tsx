@@ -1,20 +1,57 @@
 import React from "react";
 import { View, Text, Pressable, StyleSheet } from "react-native";
-import { SymbolView, type SymbolViewProps } from "expo-symbols";
 import * as Haptics from "expo-haptics";
+import { Icon } from "@components/ui";
 import { colors, shadows } from "@theme";
 import { RELIEF_MEASURES, ReliefMeasureId } from "@/types/congestion";
 import { useLogCongestion } from "./log-congestion-provider";
+import { ResonanceStepHeader } from "./resonance-step-header";
 
 const isIOS = process.env.EXPO_OS === "ios";
 
-const ICONS: Record<ReliefMeasureId, SymbolViewProps["name"]> = {
-  tea: { ios: "cup.and.saucer", android: "local_cafe" } as unknown as SymbolViewProps["name"],
-  steam: { ios: "cloud", android: "cloud" } as unknown as SymbolViewProps["name"],
-  lozenge: { ios: "pills", android: "pill" } as unknown as SymbolViewProps["name"],
-  inhaler: { ios: "lungs", android: "air" } as unknown as SymbolViewProps["name"],
-  propped: { ios: "bed.double", android: "bed" } as unknown as SymbolViewProps["name"],
-  chest_rub: { ios: "heart", android: "favorite" } as unknown as SymbolViewProps["name"],
+const DISPLAY_ORDER: ReliefMeasureId[] = [
+  "tea",
+  "steam",
+  "lozenge",
+  "inhaler",
+  "chest_rub",
+  "propped",
+];
+
+const REMEDY_META: Record<
+  ReliefMeasureId,
+  { title: string; subtitle: string; icon: string }
+> = {
+  tea: {
+    title: "Hot Tea / Honey",
+    subtitle: "Warm soothing drink.",
+    icon: "coffee",
+  },
+  steam: {
+    title: "Steam / Shower",
+    subtitle: "Hot steam inhalation.",
+    icon: "cloud-outline",
+  },
+  lozenge: {
+    title: "Cough Drop",
+    subtitle: "Lozenge or throat drop.",
+    icon: "pill",
+  },
+  inhaler: {
+    title: "Inhaler",
+    subtitle: "Prescribed inhaler.",
+    icon: "wind",
+  },
+  chest_rub: {
+    title: "Chest Rub",
+    subtitle: "Vapor rub or balm.",
+    icon: "hand-left-outline",
+  },
+  propped: {
+    title: "Rest",
+    subtitle: "Lying down, sleeping.",
+    icon: "bed-outline",
+  },
 };
 
 export function ReliefStep() {
@@ -23,44 +60,54 @@ export function ReliefStep() {
   const handleToggle = (id: ReliefMeasureId) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     const updated = formData.reliefMeasures.includes(id)
-      ? formData.reliefMeasures.filter((m) => m !== id)
+      ? formData.reliefMeasures.filter((item) => item !== id)
       : [...formData.reliefMeasures, id];
     updateFormData({ reliefMeasures: updated });
   };
 
+  const optionsById = RELIEF_MEASURES.reduce((acc, option) => {
+    acc[option.id] = option;
+    return acc;
+  }, {} as Record<ReliefMeasureId, (typeof RELIEF_MEASURES)[number]>);
+
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>What helped you settle?</Text>
-        <Text style={styles.subtitle}>Select all that apply</Text>
-      </View>
+      <ResonanceStepHeader title="What helped you settle?" subtitle="Select all that apply" />
 
-      <View style={styles.pillWrap}>
-        {RELIEF_MEASURES.map((item) => {
-          const isSelected = formData.reliefMeasures.includes(item.id);
+      <View style={styles.list}>
+        {DISPLAY_ORDER.map((id) => {
+          const option = optionsById[id];
+          if (!option) return null;
+
+          const meta = REMEDY_META[id];
+          const selected = formData.reliefMeasures.includes(id);
+
           return (
             <Pressable
-              key={item.id}
-              onPress={() => handleToggle(item.id)}
+              key={option.id}
+              onPress={() => handleToggle(id)}
               style={({ pressed }) => [
-                styles.pill,
-                isSelected && styles.pillSelected,
-                pressed && styles.pillPressed,
+                styles.card,
+                selected && styles.cardSelected,
+                pressed && styles.cardPressed,
               ]}
             >
-              <SymbolView
-                name={ICONS[item.id]}
-                size={16}
-                tintColor={isSelected ? "#FFFFFF" : colors.textSecondary}
-                fallback={
-                  <Text style={[styles.fallbackIcon, isSelected && styles.fallbackIconSelected]}>
-                    ●
-                  </Text>
-                }
-              />
-              <Text style={[styles.pillText, isSelected && styles.pillTextSelected]}>
-                {item.label}
-              </Text>
+              <View style={styles.iconWrap}>
+                <Icon name={meta.icon} size={20} color={colors.restorativeSage} />
+              </View>
+
+              <View style={styles.info}>
+                <Text selectable style={styles.titleText}>
+                  {meta.title}
+                </Text>
+                <Text selectable style={styles.subtitleText}>
+                  {meta.subtitle}
+                </Text>
+              </View>
+
+              <View style={[styles.check, selected && styles.checkSelected]}>
+                {selected ? <Icon name="checkmark" size={14} color="#FFFFFF" /> : null}
+              </View>
             </Pressable>
           );
         })}
@@ -72,67 +119,73 @@ export function ReliefStep() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "space-between",
+    gap: 20,
   },
-  header: {
-    alignItems: "center",
-    gap: 6,
-    paddingHorizontal: 16,
-  },
-  title: {
-    fontFamily: isIOS ? "SF Pro Rounded" : "sans-serif",
-    fontSize: 24,
-    fontWeight: "700",
-    color: colors.textPrimary,
-    textAlign: "center",
-  },
-  subtitle: {
-    fontFamily: isIOS ? "SF Pro Rounded" : "sans-serif",
-    fontSize: 14,
-    color: colors.textSecondary,
-    textAlign: "center",
-  },
-  pillWrap: {
-    flexDirection: "row",
-    flexWrap: "wrap",
+  list: {
+    width: "100%",
     gap: 10,
-    justifyContent: "center",
-    marginBottom: 8,
+    paddingBottom: 8,
   },
-  pill: {
+  card: {
+    width: "100%",
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
-    backgroundColor: "#FFFFFF",
+    gap: 14,
     borderRadius: 18,
     borderCurve: "continuous",
-    paddingHorizontal: 14,
-    paddingVertical: 10,
+    backgroundColor: "#FFFFFF",
     borderWidth: 1,
-    borderColor: "#E2E8F0",
+    borderColor: "#E5EBE5",
+    paddingVertical: 14,
+    paddingHorizontal: 16,
     ...shadows.sm,
   },
-  pillSelected: {
-    backgroundColor: colors.restorativeSage,
+  cardSelected: {
+    borderWidth: 3,
     borderColor: colors.restorativeSage,
   },
-  pillPressed: {
-    transform: [{ scale: 0.98 }],
+  cardPressed: {
+    opacity: 0.94,
+    transform: [{ scale: 0.99 }],
   },
-  pillText: {
+  iconWrap: {
+    width: 42,
+    height: 42,
+    borderRadius: 12,
+    borderCurve: "continuous",
+    backgroundColor: "#E0F2F1",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  info: {
+    flex: 1,
+    gap: 2,
+  },
+  titleText: {
     fontFamily: isIOS ? "SF Pro Rounded" : "sans-serif",
-    fontSize: 13,
+    fontSize: 16,
     fontWeight: "600",
-    color: colors.textPrimary,
+    color: "#2F3A34",
   },
-  pillTextSelected: {
-    color: "#FFFFFF",
-  },
-  fallbackIcon: {
+  subtitleText: {
+    fontFamily: isIOS ? "SF Pro Text" : "sans-serif",
     fontSize: 12,
-    color: colors.textSecondary,
+    fontWeight: "400",
+    color: "#6C7A72",
   },
-  fallbackIconSelected: {
-    color: "#FFFFFF",
+  check: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    borderCurve: "continuous",
+    borderWidth: 1.5,
+    borderColor: "#E5EBE5",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "transparent",
+  },
+  checkSelected: {
+    borderColor: colors.restorativeSage,
+    backgroundColor: colors.restorativeSage,
   },
 });

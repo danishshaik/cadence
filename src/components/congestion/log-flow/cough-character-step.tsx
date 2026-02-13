@@ -5,14 +5,35 @@ import * as Haptics from "expo-haptics";
 import { colors, shadows } from "@theme";
 import { COUGH_CHARACTERS, CoughCharacterId } from "@/types/congestion";
 import { useLogCongestion } from "./log-congestion-provider";
+import { ResonanceStepHeader } from "./resonance-step-header";
 
 const isIOS = process.env.EXPO_OS === "ios";
 
-const ACCENT_MAP: Record<CoughCharacterId, { accent: string; glow: string }> = {
-  dry: { accent: colors.restorativeSage, glow: "rgba(136, 216, 176, 0.28)" },
-  barking: { accent: colors.textSecondary, glow: "rgba(44, 62, 80, 0.14)" },
-  wet: { accent: colors.restorativeSage, glow: "rgba(136, 216, 176, 0.28)" },
-  productive: { accent: colors.honeyAmber, glow: "rgba(255, 193, 7, 0.28)" },
+const ACCENT_MAP: Record<
+  CoughCharacterId,
+  { accent: string; glow: string; iconBackground: string; selectedBackground?: string }
+> = {
+  dry: {
+    accent: colors.restorativeSage,
+    glow: "rgba(136, 216, 176, 0.18)",
+    iconBackground: "#E8F5F2",
+  },
+  barking: {
+    accent: "#FF9E7A",
+    glow: "rgba(255, 158, 122, 0.18)",
+    iconBackground: "#FFF0E8",
+  },
+  wet: {
+    accent: "#4DB6AC",
+    glow: "rgba(77, 182, 172, 0.18)",
+    iconBackground: "#E0F2F1",
+  },
+  productive: {
+    accent: "#F9A825",
+    glow: "rgba(249, 168, 37, 0.22)",
+    iconBackground: "#FFF8E1",
+    selectedBackground: "#F0FAF5",
+  },
 };
 
 function FeatherIcon({ color }: { color: string }) {
@@ -68,17 +89,14 @@ const ICONS: Record<CoughCharacterId, ColorIconElement> = {
 
 export function CoughCharacterStep() {
   const { formData, updateFormData } = useLogCongestion();
-  const { width, height } = useWindowDimensions();
+  const { width } = useWindowDimensions();
 
   const columnGap = 12;
-  const horizontalPadding = 48; // 20 container + 4 grid padding on each side
-  const columnWidth = Math.min(
-    170,
-    Math.max(150, (width - horizontalPadding - columnGap) / 2)
-  );
-  const cardHeight = Math.min(185, Math.max(150, Math.round(height * 0.21)));
-  const iconSize = Math.min(34, Math.max(28, Math.round(cardHeight * 0.22)));
-  const gridOffset = Math.min(20, Math.max(10, Math.round(height * 0.018)));
+  const flowPadding = 48;
+  const columnWidth = Math.min(150, Math.max(132, (width - flowPadding - columnGap) / 2));
+  const cardHeight = 150;
+  const iconSize = 48;
+  const gridOffset = 2;
   const leftColumn = COUGH_CHARACTERS.filter((_, index) => index % 2 === 0);
   const rightColumn = COUGH_CHARACTERS.filter((_, index) => index % 2 === 1);
 
@@ -101,16 +119,18 @@ export function CoughCharacterStep() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>What does the cough feel like?</Text>
-        <Text style={styles.subtitle}>Select all that apply</Text>
-      </View>
+      <ResonanceStepHeader title="What does the cough feel like?" subtitle="Select all that apply" />
 
       <View style={[styles.grid, { marginTop: gridOffset }]}>
         <View style={[styles.column, { width: columnWidth }]}>
           {leftColumn.map((cough) => {
             const isSelected = formData.coughCharacters.includes(cough.id);
-            const { accent: accentColor, glow: glowColor } = ACCENT_MAP[cough.id];
+            const {
+              accent: accentColor,
+              glow: glowColor,
+              iconBackground,
+              selectedBackground,
+            } = ACCENT_MAP[cough.id];
             const icon = React.cloneElement(ICONS[cough.id], {
               color: accentColor,
             });
@@ -124,13 +144,24 @@ export function CoughCharacterStep() {
                   { height: cardHeight },
                   isSelected && {
                     borderColor: accentColor,
-                    borderWidth: 2,
+                    borderWidth: 3,
+                    backgroundColor: selectedBackground ?? "#FFFFFF",
                     boxShadow: `0 0 16px ${glowColor}`,
                   },
                   pressed && styles.cardPressed,
                 ]}
               >
-                <View style={[styles.iconWrap, { width: iconSize, height: iconSize, borderRadius: iconSize / 2 }]}>
+                <View
+                  style={[
+                    styles.iconWrap,
+                    {
+                      width: iconSize,
+                      height: iconSize,
+                      borderRadius: iconSize / 2,
+                      backgroundColor: iconBackground,
+                    },
+                  ]}
+                >
                   {icon}
                 </View>
                 <Text style={styles.cardTitle}>{cough.label}</Text>
@@ -142,7 +173,12 @@ export function CoughCharacterStep() {
         <View style={[styles.column, { width: columnWidth }]}>
           {rightColumn.map((cough) => {
             const isSelected = formData.coughCharacters.includes(cough.id);
-            const { accent: accentColor, glow: glowColor } = ACCENT_MAP[cough.id];
+            const {
+              accent: accentColor,
+              glow: glowColor,
+              iconBackground,
+              selectedBackground,
+            } = ACCENT_MAP[cough.id];
             const icon = React.cloneElement(ICONS[cough.id], {
               color: accentColor,
             });
@@ -156,13 +192,24 @@ export function CoughCharacterStep() {
                   { height: cardHeight },
                   isSelected && {
                     borderColor: accentColor,
-                    borderWidth: 2,
+                    borderWidth: 3,
+                    backgroundColor: selectedBackground ?? "#FFFFFF",
                     boxShadow: `0 0 16px ${glowColor}`,
                   },
                   pressed && styles.cardPressed,
                 ]}
               >
-                <View style={[styles.iconWrap, { width: iconSize, height: iconSize, borderRadius: iconSize / 2 }]}>
+                <View
+                  style={[
+                    styles.iconWrap,
+                    {
+                      width: iconSize,
+                      height: iconSize,
+                      borderRadius: iconSize / 2,
+                      backgroundColor: iconBackground,
+                    },
+                  ]}
+                >
                   {icon}
                 </View>
                 <Text style={styles.cardTitle}>{cough.label}</Text>
@@ -180,26 +227,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    gap: 12,
+    gap: 20,
     paddingTop: 2,
-  },
-  header: {
-    alignItems: "center",
-    gap: 6,
-    paddingHorizontal: 16,
-  },
-  title: {
-    fontFamily: isIOS ? "SF Pro Rounded" : "sans-serif",
-    fontSize: 24,
-    fontWeight: "700",
-    color: colors.textPrimary,
-    textAlign: "center",
-  },
-  subtitle: {
-    fontFamily: isIOS ? "SF Pro Rounded" : "sans-serif",
-    fontSize: 14,
-    color: colors.textSecondary,
-    textAlign: "center",
   },
   grid: {
     flex: 1,
@@ -208,7 +237,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     width: "100%",
-    paddingHorizontal: 4,
+    paddingHorizontal: 0,
     paddingBottom: 8,
   },
   column: {
@@ -216,15 +245,15 @@ const styles = StyleSheet.create({
   },
   card: {
     backgroundColor: "#FFFFFF",
-    borderRadius: 18,
+    borderRadius: 20,
     borderCurve: "continuous",
-    padding: 16,
+    padding: 14,
     width: "100%",
     gap: 8,
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1,
-    borderColor: "transparent",
+    borderColor: "#E5EBE5",
     ...shadows.sm,
   },
   cardPressed: {
@@ -237,14 +266,16 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontFamily: isIOS ? "SF Pro Rounded" : "sans-serif",
     fontSize: 15,
-    fontWeight: "700",
-    color: colors.textPrimary,
+    fontWeight: "600",
+    color: "#2F3A34",
     textAlign: "center",
   },
   cardDescription: {
-    fontFamily: isIOS ? "SF Pro Rounded" : "sans-serif",
+    fontFamily: isIOS ? "SF Pro Text" : "sans-serif",
     fontSize: 11,
-    color: colors.textSecondary,
+    lineHeight: 15,
+    color: "rgba(123, 133, 127, 0.6)",
     textAlign: "center",
+    width: 118,
   },
 });

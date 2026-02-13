@@ -34,7 +34,7 @@ const generateSampleData = (): CongestionLog[] => {
 
   const coughOptions: CoughCharacterId[] = ["dry", "barking", "wet", "productive"];
   const reliefOptions: ReliefMeasureId[] = ["tea", "steam", "lozenge", "propped", "chest_rub"];
-  const sourceOptions: CongestionSourceId[] = ["throat", "bronchi", "deep_lungs"];
+  const sourceOptions: CongestionSourceId[] = ["head", "throat", "bronchi", "deep_lungs"];
   const phlegmOptions: PhlegmColorId[] = ["clear", "yellow", "green"];
 
   for (let i = 0; i < 6; i++) {
@@ -47,14 +47,18 @@ const generateSampleData = (): CongestionLog[] => {
     const coughCharacters: CoughCharacterId[] = isProductive
       ? ["productive", "wet"]
       : [coughOptions[Math.floor(Math.random() * 2)]];
+    const wokeDuringNight = sleepQuality > 1 || Math.random() > 0.65;
 
     logs.push({
       id: generateId(),
       createdAt: date.toISOString(),
       sleepQuality,
       sleepLabel: getSleepLabel(sleepQuality),
+      wokeDuringNight,
       coughCharacters,
-      congestionSource: sourceOptions[Math.floor(Math.random() * sourceOptions.length)],
+      congestionSource: [
+        sourceOptions[Math.floor(Math.random() * sourceOptions.length)],
+      ],
       phlegmColor: isProductive
         ? phlegmOptions[Math.floor(Math.random() * phlegmOptions.length)]
         : null,

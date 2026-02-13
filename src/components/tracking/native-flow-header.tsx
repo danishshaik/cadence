@@ -17,6 +17,11 @@ interface NativeFlowHeaderOptions {
   height?: number;
   headerHorizontalPadding?: number;
   disabled?: boolean;
+  iconButtonBackgroundColor?: string;
+  iconButtonBorderColor?: string;
+  iconButtonBorderWidth?: number;
+  iconButtonSize?: number;
+  iconButtonRadius?: number;
 }
 
 const isIOS = process.env.EXPO_OS === "ios";
@@ -34,6 +39,11 @@ export function useNativeFlowHeader({
   height = 96,
   headerHorizontalPadding = 16,
   disabled = false,
+  iconButtonBackgroundColor,
+  iconButtonBorderColor,
+  iconButtonBorderWidth = 0,
+  iconButtonSize = 40,
+  iconButtonRadius = 20,
 }: NativeFlowHeaderOptions) {
   const navigation = useNavigation();
 
@@ -58,7 +68,31 @@ export function useNativeFlowHeader({
       headerRightContainerStyle: { paddingRight: headerHorizontalPadding, paddingTop: 6 },
       headerLeft: () =>
         canGoBack ? (
-          <Pressable onPress={onBack} style={{ padding: 8, borderRadius: 16 }}>
+          <Pressable
+            onPress={onBack}
+            style={[
+              {
+                width: iconButtonSize,
+                height: iconButtonSize,
+                borderRadius: iconButtonRadius,
+                alignItems: "center",
+                justifyContent: "center",
+              },
+              iconButtonBackgroundColor
+                ? {
+                    backgroundColor: iconButtonBackgroundColor,
+                  }
+                : {
+                    padding: 8,
+                  },
+              iconButtonBorderColor
+                ? {
+                    borderColor: iconButtonBorderColor,
+                    borderWidth: iconButtonBorderWidth,
+                  }
+                : null,
+            ]}
+          >
             <SymbolView
               name="chevron.left"
               size={20}
@@ -72,7 +106,31 @@ export function useNativeFlowHeader({
           </Pressable>
         ) : null,
       headerRight: () => (
-        <Pressable onPress={onCancel} style={{ padding: 8, borderRadius: 16 }}>
+        <Pressable
+          onPress={onCancel}
+          style={[
+            {
+              width: iconButtonSize,
+              height: iconButtonSize,
+              borderRadius: iconButtonRadius,
+              alignItems: "center",
+              justifyContent: "center",
+            },
+            iconButtonBackgroundColor
+              ? {
+                  backgroundColor: iconButtonBackgroundColor,
+                }
+              : {
+                  padding: 8,
+                },
+            iconButtonBorderColor
+              ? {
+                  borderColor: iconButtonBorderColor,
+                  borderWidth: iconButtonBorderWidth,
+                }
+              : null,
+          ]}
+        >
           <SymbolView
             name="xmark"
             size={18}
@@ -100,5 +158,10 @@ export function useNativeFlowHeader({
     height,
     headerHorizontalPadding,
     disabled,
+    iconButtonBackgroundColor,
+    iconButtonBorderColor,
+    iconButtonBorderWidth,
+    iconButtonSize,
+    iconButtonRadius,
   ]);
 }

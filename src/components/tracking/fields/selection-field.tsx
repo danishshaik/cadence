@@ -11,6 +11,8 @@ export interface SelectionOption {
   value: string;
   label: string;
   description?: string;
+  icon?: string;
+  subtitle?: string;
 }
 
 interface SelectionFieldProps extends FieldPropsWithVariant<string | null, "default" | "compact"> {

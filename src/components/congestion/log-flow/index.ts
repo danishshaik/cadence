@@ -1,4 +1,9 @@
 export { LogCongestionFlow } from "./log-congestion-flow";
+export {
+  congestionFlowConfig,
+  congestionInitialFormData,
+  normalizeCongestionFormData,
+} from "./congestion-flow-config";
 export { LogCongestionProvider, useLogCongestion } from "./log-congestion-provider";
 export { ProgressBar } from "./progress-bar";
 export { StepHeader } from "./step-header";

@@ -1,95 +1,113 @@
 import React from "react";
-import { View, Text, Pressable, StyleSheet, useWindowDimensions } from "react-native";
+import { StyleSheet, Text, View, Pressable } from "react-native";
+import * as Haptics from "expo-haptics";
 import { LinearGradient } from "expo-linear-gradient";
+import { Icon } from "@components/ui";
 import { colors, shadows } from "@theme";
 import { PHLEGM_COLORS, PhlegmColorId } from "@/types/congestion";
 import { useLogCongestion } from "./log-congestion-provider";
+import { ResonanceStepHeader } from "./resonance-step-header";
 
 const isIOS = process.env.EXPO_OS === "ios";
 
-const COLOR_MAP: Record<PhlegmColorId, { main: string; glow: string }> = {
-  clear: { main: "#E2E8F0", glow: "rgba(226,232,240,0.6)" },
-  yellow: { main: colors.honeyAmber, glow: "rgba(255,193,7,0.5)" },
-  green: { main: "#7BC67B", glow: "rgba(123,198,123,0.5)" },
-  pink: { main: "#E9A3A3", glow: "rgba(233,163,163,0.5)" },
+const SWATCH_STYLES: Record<
+  PhlegmColorId,
+  { gradient: [string, string, string]; label: string }
+> = {
+  clear: {
+    gradient: ["#FFFFFF", "#F0F0F0", "#E0E0E0"],
+    label: "Clear",
+  },
+  yellow: {
+    gradient: ["#FFF9C4", "#FFEE58", "#F9A825"],
+    label: "Yellow",
+  },
+  green: {
+    gradient: ["#C8E6C9", "#81C784", "#4CAF50"],
+    label: "Green",
+  },
+  pink: {
+    gradient: ["#FFCDD2", "#EF9A9A", "#E57373"],
+    label: "Pink/Rust",
+  },
 };
 
-function Droplet({
+const INSIGHT_TEXT: Partial<Record<PhlegmColorId, string>> = {
+  clear: "Clear usually indicates low mucus production",
+  yellow: "Yellow typically indicates immune response",
+  green: "Green may indicate thicker mucus production",
+  pink: "If pink/rust persists, contact your provider",
+};
+
+function ColorSwatch({
   id,
-  label,
   selected,
   onPress,
-  size,
 }: {
   id: PhlegmColorId;
-  label: string;
   selected: boolean;
   onPress: (id: PhlegmColorId) => void;
-  size: number;
 }) {
-  const colorset = COLOR_MAP[id];
+  const swatch = SWATCH_STYLES[id];
 
   return (
-    <Pressable onPress={() => onPress(id)} style={styles.dropletWrap}>
+    <Pressable onPress={() => onPress(id)} style={styles.swatchWrap}>
       <LinearGradient
-        colors={["rgba(255,255,255,0.9)", colorset.main]}
+        colors={swatch.gradient}
         start={{ x: 0.2, y: 0.1 }}
         end={{ x: 0.8, y: 0.9 }}
         style={[
-          styles.droplet,
-          {
-            width: size,
-            height: size,
-            borderRadius: size / 2,
-            borderColor: selected ? colorset.main : "#E2E8F0",
-            boxShadow: selected
-              ? `0 0 14px ${colorset.glow}`
-              : "0 2px 8px rgba(0,0,0,0.06)",
-          },
+          styles.swatch,
+          selected ? styles.swatchSelected : styles.swatchIdle,
+          selected && { borderColor: colors.restorativeSage, borderWidth: 3 },
         ]}
       />
-      <Text style={[styles.dropletLabel, selected && { color: colorset.main }]}>{label}</Text>
+      <Text selectable style={[styles.swatchLabel, selected && styles.swatchLabelSelected]}>
+        {swatch.label}
+      </Text>
     </Pressable>
   );
 }
 
 export function ProductionStep() {
   const { formData, updateFormData } = useLogCongestion();
-  const { width } = useWindowDimensions();
 
-  const swatchSize = Math.min(62, Math.max(44, width * 0.14));
+  const selected = formData.phlegmColor;
+  const insight = selected ? INSIGHT_TEXT[selected] : null;
 
   const handleSelect = (id: PhlegmColorId) => {
+    Haptics.selectionAsync();
     updateFormData({ phlegmColor: id });
   };
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>If productive, what color is it?</Text>
-        <Text style={styles.subtitle}>This helps track your recovery</Text>
-      </View>
+      <ResonanceStepHeader
+        title="If productive, what color is it?"
+        subtitle="This helps track your recovery"
+      />
 
-      <View style={styles.palette}>
-        {PHLEGM_COLORS.map((color) => (
-          <Droplet
-            key={color.id}
-            id={color.id}
-            label={color.label}
-            selected={formData.phlegmColor === color.id}
-            onPress={handleSelect}
-            size={swatchSize}
-          />
-        ))}
-      </View>
-
-      {formData.phlegmColor === "pink" && (
-        <View style={styles.alertBox}>
-          <Text style={styles.alertText}>
-            Please keep an eye on this. If it persists, contact your provider.
-          </Text>
+      <View style={styles.card}>
+        <View style={styles.row}>
+          {PHLEGM_COLORS.map((option) => (
+            <ColorSwatch
+              key={option.id}
+              id={option.id}
+              selected={selected === option.id}
+              onPress={handleSelect}
+            />
+          ))}
         </View>
-      )}
+
+        {insight ? (
+          <View style={styles.insightPill}>
+            <Icon name="info" size={16} color="#F9A825" />
+            <Text selectable style={styles.insightText}>
+              {insight}
+            </Text>
+          </View>
+        ) : null}
+      </View>
     </View>
   );
 }
@@ -98,61 +116,65 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    justifyContent: "space-between",
+    gap: 20,
   },
-  header: {
-    alignItems: "center",
-    gap: 6,
-    paddingHorizontal: 16,
+  card: {
+    width: "100%",
+    borderRadius: 28,
+    borderCurve: "continuous",
+    backgroundColor: "#FFFFFF",
+    padding: 28,
+    gap: 24,
+    ...shadows.sm,
   },
-  title: {
-    fontFamily: isIOS ? "SF Pro Rounded" : "sans-serif",
-    fontSize: 24,
-    fontWeight: "700",
-    color: colors.textPrimary,
-    textAlign: "center",
-  },
-  subtitle: {
-    fontFamily: isIOS ? "SF Pro Rounded" : "sans-serif",
-    fontSize: 14,
-    color: colors.textSecondary,
-    textAlign: "center",
-  },
-  palette: {
+  row: {
     flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    flexWrap: "wrap",
-    gap: 14,
+    justifyContent: "space-around",
+    alignItems: "flex-start",
+    gap: 8,
   },
-  dropletWrap: {
+  swatchWrap: {
     alignItems: "center",
     gap: 8,
   },
-  droplet: {
-    borderWidth: 2,
-    ...shadows.sm,
+  swatch: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
   },
-  dropletLabel: {
-    fontFamily: isIOS ? "SF Pro Rounded" : "sans-serif",
-    fontSize: 11,
-    color: colors.textSecondary,
-    textAlign: "center",
+  swatchIdle: {
+    borderWidth: 1.5,
+    borderColor: "#E5EBE5",
+    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.06)",
   },
-  alertBox: {
-    backgroundColor: "#FFF7F2",
-    borderRadius: 14,
-    borderCurve: "continuous",
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    borderWidth: 1,
-    borderColor: "#F6CACA",
-    ...shadows.sm,
+  swatchSelected: {
+    boxShadow: "0 6px 16px rgba(249, 168, 37, 0.25)",
   },
-  alertText: {
-    fontFamily: isIOS ? "SF Pro Rounded" : "sans-serif",
+  swatchLabel: {
+    fontFamily: isIOS ? "SF Pro Text" : "sans-serif",
     fontSize: 12,
-    color: "#B45353",
-    textAlign: "center",
+    fontWeight: "500",
+    color: "#6C7A72",
+  },
+  swatchLabelSelected: {
+    fontWeight: "600",
+    color: "#2F3A34",
+  },
+  insightPill: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    borderRadius: 16,
+    borderCurve: "continuous",
+    backgroundColor: "rgba(255, 249, 196, 0.18)",
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+  },
+  insightText: {
+    flex: 1,
+    fontFamily: isIOS ? "SF Pro Text" : "sans-serif",
+    fontSize: 12,
+    fontWeight: "500",
+    color: "#6C7A72",
   },
 });

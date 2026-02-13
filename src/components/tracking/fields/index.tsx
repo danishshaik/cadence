@@ -1,4 +1,5 @@
 export { AxisGridField } from "./axis-grid-field";
+export { AnatomyHotspotField } from "./anatomy-hotspot-field";
 export type { AxisGridValue } from "./axis-grid-field";
 export { CategorizedChipField } from "./categorized-chip-field";
 export { BubbleChoiceField } from "./bubble-choice-field";
@@ -15,4 +16,5 @@ export { RadialDurationField } from "./radial-duration-field";
 export { SegmentedSelectionField } from "./segmented-selection-field";
 export { SelectionField } from "./selection-field";
 export { StiffnessField } from "./stiffness-field";
+export { SwatchSelectionField } from "./swatch-selection-field";
 export { ToggleField } from "./toggle-field";
