@@ -1,152 +1,136 @@
 import React from "react";
-import { View, Text, Pressable, StyleSheet, Platform } from "react-native";
+import { StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Icon } from "@components/ui";
+import * as Haptics from "expo-haptics";
 import { colors } from "@theme";
 import { useSkinStore } from "@stores/skin-store";
-import { useLogSkin, LogSkinProvider } from "./log-skin-provider";
-import { ProgressBar } from "./progress-bar";
-import { StepHeader } from "./step-header";
-import { PhotoStep } from "./photo-step";
-import { BreakoutTypeStep } from "./breakout-type-step";
-import { SeverityStep } from "./severity-step";
-import { TriggersStep } from "./triggers-step";
-import { RoutineStep } from "./routine-step";
+import {
+  FlowFooter,
+  FlowScaffold,
+  StepLayout,
+  TrackerFlowProvider,
+  TrackerFlowRenderer,
+  getAction,
+  useNativeFlowHeader,
+  useTrackerFlow,
+} from "@components/tracking";
+import { SkinFormData } from "@/types/skin";
+import { normalizeSkinFormData, skinFlowConfig } from "./skin-flow-config";
+
+const isIOS = process.env.EXPO_OS === "ios";
 
 function LogSkinFlowContent() {
   const router = useRouter();
-  const insets = useSafeAreaInsets();
-  const addLog = useSkinStore((state) => state.addLog);
-
   const {
-    formData,
     currentStep,
     totalSteps,
     goToNextStep,
     goToPreviousStep,
+    isFirstStep,
     canGoBack,
     isLastStep,
-  } = useLogSkin();
+    save,
+  } = useTrackerFlow<SkinFormData>();
 
-  const handleCancel = () => {
+  const handleCancel = React.useCallback(() => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     router.back();
-  };
+  }, [router]);
 
-  const handleSave = () => {
-    addLog({
-      photoUri: formData.photoUri,
-      breakoutTypes: formData.breakoutTypes,
-      severity: formData.severity,
-      triggers: formData.triggers,
-      routineTime: formData.routineTime,
-      routineSteps: formData.routineSteps,
-      treatmentActives: formData.treatmentActives,
-      spotTreatments: formData.spotTreatments,
-      notes: formData.notes,
-    });
-    router.back();
-  };
+  const handleHeaderBack = React.useCallback(() => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    goToPreviousStep();
+  }, [goToPreviousStep]);
 
-  const handleContinue = () => {
+  useNativeFlowHeader({
+    currentStep,
+    totalSteps,
+    canGoBack,
+    onBack: handleHeaderBack,
+    onCancel: handleCancel,
+    backgroundColor: "#F9F9F9",
+    activeColor: colors.skin,
+    inactiveColor: colors.skinLight,
+    iconColor: "#6C7A72",
+    iconButtonBackgroundColor: "#FFFFFF",
+    headerHorizontalPadding: 16,
+  });
+
+  const handleSave = React.useCallback(() => {
+    void save();
+  }, [save]);
+
+  const handleContinue = React.useCallback(() => {
     if (isLastStep) {
-      handleSave();
+      void save();
     } else {
       goToNextStep();
     }
-  };
+  }, [goToNextStep, isLastStep, save]);
 
-  const renderStep = () => {
-    switch (currentStep) {
-      case 1:
-        return <PhotoStep />;
-      case 2:
-        return <BreakoutTypeStep />;
-      case 3:
-        return <SeverityStep />;
-      case 4:
-        return <TriggersStep />;
-      case 5:
-        return <RoutineStep />;
-      default:
-        return null;
-    }
-  };
+  const showSecondary = !isFirstStep && !isLastStep;
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
-      <View>
-        <StepHeader
-          onBack={canGoBack ? goToPreviousStep : undefined}
-          onCancel={handleCancel}
-          showBack={canGoBack}
+    <FlowScaffold
+      backgroundColor="#F9F9F9"
+      scrollEnabled={false}
+      footer={
+        <FlowFooter
+          primaryAction={{ label: isLastStep ? "Log It" : "Continue", onPress: handleContinue }}
+          secondaryAction={showSecondary ? { label: "Save", onPress: handleSave } : undefined}
+          containerStyle={styles.footer}
+          buttonRowStyle={styles.buttonRow}
+          primaryButtonStyle={styles.continueButton}
+          primaryPressedStyle={styles.continuePressed}
+          primaryTextStyle={styles.continueText}
+          secondaryButtonStyle={styles.saveButton}
+          secondaryPressedStyle={styles.saveButtonPressed}
+          secondaryTextStyle={styles.saveButtonText}
+          fullWidthPrimaryWhenSolo={!showSecondary}
         />
-
-        <ProgressBar currentStep={currentStep} totalSteps={totalSteps} />
-      </View>
-
-      <View style={styles.stepContainer}>{renderStep()}</View>
-
-      <View style={styles.footer}>
-        <View style={styles.buttonRow}>
-          {currentStep > 1 && (
-            <Pressable
-              onPress={handleSave}
-              style={({ pressed }) => [styles.saveButton, pressed && styles.saveButtonPressed]}
-            >
-              <Text style={styles.saveButtonText}>Save</Text>
-            </Pressable>
-          )}
-
-          <Pressable
-            onPress={handleContinue}
-            style={({ pressed }) => [
-              styles.continueButton,
-              currentStep === 1 && styles.continueButtonFull,
-              pressed && styles.continuePressed,
-            ]}
-          >
-            {isLastStep ? (
-              <View style={styles.logItContent}>
-                <Icon name="checkmark-circle" size={22} color="#FFFFFF" />
-                <Text style={styles.continueText}>Log It</Text>
-              </View>
-            ) : (
-              <Text style={styles.continueText}>Continue</Text>
-            )}
-          </Pressable>
-        </View>
-      </View>
-    </View>
+      }
+    >
+      <StepLayout style={styles.stepLayout}>
+        <TrackerFlowRenderer config={skinFlowConfig} />
+      </StepLayout>
+    </FlowScaffold>
   );
 }
 
 export function LogSkinFlow() {
+  const router = useRouter();
+  const addLog = useSkinStore((state) => state.addLog);
+
   return (
-    <LogSkinProvider>
+    <TrackerFlowProvider
+      initialData={skinFlowConfig.initialData}
+      totalSteps={skinFlowConfig.steps.length}
+      onSave={(data) => {
+        const saveAction = getAction("skin.save");
+        saveAction(data, {
+          addLog,
+          onComplete: () => router.back(),
+        });
+      }}
+      onCancel={() => router.back()}
+      onFormDataChange={normalizeSkinFormData}
+    >
       <LogSkinFlowContent />
-    </LogSkinProvider>
+    </TrackerFlowProvider>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-    justifyContent: "space-between",
-  },
-  stepContainer: {
-    flex: 1,
+  stepLayout: {
     paddingHorizontal: 20,
     paddingTop: 16,
   },
   footer: {
     paddingHorizontal: 20,
     paddingTop: 12,
-    paddingBottom: 24,
+    backgroundColor: "transparent",
   },
   buttonRow: {
-    flexDirection: "row",
     gap: 10,
   },
   saveButton: {
@@ -163,7 +147,7 @@ const styles = StyleSheet.create({
     transform: [{ scale: 0.98 }],
   },
   saveButtonText: {
-    fontFamily: Platform.OS === "ios" ? "SF Pro Text" : "sans-serif",
+    fontFamily: isIOS ? "SF Pro Text" : "sans-serif",
     fontSize: 16,
     fontWeight: "600",
     color: colors.textPrimary,
@@ -176,22 +160,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  continueButtonFull: {
-    flex: 1,
-  },
   continuePressed: {
     opacity: 0.9,
     transform: [{ scale: 0.98 }],
   },
   continueText: {
-    fontFamily: Platform.OS === "ios" ? "SF Pro Text" : "sans-serif",
+    fontFamily: isIOS ? "SF Pro Text" : "sans-serif",
     fontSize: 16,
     fontWeight: "600",
     color: "#FFFFFF",
-  },
-  logItContent: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
   },
 });

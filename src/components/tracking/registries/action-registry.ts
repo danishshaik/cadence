@@ -7,12 +7,14 @@ import {
   OrthostaticSedentaryDuration,
   OrthostaticSymptom,
 } from "@/types/orthostatic";
+import { SkinFormData } from "@/types/skin";
 
 export type ActionKey =
   | "arthritis.save"
   | "migraine.save"
   | "orthostatic.save"
-  | "congestion.save";
+  | "congestion.save"
+  | "skin.save";
 
 type ActionHandler<TPayload, TContext> = (payload: TPayload, context: TContext) => void;
 
@@ -71,6 +73,22 @@ interface CongestionSaveContext {
     congestionSource: CongestionFormData["congestionSource"];
     phlegmColor: CongestionFormData["phlegmColor"];
     reliefMeasures: CongestionFormData["reliefMeasures"];
+    notes?: string;
+  }) => void;
+  onComplete: () => void;
+}
+
+interface SkinSaveContext {
+  addLog: (log: {
+    photoUri?: string;
+    breakoutTypes: SkinFormData["breakoutTypes"];
+    severity: number;
+    morningLightness?: boolean;
+    triggers: SkinFormData["triggers"];
+    routineTime: SkinFormData["routineTime"];
+    routineSteps: SkinFormData["routineSteps"];
+    treatmentActives: SkinFormData["treatmentActives"];
+    spotTreatments: SkinFormData["spotTreatments"];
     notes?: string;
   }) => void;
   onComplete: () => void;
@@ -145,6 +163,21 @@ const actionRegistry = {
       congestionSource: formData.congestionSource,
       phlegmColor: formData.phlegmColor,
       reliefMeasures: formData.reliefMeasures,
+      notes: formData.notes || undefined,
+    });
+    onComplete();
+  },
+  "skin.save": (formData: SkinFormData, { addLog, onComplete }: SkinSaveContext) => {
+    addLog({
+      photoUri: formData.photoUri,
+      breakoutTypes: formData.breakoutTypes,
+      severity: formData.severity,
+      morningLightness: formData.morningLightness,
+      triggers: formData.triggers,
+      routineTime: formData.routineTime,
+      routineSteps: formData.routineSteps,
+      treatmentActives: formData.treatmentActives,
+      spotTreatments: formData.spotTreatments,
       notes: formData.notes || undefined,
     });
     onComplete();

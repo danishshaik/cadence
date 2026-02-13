@@ -29,6 +29,7 @@ const ICON_MAP: Record<string, SymbolName> = {
   "cloud-rain": { ios: "cloud.rain", android: "rainy" } as unknown as SymbolName,
   sparkles: { ios: "sparkles", android: "auto_awesome" } as unknown as SymbolName,
   people: { ios: "person.2.fill", android: "group" } as unknown as SymbolName,
+  user: { ios: "person", android: "person" } as unknown as SymbolName,
   leaf: { ios: "leaf.fill", android: "eco" } as unknown as SymbolName,
   "leaf-outline": { ios: "leaf", android: "eco" } as unknown as SymbolName,
   pulse: { ios: "waveform.path.ecg", android: "monitor_heart" } as unknown as SymbolName,
@@ -64,6 +65,8 @@ const ICON_MAP: Record<string, SymbolName> = {
     ios: "arrow.triangle.2.circlepath.camera",
     android: "flip_camera_android",
   } as unknown as SymbolName,
+  "rotate-ccw": { ios: "arrow.counterclockwise", android: "replay" } as unknown as SymbolName,
+  image: { ios: "photo", android: "image" } as unknown as SymbolName,
   "sunny-outline": { ios: "sun.max", android: "wb_sunny" } as unknown as SymbolName,
   "water-outline": { ios: "drop", android: "water_drop" } as unknown as SymbolName,
   "alert-circle-outline": {

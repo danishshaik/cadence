@@ -89,6 +89,7 @@ export interface SkinLog {
   // Severity (1-10)
   severity: number;
   severityLabel: string;
+  morningLightness?: boolean;
 
   // Triggers
   triggers: SkinTriggerId[];
@@ -109,6 +110,7 @@ export interface SkinFormData {
   breakoutTypes: BreakoutTypeId[];
   severity: number;
   severityLabel: string;
+  morningLightness: boolean;
   triggers: SkinTriggerId[];
   routineTime: RoutineTime;
   routineSteps: RoutineStepId[];

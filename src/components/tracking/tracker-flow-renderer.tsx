@@ -1,12 +1,13 @@
 import React from "react";
 import { StyleSheet, Text, View, useWindowDimensions } from "react-native";
-import Svg, { Defs, RadialGradient, Rect, Stop } from "react-native-svg";
+import Svg, { Circle, Defs, G, Line, Path, RadialGradient, Rect, Stop } from "react-native-svg";
 import { colors, mentalWeatherColors, mentalWeatherFonts } from "@theme";
 import { FlowContentBlock, TrackerFlowConfig } from "./flow-config";
 import { FormDataConstraint } from "./types";
 import {
   AnatomyHotspotField,
   AxisGridField,
+  CameraCaptureField,
   CategorizedChipField,
   BubbleChoiceField,
   ChoiceField,
@@ -48,6 +49,7 @@ import {
 import { WeatherConfirmationId } from "@/types/arthritis";
 import { getMigraineSeverityLabel } from "@/types/migraine";
 import { getOrthostaticSeverityLabel } from "@/types/orthostatic";
+import { useSkinStore } from "@stores/skin-store";
 import { Icon } from "@components/ui";
 import type { SegmentedSelectionFieldProps } from "./fields/segmented-selection-field";
 
@@ -93,6 +95,128 @@ function getSegmentedSelectionStyle(
   return undefined;
 }
 
+type SkinBreakoutId =
+  | "whitehead"
+  | "blackhead"
+  | "papule"
+  | "cystic"
+  | "texture"
+  | "scarring";
+
+const skinBreakoutDisplay: Record<
+  SkinBreakoutId,
+  {
+    subtitle: string;
+    accentColor: string;
+    iconBackgroundColor: string;
+  }
+> = {
+  whitehead: {
+    subtitle: "Surface bumps",
+    accentColor: colors.skin,
+    iconBackgroundColor: colors.skinLight,
+  },
+  blackhead: {
+    subtitle: "Congestion",
+    accentColor: colors.skin,
+    iconBackgroundColor: colors.skinLight,
+  },
+  papule: {
+    subtitle: "Red bumps",
+    accentColor: "#D97D78",
+    iconBackgroundColor: colors.skinAlertLight,
+  },
+  cystic: {
+    subtitle: "Deep & painful",
+    accentColor: "#CF6B63",
+    iconBackgroundColor: colors.skinAlertLight,
+  },
+  texture: {
+    subtitle: "Rough patches",
+    accentColor: colors.skin,
+    iconBackgroundColor: colors.skinLight,
+  },
+  scarring: {
+    subtitle: "Fading marks",
+    accentColor: colors.skin,
+    iconBackgroundColor: colors.skinLight,
+  },
+};
+
+function SkinBreakoutIcon({ type, color }: { type: SkinBreakoutId; color: string }) {
+  const size = 30;
+
+  switch (type) {
+    case "whitehead":
+      return (
+        <Svg width={size} height={size} viewBox="0 0 40 40">
+          <Circle cx="20" cy="22" r="8" fill={color} opacity={0.3} />
+          <Circle cx="20" cy="22" r="5" fill={color} opacity={0.5} />
+          <Circle cx="20" cy="21" r="2" fill={color} />
+        </Svg>
+      );
+    case "blackhead":
+      return (
+        <Svg width={size} height={size} viewBox="0 0 40 40">
+          <Circle cx="20" cy="21" r="8" fill={color} opacity={0.16} />
+          <Circle cx="20" cy="21" r="4.2" fill={color} />
+          <Circle cx="18" cy="19" r="1.4" fill="#FFFFFF" opacity={0.92} />
+        </Svg>
+      );
+    case "papule":
+      return (
+        <Svg width={size} height={size} viewBox="0 0 40 40">
+          <Circle cx="20" cy="20" r="10.5" fill={color} opacity={0.16} />
+          <Circle cx="20" cy="20" r="7.6" fill={color} opacity={0.33} />
+          <Circle cx="20" cy="20" r="4.8" fill={color} opacity={0.58} />
+          <Circle cx="20" cy="20" r="2" fill={color} opacity={0.92} />
+        </Svg>
+      );
+    case "cystic":
+      return (
+        <Svg width={size} height={size} viewBox="0 0 40 40">
+          <Line x1="8" y1="14" x2="32" y2="14" stroke={color} strokeWidth={1.7} opacity={0.45} />
+          <Path d="M 12 14 C 14 9 26 9 28 14" fill={color} opacity={0.24} />
+          <Circle cx="20" cy="23" r="8.5" fill={color} opacity={0.12} />
+          <Circle
+            cx="20"
+            cy="23"
+            r="5.7"
+            fill="none"
+            stroke={color}
+            strokeWidth={1.8}
+            strokeDasharray="2.2,2.2"
+            opacity={0.75}
+          />
+        </Svg>
+      );
+    case "texture":
+      return (
+        <Svg width={size} height={size} viewBox="0 0 40 40">
+          <G opacity={0.6}>
+            <Circle cx="14" cy="16" r="2.1" fill={color} />
+            <Circle cx="22" cy="14" r="1.8" fill={color} />
+            <Circle cx="26" cy="18" r="2.2" fill={color} />
+            <Circle cx="18" cy="22" r="1.8" fill={color} />
+            <Circle cx="24" cy="24" r="2.1" fill={color} />
+            <Circle cx="14" cy="26" r="1.9" fill={color} />
+            <Circle cx="20" cy="28" r="2.2" fill={color} />
+          </G>
+        </Svg>
+      );
+    case "scarring":
+      return (
+        <Svg width={size} height={size} viewBox="0 0 40 40">
+          <Circle cx="20" cy="20" r="9" fill="none" stroke={color} strokeWidth={1.3} opacity={0.24} />
+          <Circle cx="20" cy="20" r="6.3" fill="none" stroke={color} strokeWidth={1.3} opacity={0.38} />
+          <Circle cx="20" cy="20" r="3.7" fill={color} opacity={0.28} />
+        </Svg>
+      );
+    default:
+      return null;
+  }
+}
+
 interface TrackerFlowRendererProps<TFormData extends FormDataConstraint> {
   config: TrackerFlowConfig<TFormData>;
 }
@@ -101,6 +225,7 @@ export function TrackerFlowRenderer<TFormData extends FormDataConstraint>({
   config,
 }: TrackerFlowRendererProps<TFormData>) {
   const { formData, updateField, errors, currentStep } = useTrackerFlow<TFormData>();
+  const getPreviousSkinPhotoUri = useSkinStore((state) => state.getPreviousPhotoUri);
   const { width } = useWindowDimensions();
   const step = config.steps[currentStep - 1];
   const theme = config.theme;
@@ -112,6 +237,7 @@ export function TrackerFlowRenderer<TFormData extends FormDataConstraint>({
   const headerBadgeIconColor = headerBadge?.iconColor ?? "#FFFFFF";
   const contentBlocks = step?.content ?? [];
   const weatherBlock = contentBlocks.find((block) => block.type === "weather_summary");
+  const previousSkinPhotoUri = getPreviousSkinPhotoUri();
 
   React.useEffect(() => {
     if (!weatherBlock || weatherBlock.type !== "weather_summary") return;
@@ -167,10 +293,11 @@ export function TrackerFlowRenderer<TFormData extends FormDataConstraint>({
       const count = value?.length ?? 0;
       const singularLabel = block.singularLabel ?? "item";
       const pluralLabel = block.pluralLabel ?? `${singularLabel}s`;
+      const selectedLabel = count === 1 ? singularLabel : pluralLabel;
       const text =
         count === 0
           ? block.emptyText ?? "No selections"
-          : `${count} ${count === 1 ? singularLabel : pluralLabel} selected`;
+          : [String(count), selectedLabel, "selected"].filter(Boolean).join(" ");
       return (
         <Text key={`note-${index}`} style={noteStyle}>
           {text}
@@ -277,6 +404,8 @@ export function TrackerFlowRenderer<TFormData extends FormDataConstraint>({
 
     if (field.type === "toggle") {
       const toggleTheme = field.visualizationKey;
+      const isCongestionSleep = toggleTheme === "congestion.sleep";
+      const isSkinMorningLightness = toggleTheme === "skin.morning-lightness";
       return (
         <ToggleField
           key={field.id}
@@ -286,16 +415,18 @@ export function TrackerFlowRenderer<TFormData extends FormDataConstraint>({
           description={field.description}
           required={field.required}
           error={error}
-          variant={toggleTheme === "congestion.sleep" ? "card" : "default"}
-          trackOffColor={toggleTheme === "congestion.sleep" ? "#D6DED9" : undefined}
-          trackOnColor={toggleTheme === "congestion.sleep" ? "#4DB6AC" : undefined}
-          thumbColorOn={toggleTheme === "congestion.sleep" ? "#FFFFFF" : undefined}
-          thumbColorOff={toggleTheme === "congestion.sleep" ? "#FFFFFF" : undefined}
-          iosBackgroundColor={toggleTheme === "congestion.sleep" ? "#D6DED9" : undefined}
-          labelColor={toggleTheme === "congestion.sleep" ? "#2F3A34" : undefined}
-          descriptionColor={toggleTheme === "congestion.sleep" ? "#6C7A72" : undefined}
+          variant={isCongestionSleep || isSkinMorningLightness ? "card" : "default"}
+          trackOffColor={isCongestionSleep || isSkinMorningLightness ? "#D6DED9" : undefined}
+          trackOnColor={
+            isCongestionSleep ? "#4DB6AC" : isSkinMorningLightness ? colors.skin : undefined
+          }
+          thumbColorOn={isCongestionSleep || isSkinMorningLightness ? "#FFFFFF" : undefined}
+          thumbColorOff={isCongestionSleep || isSkinMorningLightness ? "#FFFFFF" : undefined}
+          iosBackgroundColor={isCongestionSleep || isSkinMorningLightness ? "#D6DED9" : undefined}
+          labelColor={isCongestionSleep || isSkinMorningLightness ? "#2F3A34" : undefined}
+          descriptionColor={isCongestionSleep || isSkinMorningLightness ? "#6C7A72" : undefined}
           cardStyle={
-            toggleTheme === "congestion.sleep"
+            isCongestionSleep
               ? {
                   borderRadius: 18,
                   borderCurve: "continuous",
@@ -304,8 +435,53 @@ export function TrackerFlowRenderer<TFormData extends FormDataConstraint>({
                   paddingVertical: 10,
                   boxShadow: "0 4px 16px rgba(77, 182, 172, 0.08)",
                 }
+              : isSkinMorningLightness
+              ? {
+                  borderRadius: 16,
+                  borderCurve: "continuous",
+                  backgroundColor: "#FFFFFF",
+                  borderWidth: 1,
+                  borderColor: "#E5EBE5",
+                  paddingVertical: 10,
+                  paddingHorizontal: 14,
+                }
               : undefined
           }
+        />
+      );
+    }
+
+    if (field.type === "camera_capture") {
+      const cameraTheme = field.visualizationKey;
+      const isSkinPhoto = cameraTheme === "skin.photo";
+      return (
+        <CameraCaptureField
+          key={field.id}
+          value={(formData as any)[field.fieldKey] as string | undefined}
+          onChange={(next) => updateField(field.fieldKey as any, next as any)}
+          previousPhotoUri={isSkinPhoto ? previousSkinPhotoUri : undefined}
+          tipText={isSkinPhoto ? "" : undefined}
+          accentColor={isSkinPhoto ? colors.skin : undefined}
+          accentMutedColor={isSkinPhoto ? colors.skinMuted : undefined}
+          backgroundColor={isSkinPhoto ? "#F9F9F9" : undefined}
+          heroBackgroundColor={isSkinPhoto ? "#F0F0F0" : undefined}
+          sideButtonBackgroundColor={isSkinPhoto ? colors.skinLight : undefined}
+          tipBackgroundColor={isSkinPhoto ? colors.skinLight : undefined}
+          tipTextColor={isSkinPhoto ? "#6C7A72" : undefined}
+          permissionTitle={isSkinPhoto ? "Camera access needed" : undefined}
+          permissionDescription={
+            isSkinPhoto
+              ? "To track your skin progress with photos, we need camera permission."
+              : undefined
+          }
+          permissionButtonLabel={isSkinPhoto ? "Grant Access" : undefined}
+          permissionSkipLabel={isSkinPhoto ? "You can also skip this step" : undefined}
+          permissionButtonColor={isSkinPhoto ? colors.skin : undefined}
+          contentGap={isSkinPhoto ? 6 : undefined}
+          captureBarMinHeight={isSkinPhoto ? 74 : undefined}
+          captureBarTopPadding={isSkinPhoto ? 4 : undefined}
+          captureBarBottomPadding={isSkinPhoto ? 4 : undefined}
+          captureBarGap={isSkinPhoto ? 18 : undefined}
         />
       );
     }
@@ -316,11 +492,14 @@ export function TrackerFlowRenderer<TFormData extends FormDataConstraint>({
       const derivedLabelKey = field.secondaryKey ?? `${field.fieldKey}Label`;
       const isOrbHero =
         heroVariant === "migraine.severity" ||
+        heroVariant === "skin.severity" ||
         heroVariant === "orthostatic.severity" ||
         heroVariant === "congestion.sleep";
       const heroValueLabel =
         heroVariant === "migraine.severity"
           ? `${getMigraineSeverityLabel(heroValue).charAt(0).toUpperCase()}${getMigraineSeverityLabel(heroValue).slice(1)}`
+          : heroVariant === "skin.severity"
+          ? ((formData as any)[derivedLabelKey] as string | undefined)
           : heroVariant === "orthostatic.severity"
           ? getOrthostaticSeverityLabel(heroValue)
           : heroVariant === "congestion.sleep"
@@ -344,6 +523,28 @@ export function TrackerFlowRenderer<TFormData extends FormDataConstraint>({
               gradientColors: ["#8EF2B2", "#FFE082", "#FF8AC7", "#F44336"] as const,
               cardGradientColors: ["#FFFFFF", "#FFF5FA"] as const,
               cardShadow: "0 12px 30px rgba(233, 30, 140, 0.16)",
+            }
+          : heroVariant === "skin.severity"
+          ? {
+              orbSize: 180,
+              orbGradientColors: ["#E8FAF8", "#8FE3DD", "#4ECDC4"] as const,
+              orbHotGradientColors: ["#C7F0EC", "#6DD6CE", "#33BEB4"] as const,
+              orbShadow: "0 10px 28px rgba(78, 205, 196, 0.24)",
+              accentColor: colors.skin,
+              textPrimaryColor: "#2F3A34",
+              textSecondaryColor: "#6C7A72",
+              textMutedColor: "#6C7A72",
+              pillBackgroundColor: colors.skinLight,
+              tickInactiveColor: "#D6DED9",
+              tickActiveColor: colors.skin,
+              gradientColors: [
+                colors.skinLight,
+                colors.skinMuted,
+                colors.skin,
+                colors.skinAlert,
+              ] as const,
+              cardGradientColors: ["#FFFFFF", "#F8FBFA"] as const,
+              cardShadow: "0 12px 24px rgba(78, 205, 196, 0.12)",
             }
           : heroVariant === "orthostatic.severity"
           ? {
@@ -676,6 +877,8 @@ export function TrackerFlowRenderer<TFormData extends FormDataConstraint>({
       const cardTheme = field.visualizationKey;
       const isMoodSelfcare = cardTheme === "mood.selfcare";
       const isCongestionRelief = cardTheme === "congestion.relief-cards";
+      const isSkinTriggers = cardTheme === "skin.triggers";
+      const isSkinRoutine = cardTheme === "skin.routine";
       const selected = (formData as any)[field.fieldKey] as string[];
       const selectedCount = selected?.length ?? 0;
       const badgeText = field.badgeTemplate
@@ -693,6 +896,9 @@ export function TrackerFlowRenderer<TFormData extends FormDataConstraint>({
             const next = selected?.includes(id)
               ? selected.filter((item) => item !== id)
               : [...(selected ?? []), id];
+            if (isSkinRoutine && id === "treatment" && !next.includes("treatment")) {
+              updateField("treatmentActives" as any, [] as any);
+            }
             updateField(field.fieldKey as any, next as any);
           }}
           badge={
@@ -709,6 +915,8 @@ export function TrackerFlowRenderer<TFormData extends FormDataConstraint>({
               ? mentalWeatherColors.accent
               : isCongestionRelief
               ? colors.restorativeSage
+              : isSkinTriggers || isSkinRoutine
+              ? colors.skin
               : undefined
           }
           accentSoftColor={
@@ -716,12 +924,16 @@ export function TrackerFlowRenderer<TFormData extends FormDataConstraint>({
               ? mentalWeatherColors.accentLight
               : isCongestionRelief
               ? "#E0F2F1"
+              : isSkinTriggers || isSkinRoutine
+              ? colors.skinLight
               : undefined
           }
           cardBackgroundColor={
             isMoodSelfcare
               ? mentalWeatherColors.surface
               : isCongestionRelief
+              ? "#FFFFFF"
+              : isSkinTriggers || isSkinRoutine
               ? "#FFFFFF"
               : undefined
           }
@@ -730,6 +942,8 @@ export function TrackerFlowRenderer<TFormData extends FormDataConstraint>({
               ? mentalWeatherColors.borderSoft
               : isCongestionRelief
               ? "#E5EBE5"
+              : isSkinTriggers || isSkinRoutine
+              ? "#E5EBE5"
               : undefined
           }
           cardSelectedBorderColor={
@@ -737,13 +951,18 @@ export function TrackerFlowRenderer<TFormData extends FormDataConstraint>({
               ? mentalWeatherColors.accent
               : isCongestionRelief
               ? colors.restorativeSage
+              : isSkinTriggers || isSkinRoutine
+              ? colors.skin
               : undefined
           }
+          cardSelectedBorderWidth={isSkinRoutine ? 3 : isSkinTriggers ? 2 : undefined}
           iconBackgroundColor={
             isMoodSelfcare
               ? mentalWeatherColors.accentLight
               : isCongestionRelief
               ? "#E0F2F1"
+              : isSkinTriggers || isSkinRoutine
+              ? colors.skinLight
               : undefined
           }
           iconMutedColor={
@@ -751,6 +970,8 @@ export function TrackerFlowRenderer<TFormData extends FormDataConstraint>({
               ? mentalWeatherColors.textSecondary
               : isCongestionRelief
               ? colors.restorativeSage
+              : isSkinTriggers || isSkinRoutine
+              ? colors.skin
               : undefined
           }
           iconSelectedColor={
@@ -758,12 +979,16 @@ export function TrackerFlowRenderer<TFormData extends FormDataConstraint>({
               ? mentalWeatherColors.accent
               : isCongestionRelief
               ? colors.restorativeSage
+              : isSkinTriggers || isSkinRoutine
+              ? colors.skin
               : undefined
           }
           textPrimaryColor={
             isMoodSelfcare
               ? mentalWeatherColors.textPrimary
               : isCongestionRelief
+              ? "#2F3A34"
+              : isSkinTriggers || isSkinRoutine
               ? "#2F3A34"
               : undefined
           }
@@ -772,12 +997,16 @@ export function TrackerFlowRenderer<TFormData extends FormDataConstraint>({
               ? mentalWeatherColors.textSecondary
               : isCongestionRelief
               ? "#6C7A72"
+              : isSkinTriggers || isSkinRoutine
+              ? "#6C7A72"
               : undefined
           }
           checkBorderColor={
             isMoodSelfcare
               ? mentalWeatherColors.borderMuted
               : isCongestionRelief
+              ? "#E5EBE5"
+              : isSkinTriggers || isSkinRoutine
               ? "#E5EBE5"
               : undefined
           }
@@ -786,6 +1015,8 @@ export function TrackerFlowRenderer<TFormData extends FormDataConstraint>({
               ? mentalWeatherColors.accent
               : isCongestionRelief
               ? colors.restorativeSage
+              : isSkinTriggers || isSkinRoutine
+              ? colors.skin
               : undefined
           }
           badgeBackgroundColor={
@@ -800,6 +1031,8 @@ export function TrackerFlowRenderer<TFormData extends FormDataConstraint>({
               ? mentalWeatherColors.accent
               : isCongestionRelief
               ? colors.restorativeSage
+              : isSkinTriggers || isSkinRoutine
+              ? colors.skin
               : undefined
           }
           badgeIconColor={
@@ -807,6 +1040,8 @@ export function TrackerFlowRenderer<TFormData extends FormDataConstraint>({
               ? mentalWeatherColors.accent
               : isCongestionRelief
               ? colors.restorativeSage
+              : isSkinTriggers || isSkinRoutine
+              ? colors.skin
               : undefined
           }
           titleFontFamily={isMoodSelfcare ? mentalWeatherFonts.text : undefined}
@@ -816,6 +1051,12 @@ export function TrackerFlowRenderer<TFormData extends FormDataConstraint>({
             field.fill ? [styles.fieldFill, styles.fieldFillPinned] : undefined
           }
           badgeStyle={field.fill ? styles.badgePinned : undefined}
+          listStyle={
+            isSkinTriggers || isSkinRoutine ? styles.skinMultiSelectList : undefined
+          }
+          cardStyle={
+            isSkinTriggers || isSkinRoutine ? styles.skinMultiSelectCard : undefined
+          }
         />
       );
     }
@@ -884,6 +1125,7 @@ export function TrackerFlowRenderer<TFormData extends FormDataConstraint>({
         valueType === "object" ? (item as { name: string }).name : (item as string)
       );
       const iconTheme = field.visualizationKey;
+      const isSkinBreakout = iconTheme === "skin.breakout";
       return (
         <IconGridField
           key={field.id}
@@ -927,7 +1169,13 @@ export function TrackerFlowRenderer<TFormData extends FormDataConstraint>({
               : undefined
           }
           accentColor={iconTheme === "migraine.icon-grid" ? colors.migraine : undefined}
-          accentSoftColor={iconTheme === "migraine.icon-grid" ? "#FCE4F1" : undefined}
+          accentSoftColor={
+            iconTheme === "migraine.icon-grid"
+              ? "#FCE4F1"
+              : isSkinBreakout
+              ? colors.skinLight
+              : undefined
+          }
           textPrimaryColor={iconTheme === "migraine.icon-grid" ? "#2F3A34" : undefined}
           textSecondaryColor={iconTheme === "migraine.icon-grid" ? "#7B857F" : undefined}
           textMutedColor={iconTheme === "migraine.icon-grid" ? "#4A5A52" : undefined}
@@ -936,6 +1184,35 @@ export function TrackerFlowRenderer<TFormData extends FormDataConstraint>({
             iconTheme === "migraine.icon-grid" ? [colors.migraine, "#FF8CCB"] : undefined
           }
           badgeIcon={iconTheme === "migraine.icon-grid" ? "pill" : undefined}
+          gridStyle={isSkinBreakout ? styles.skinBreakoutGrid : undefined}
+          tileStyle={isSkinBreakout ? styles.skinBreakoutCard : undefined}
+          tileSelectedStyle={isSkinBreakout ? styles.skinBreakoutCardSelected : undefined}
+          tilePressedStyle={isSkinBreakout ? styles.skinBreakoutCardPressed : undefined}
+          renderItemContent={
+            isSkinBreakout
+              ? ({ item }) => {
+                  const breakoutId = item.id as SkinBreakoutId;
+                  const display = skinBreakoutDisplay[breakoutId];
+                  if (!display) {
+                    return null;
+                  }
+                  return (
+                    <>
+                      <View
+                        style={[
+                          styles.skinBreakoutIconContainer,
+                          { backgroundColor: display.iconBackgroundColor },
+                        ]}
+                      >
+                        <SkinBreakoutIcon type={breakoutId} color={display.accentColor} />
+                      </View>
+                      <Text style={styles.skinBreakoutLabel}>{item.label}</Text>
+                      <Text style={styles.skinBreakoutDescription}>{display.subtitle}</Text>
+                    </>
+                  );
+                }
+              : undefined
+          }
         />
       );
     }
@@ -1221,6 +1498,63 @@ const styles = StyleSheet.create({
   },
   badgePinned: {
     marginTop: "auto",
+  },
+  skinBreakoutGrid: {
+    width: "100%",
+  },
+  skinBreakoutCard: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 20,
+    borderCurve: "continuous",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 12,
+    height: 150,
+    borderWidth: 1,
+    borderColor: "#E5EBE5",
+    boxShadow: "0 4px 16px rgba(47, 58, 52, 0.08)",
+  },
+  skinBreakoutCardSelected: {
+    backgroundColor: colors.skinLight,
+    borderColor: colors.skin,
+    borderWidth: 2.5,
+    boxShadow: "0 6px 18px rgba(78, 205, 196, 0.18)",
+  },
+  skinBreakoutCardPressed: {
+    opacity: 0.95,
+    transform: [{ scale: 0.99 }],
+  },
+  skinBreakoutIconContainer: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    borderCurve: "continuous",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 8,
+  },
+  skinBreakoutLabel: {
+    fontFamily: isIOS ? "SF Pro Text" : "sans-serif",
+    fontSize: 15,
+    fontWeight: "600",
+    color: "#2F3A34",
+    textAlign: "center",
+  },
+  skinBreakoutDescription: {
+    fontFamily: isIOS ? "SF Pro Text" : "sans-serif",
+    fontSize: 11,
+    color: "rgba(123,133,127,0.65)",
+    textAlign: "center",
+    marginTop: 2,
+    maxWidth: 120,
+  },
+  skinMultiSelectList: {
+    gap: 10,
+  },
+  skinMultiSelectCard: {
+    borderRadius: 18,
+    borderCurve: "continuous",
+    boxShadow: "0 2px 10px rgba(78, 205, 196, 0.05)",
   },
   weatherCard: {
     backgroundColor: "#FFFFFF",

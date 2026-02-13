@@ -6,6 +6,7 @@ export { ProgressIndicator } from "./progress-indicator";
 export { StepLayout } from "./step-layout";
 export {
   AnatomyHotspotField,
+  CameraCaptureField,
   ChoiceField,
   JointMapField,
   LinearScaleField,
