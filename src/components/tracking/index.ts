@@ -5,11 +5,13 @@ export { FlowScaffold } from "./flow-scaffold";
 export { ProgressIndicator } from "./progress-indicator";
 export { StepLayout } from "./step-layout";
 export {
+  AnatomyHotspotField,
   ChoiceField,
   JointMapField,
   LinearScaleField,
   SelectionField,
   StiffnessField,
+  SwatchSelectionField,
   ToggleField,
 } from "./fields";
 export { useNativeFlowHeader } from "./native-flow-header";

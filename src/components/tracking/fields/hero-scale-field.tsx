@@ -3,6 +3,18 @@ import { StyleSheet, Text, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { ExpoSlider } from "@components/ui";
 import { FieldProps } from "../types";
+import Svg, { Circle, Defs, RadialGradient, Stop } from "react-native-svg";
+import Animated, {
+  cancelAnimation,
+  Easing,
+  interpolate,
+  useAnimatedProps,
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withSequence,
+  withTiming,
+} from "react-native-reanimated";
 
 const isIOS = process.env.EXPO_OS === "ios";
 
@@ -21,10 +33,149 @@ interface HeroScaleFieldProps extends FieldProps<number> {
   pillBackgroundColor?: string;
   tickInactiveColor?: string;
   tickActiveColor?: string;
+  heroVariant?: "default" | "orb";
+  orbSize?: number;
+  orbGradientColors?: readonly [string, string, string];
+  orbHotGradientColors?: readonly [string, string, string];
+  orbShadow?: string;
+  orbAnimation?: "expand" | "shake";
+  orbShakeMinOffset?: number;
+  orbShakeMaxOffset?: number;
+  orbShakeRotationDeg?: number;
+  orbShakeCycleDurationMs?: number;
   hero?: React.ReactNode | ((value: number) => React.ReactNode);
   valueFormatter?: (value: number) => string;
   valueLabel?: string;
   cardShadow?: string;
+}
+
+interface AnimatedOrbProps {
+  intensity: number;
+  size: number;
+  baseGradientColors: readonly [string, string, string];
+  hotGradientColors: readonly [string, string, string];
+  shadow: string;
+  animation: "expand" | "shake";
+  shakeMinOffset: number;
+  shakeMaxOffset: number;
+  shakeRotationDeg: number;
+  shakeCycleDurationMs: number;
+}
+
+const AnimatedCircle = Animated.createAnimatedComponent(Circle);
+
+const ORB_ANIMATION_CONFIG = {
+  duration: 220,
+  easing: Easing.out(Easing.cubic),
+};
+
+function AnimatedOrb({
+  intensity: normalizedIntensity,
+  size,
+  baseGradientColors,
+  hotGradientColors,
+  shadow,
+  animation,
+  shakeMinOffset,
+  shakeMaxOffset,
+  shakeRotationDeg,
+  shakeCycleDurationMs,
+}: AnimatedOrbProps) {
+  const intensity = useSharedValue(normalizedIntensity);
+  const shake = useSharedValue(0);
+  const radius = size / 2;
+  const gradientSuffix = React.useMemo(
+    () => Math.random().toString(36).slice(2, 8),
+    []
+  );
+  const baseGradientId = `heroScaleOrbBase-${gradientSuffix}`;
+  const hotGradientId = `heroScaleOrbHot-${gradientSuffix}`;
+
+  React.useEffect(() => {
+    intensity.value = withTiming(normalizedIntensity, ORB_ANIMATION_CONFIG);
+  }, [intensity, normalizedIntensity]);
+
+  React.useEffect(() => {
+    if (animation !== "shake") {
+      cancelAnimation(shake);
+      shake.value = 0;
+      return;
+    }
+    shake.value = withRepeat(
+      withSequence(
+        withTiming(1, {
+          duration: Math.max(80, Math.round(shakeCycleDurationMs / 2)),
+          easing: Easing.inOut(Easing.ease),
+        }),
+        withTiming(-1, {
+          duration: Math.max(80, Math.round(shakeCycleDurationMs / 2)),
+          easing: Easing.inOut(Easing.ease),
+        })
+      ),
+      -1,
+      false
+    );
+    return () => {
+      cancelAnimation(shake);
+    };
+  }, [animation, shake, shakeCycleDurationMs]);
+
+  const motionStyle = useAnimatedStyle(() => {
+    if (animation === "shake") {
+      const amplitude = interpolate(intensity.value, [0, 1], [shakeMinOffset, shakeMaxOffset]);
+      const translateX = shake.value * amplitude;
+      const rotate = shake.value * shakeRotationDeg;
+      return {
+        transform: [{ translateX }, { rotateZ: `${rotate}deg` }],
+      };
+    }
+    const scale = interpolate(intensity.value, [0, 1], [0.92, 1.08]);
+    return {
+      transform: [{ scale }],
+    };
+  });
+
+  const overlayProps = useAnimatedProps(() => ({
+    opacity: interpolate(intensity.value, [0, 1], [0, 0.85]),
+  }));
+
+  return (
+    <Animated.View
+      style={[
+        styles.orbWrap,
+        {
+          width: size,
+          height: size,
+          borderRadius: radius,
+          boxShadow: shadow,
+        },
+        motionStyle,
+      ]}
+    >
+      <Svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+        <Defs>
+          <RadialGradient id={baseGradientId} cx="50%" cy="50%" rx="50%" ry="50%">
+            <Stop offset="0%" stopColor={baseGradientColors[0]} stopOpacity={0.9} />
+            <Stop offset="60%" stopColor={baseGradientColors[1]} stopOpacity={0.95} />
+            <Stop offset="100%" stopColor={baseGradientColors[2]} stopOpacity={1} />
+          </RadialGradient>
+          <RadialGradient id={hotGradientId} cx="50%" cy="50%" rx="50%" ry="50%">
+            <Stop offset="0%" stopColor={hotGradientColors[0]} stopOpacity={0.9} />
+            <Stop offset="60%" stopColor={hotGradientColors[1]} stopOpacity={0.95} />
+            <Stop offset="100%" stopColor={hotGradientColors[2]} stopOpacity={1} />
+          </RadialGradient>
+        </Defs>
+        <Circle cx={radius} cy={radius} r={radius} fill={`url(#${baseGradientId})`} />
+        <AnimatedCircle
+          cx={radius}
+          cy={radius}
+          r={radius}
+          fill={`url(#${hotGradientId})`}
+          animatedProps={overlayProps}
+        />
+      </Svg>
+    </Animated.View>
+  );
 }
 
 export function HeroScaleField({
@@ -44,6 +195,16 @@ export function HeroScaleField({
   pillBackgroundColor = "#E5E7EB",
   tickInactiveColor = "#D1D5DB",
   tickActiveColor = "#0F172A",
+  heroVariant = "default",
+  orbSize = 160,
+  orbGradientColors = ["#DFF7EE", "#88D8B0", "#4DB6AC"],
+  orbHotGradientColors = ["#C7F0E0", "#5CC8AF", "#2F9D8F"],
+  orbShadow = "0 10px 28px rgba(77, 182, 172, 0.24)",
+  orbAnimation = "expand",
+  orbShakeMinOffset = 1,
+  orbShakeMaxOffset = 5,
+  orbShakeRotationDeg = 1.8,
+  orbShakeCycleDurationMs = 180,
   hero,
   valueFormatter,
   valueLabel,
@@ -53,24 +214,51 @@ export function HeroScaleField({
 }: HeroScaleFieldProps) {
   const ticks = Array.from({ length: max - min + 1 }, (_, index) => index + min);
   const formattedValue = valueFormatter ? valueFormatter(value) : String(value);
+  const normalizedOrbIntensity =
+    max > min ? Math.min(1, Math.max(0, (value - min) / (max - min))) : 0;
   const heroContent =
     typeof hero === "function"
       ? hero(value)
-      : hero ?? (
+      : hero ??
+        (heroVariant === "orb" ? (
+          <View style={styles.valueStack}>
+            <AnimatedOrb
+              intensity={normalizedOrbIntensity}
+              size={orbSize}
+              baseGradientColors={orbGradientColors}
+              hotGradientColors={orbHotGradientColors}
+              shadow={orbShadow}
+              animation={orbAnimation}
+              shakeMinOffset={orbShakeMinOffset}
+              shakeMaxOffset={orbShakeMaxOffset}
+              shakeRotationDeg={orbShakeRotationDeg}
+              shakeCycleDurationMs={orbShakeCycleDurationMs}
+            />
+            <Text selectable style={[styles.valueNumber, { color: accentColor }]}>
+              {formattedValue}
+            </Text>
+            {valueLabel ? (
+              <View style={[styles.severityPill, { backgroundColor: pillBackgroundColor }]}>
+                <Text selectable style={[styles.severityPillText, { color: accentColor }]}>
+                  {valueLabel}
+                </Text>
+              </View>
+            ) : null}
+          </View>
+        ) : (
           <View style={styles.valueStack}>
             <Text selectable style={[styles.valueNumber, { color: accentColor }]}>
               {formattedValue}
             </Text>
             {valueLabel ? (
               <View style={[styles.severityPill, { backgroundColor: pillBackgroundColor }]}>
-                <Text selectable style={[styles.severityPillText, { color: accentColor }]}
-                >
+                <Text selectable style={[styles.severityPillText, { color: accentColor }]}>
                   {valueLabel}
                 </Text>
               </View>
             ) : null}
           </View>
-        );
+        ));
 
   return (
     <View style={styles.container}>
@@ -184,6 +372,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 8,
     width: "100%",
+  },
+  orbWrap: {
+    overflow: "hidden",
   },
   valueNumber: {
     fontFamily: isIOS ? "SF Pro Rounded" : "sans-serif",

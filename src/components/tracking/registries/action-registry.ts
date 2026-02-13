@@ -1,4 +1,5 @@
 import { ArthritisFormData } from "@/types/arthritis";
+import { CongestionFormData } from "@/types/congestion";
 import { MigraineFormData } from "@/types/migraine";
 import {
   OrthostaticHydrationFactor,
@@ -7,7 +8,11 @@ import {
   OrthostaticSymptom,
 } from "@/types/orthostatic";
 
-export type ActionKey = "arthritis.save" | "migraine.save" | "orthostatic.save";
+export type ActionKey =
+  | "arthritis.save"
+  | "migraine.save"
+  | "orthostatic.save"
+  | "congestion.save";
 
 type ActionHandler<TPayload, TContext> = (payload: TPayload, context: TContext) => void;
 
@@ -54,6 +59,19 @@ interface OrthostaticSaveContext {
     positionBeforeStanding: OrthostaticPosition;
     sedentaryDuration: OrthostaticSedentaryDuration;
     hydrationFactors: OrthostaticHydrationFactor[];
+  }) => void;
+  onComplete: () => void;
+}
+
+interface CongestionSaveContext {
+  addLog: (log: {
+    sleepQuality: number;
+    wokeDuringNight: boolean;
+    coughCharacters: CongestionFormData["coughCharacters"];
+    congestionSource: CongestionFormData["congestionSource"];
+    phlegmColor: CongestionFormData["phlegmColor"];
+    reliefMeasures: CongestionFormData["reliefMeasures"];
+    notes?: string;
   }) => void;
   onComplete: () => void;
 }
@@ -113,6 +131,21 @@ const actionRegistry = {
       positionBeforeStanding: formData.positionBeforeStanding,
       sedentaryDuration: formData.sedentaryDuration,
       hydrationFactors: formData.hydrationFactors,
+    });
+    onComplete();
+  },
+  "congestion.save": (
+    formData: CongestionFormData,
+    { addLog, onComplete }: CongestionSaveContext
+  ) => {
+    addLog({
+      sleepQuality: formData.sleepQuality,
+      wokeDuringNight: formData.wokeDuringNight,
+      coughCharacters: formData.coughCharacters,
+      congestionSource: formData.congestionSource,
+      phlegmColor: formData.phlegmColor,
+      reliefMeasures: formData.reliefMeasures,
+      notes: formData.notes || undefined,
     });
     onComplete();
   },

@@ -12,6 +12,12 @@ export interface FlowOption {
   value: string;
   label: string;
   description?: string;
+  icon?: string;
+  subtitle?: string;
+  accentColor?: string;
+  iconBackgroundColor?: string;
+  selectedBackgroundColor?: string;
+  glowColor?: string;
 }
 
 export interface RegionMapConfig {
@@ -75,6 +81,63 @@ export interface HotspotMapHotspot {
   calloutOffsetY?: number;
 }
 
+export interface AnatomyMapCornerRadii {
+  topLeft?: number;
+  topRight?: number;
+  bottomRight?: number;
+  bottomLeft?: number;
+}
+
+export interface AnatomyMapLayer {
+  id: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  fill: string;
+  borderRadius?: number;
+  cornerRadii?: AnatomyMapCornerRadii;
+}
+
+export interface AnatomyMapPoint {
+  id: string;
+  x: number;
+  y: number;
+  radius?: number;
+  fill?: string;
+}
+
+export interface AnatomyMapHotspot {
+  id: string;
+  valueId?: string;
+  label: string;
+  x: number;
+  y: number;
+  radius?: number;
+  ringRadius?: number;
+}
+
+export interface AnatomyMapConfig {
+  canvasWidth: number;
+  canvasHeight: number;
+  cardHeight?: number;
+  maxCardWidth?: number;
+  screenPadding?: number;
+  cardBackgroundColor?: string;
+  cardBorderColor?: string;
+  cardShadow?: string;
+  layers: AnatomyMapLayer[];
+  decorativePoints?: AnatomyMapPoint[];
+  hotspots: AnatomyMapHotspot[];
+}
+
+export interface SwatchOption {
+  id: string;
+  label: string;
+  color?: string;
+  gradient?: readonly [string, string, string];
+}
+
 export interface RadialDurationUnit {
   id: string;
   label: string;
@@ -108,7 +171,9 @@ export type TrackerFieldType =
   | "categorized_chips"
   | "radial_duration"
   | "segmented_selection"
-  | "hotspot_map";
+  | "hotspot_map"
+  | "anatomy_hotspot"
+  | "swatch_selection";
 
 export interface TrackerFieldConfig {
   id: string;
@@ -160,6 +225,11 @@ export interface TrackerFieldConfig {
   durationUnits?: RadialDurationUnit[];
   durationPresets?: RadialDurationPreset[];
   hotspots?: HotspotMapHotspot[];
+  anatomyMapConfig?: AnatomyMapConfig;
+  anatomySelectionMode?: "single" | "multiple";
+  anatomyMaxSelections?: number;
+  swatchOptions?: SwatchOption[];
+  swatchInsightByValue?: Record<string, string>;
 }
 
 export interface HeaderBadgeConfig {

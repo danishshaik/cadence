@@ -1,6 +1,5 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
-import { colors } from "@theme";
 
 interface StepHeaderProps {
   currentStep: number;
@@ -45,11 +44,11 @@ const styles = StyleSheet.create({
   activeDot: {
     width: 8,
     height: 8,
-    backgroundColor: colors.midnightBlue,
+    backgroundColor: "#88D8B0",
   },
   inactiveDot: {
     width: 6,
     height: 6,
-    backgroundColor: "rgba(44, 62, 80, 0.3)", // #2C3E5050
+    backgroundColor: "rgba(108, 122, 114, 0.25)",
   },
 });

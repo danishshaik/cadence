@@ -26,6 +26,7 @@ export const COUGH_CHARACTERS = [
 export type CoughCharacterId = (typeof COUGH_CHARACTERS)[number]["id"];
 
 export const CONGESTION_SOURCES = [
+  { id: "head", label: "Head" },
   { id: "throat", label: "Throat" },
   { id: "bronchi", label: "Bronchi" },
   { id: "deep_lungs", label: "Deep Lungs" },
@@ -58,8 +59,9 @@ export interface CongestionLog {
   createdAt: string;
   sleepQuality: number;
   sleepLabel: string;
+  wokeDuringNight: boolean;
   coughCharacters: CoughCharacterId[];
-  congestionSource: CongestionSourceId | null;
+  congestionSource: CongestionSourceId[];
   phlegmColor: PhlegmColorId | null;
   reliefMeasures: ReliefMeasureId[];
   notes?: string;
@@ -68,8 +70,9 @@ export interface CongestionLog {
 export interface CongestionFormData {
   sleepQuality: number;
   sleepLabel: string;
+  wokeDuringNight: boolean;
   coughCharacters: CoughCharacterId[];
-  congestionSource: CongestionSourceId | null;
+  congestionSource: CongestionSourceId[];
   phlegmColor: PhlegmColorId | null;
   reliefMeasures: ReliefMeasureId[];
   notes: string;
