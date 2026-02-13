@@ -24,7 +24,6 @@ const CATEGORY_ICONS: Record<string, string> = {
   pain: "🩹",
   skin: "🔬",
   digestive: "🍽️",
-  respiratory: "🫁",
   sleep: "😴",
   fatigue: "⚡",
   default: "📋",

@@ -8,10 +8,10 @@
 
 export interface SampleWidget {
   id: string;
-  type: "migraine_crisis" | "sleep_tracker" | "mood_journal" | "pain_diary" | "breathe_dashboard" | "arthritis_dashboard";
+  type: "migraine_crisis" | "sleep_tracker" | "mood_journal" | "pain_diary" | "arthritis_dashboard";
   title: string;
   description: string;
-  category: "neurological" | "mental_health" | "sleep" | "pain" | "respiratory" | "musculoskeletal";
+  category: "neurological" | "mental_health" | "sleep" | "pain" | "musculoskeletal";
   designPhilosophy: string;
   features: string[];
   isPinned: boolean;
@@ -19,28 +19,6 @@ export interface SampleWidget {
 }
 
 export const SAMPLE_WIDGETS: SampleWidget[] = [
-  {
-    id: "sample-breathe-001",
-    type: "breathe_dashboard",
-    title: "Breathe Dashboard",
-    description:
-      "A compact summary widget tracking respiratory control and environmental factors.",
-    category: "respiratory",
-    designPhilosophy: `
-      Compact Dashboard Design:
-      • Soft respiratory palette (#E1F5FE background)
-      • Key metrics at a glance (Days Controlled)
-      • Contextual environmental data (Air Quality)
-      • Minimalist typography and iconography
-    `,
-    features: [
-      "Days fully controlled counter",
-      "Air Quality Indicator",
-      "Gradient progress bars",
-    ],
-    isPinned: true,
-    sortOrder: 1,
-  },
   {
     id: "sample-arthritis-001",
     type: "arthritis_dashboard",
@@ -62,7 +40,7 @@ export const SAMPLE_WIDGETS: SampleWidget[] = [
       "Quick log access",
     ],
     isPinned: true,
-    sortOrder: 2,
+    sortOrder: 1,
   },
 ];
 

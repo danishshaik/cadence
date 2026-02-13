@@ -8,8 +8,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
  */
 export type TrackerName =
   | "mood"
-  | "gi"
-  | "respiratory"
   | "congestion"
   | "arthritis"
   | "orthostatic"
@@ -48,8 +46,6 @@ interface FeatureFlagsStore {
 
 const DEFAULT_FLAGS: Record<TrackerName, boolean> = {
   mood: false,
-  gi: false,
-  respiratory: false,
   congestion: false,
   arthritis: false,
   orthostatic: false,
@@ -85,8 +81,6 @@ export const useFeatureFlagsStore = create<FeatureFlagsStore>()(
         set({
           useNewFlow: {
             mood: true,
-            gi: true,
-            respiratory: true,
             congestion: true,
             arthritis: true,
             orthostatic: true,

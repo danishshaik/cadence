@@ -30,24 +30,7 @@ export default function RootLayout() {
             }}
           />
           <Stack.Screen
-            name="log-gi"
-            options={{
-              presentation: "modal",
-              animation: "slide_from_bottom",
-            }}
-          />
-          <Stack.Screen
             name="log-mood"
-            options={{
-              presentation: "modal",
-              animation: "slide_from_bottom",
-              headerShown: true,
-              headerTitle: "",
-              headerShadowVisible: false,
-            }}
-          />
-          <Stack.Screen
-            name="log-respiratory"
             options={{
               presentation: "modal",
               animation: "slide_from_bottom",

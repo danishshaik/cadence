@@ -1,10 +1,8 @@
 import { ChatInput, ChatMessage, MessageList, QuickReplyMessage } from "@components/chat";
 import { CheckinSummary, CheckinWidget } from "@components/checkin";
-import { GIAnalyticsWidget } from "@components/gi";
 import { MigraineAnalyticsWidget } from "@components/migraine";
 import { MoodAnalyticsWidget } from "@components/mood";
 import { CongestionAnalyticsWidget } from "@components/congestion";
-import { RespiratoryAnalyticsWidget } from "@components/respiratory";
 import { SkinAnalyticsWidget } from "@components/skin";
 import { ArthritisAnalyticsWidget } from "@components/arthritis";
 import { OrthostaticAnalyticsWidget } from "@components/orthostatic";
@@ -161,9 +159,7 @@ export function ChatScreen() {
               <PinnedWidgetShowcase />
               <MoodAnalyticsWidget />
               <MigraineAnalyticsWidget />
-              <GIAnalyticsWidget />
               <SkinAnalyticsWidget />
-              <RespiratoryAnalyticsWidget />
               <CongestionAnalyticsWidget />
               <ArthritisAnalyticsWidget />
               <OrthostaticAnalyticsWidget />

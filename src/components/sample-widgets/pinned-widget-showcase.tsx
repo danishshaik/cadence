@@ -17,7 +17,6 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { MigraineCrisisWidget } from "./migraine-crisis-widget";
-import { BreatheDashboardWidget } from "./breathe-dashboard-widget";
 import { ArthritisDashboardWidget } from "../arthritis/arthritis-dashboard-widget";
 import { getPinnedWidgets, type SampleWidget } from "./sample-widget-data";
 
@@ -127,11 +126,6 @@ const PinnedWidgetCard: React.FC<PinnedWidgetCardProps> = ({
                   console.log("Sample widget metrics:", metrics);
                 }}
               />
-            )}
-            {widget.type === "breathe_dashboard" && (
-              <View style={{ alignItems: "center", paddingVertical: 16 }}>
-                <BreatheDashboardWidget />
-              </View>
             )}
             {widget.type === "arthritis_dashboard" && (
               <View style={{ alignItems: "center", paddingVertical: 16 }}>
