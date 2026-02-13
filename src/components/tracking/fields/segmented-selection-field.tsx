@@ -1,6 +1,7 @@
 import React from "react";
 import { Pressable, StyleProp, StyleSheet, Text, View, ViewStyle } from "react-native";
 import { FlowOption } from "../flow-config";
+import { Icon } from "@components/ui";
 
 const isIOS = process.env.EXPO_OS === "ios";
 
@@ -22,6 +23,8 @@ export interface SegmentedSelectionFieldProps {
   containerRadius?: number;
   segmentRadius?: number;
   segmentMinHeight?: number;
+  equalWidth?: boolean;
+  showIconWhenUnselected?: boolean;
   cardStyle?: StyleProp<ViewStyle>;
   style?: StyleProp<ViewStyle>;
   cardShadow?: string;
@@ -45,6 +48,8 @@ export function SegmentedSelectionField({
   containerRadius = 12,
   segmentRadius = 10,
   segmentMinHeight = 40,
+  equalWidth = true,
+  showIconWhenUnselected = true,
   cardStyle,
   style,
   cardShadow = "0 12px 24px rgba(108, 92, 231, 0.1)",
@@ -71,7 +76,7 @@ export function SegmentedSelectionField({
                 onChange(option.value);
               }}
               style={({ pressed }) => [
-                styles.segment,
+                equalWidth ? styles.segmentEqual : styles.segmentAuto,
                 {
                   minHeight: segmentMinHeight,
                   borderRadius: segmentRadius,
@@ -80,6 +85,13 @@ export function SegmentedSelectionField({
                 pressed && styles.segmentPressed,
               ]}
             >
+              {option.icon && (showIconWhenUnselected || selected) ? (
+                <Icon
+                  name={option.icon}
+                  size={14}
+                  color={selected ? segmentSelectedTextColor : textSecondaryColor}
+                />
+              ) : null}
               <Text
                 selectable
                 numberOfLines={1}
@@ -150,12 +162,22 @@ const styles = StyleSheet.create({
     padding: 4,
     width: "100%",
   },
-  segment: {
+  segmentEqual: {
     flex: 1,
+    flexDirection: "row",
+    gap: 4,
     borderCurve: "continuous",
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 8,
+  },
+  segmentAuto: {
+    flexDirection: "row",
+    gap: 4,
+    borderCurve: "continuous",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 14,
   },
   segmentPressed: {
     opacity: 0.92,

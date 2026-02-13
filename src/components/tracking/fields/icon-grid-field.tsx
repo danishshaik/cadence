@@ -1,5 +1,13 @@
 import React from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  Pressable,
+  StyleProp,
+  StyleSheet,
+  Text,
+  TextStyle,
+  View,
+  ViewStyle,
+} from "react-native";
 import Svg, { Defs, RadialGradient, Rect, Stop } from "react-native-svg";
 import { Icon } from "@components/ui";
 
@@ -9,6 +17,7 @@ export interface IconGridItem {
   id: string;
   label: string;
   icon: string;
+  subtitle?: string;
 }
 
 interface IconGridNoneOption {
@@ -35,6 +44,19 @@ interface IconGridFieldProps {
   iconMutedColor?: string;
   badgeGradient?: [string, string];
   badgeIcon?: string;
+  renderItemContent?: (params: {
+    item: IconGridItem;
+    isSelected: boolean;
+  }) => React.ReactNode;
+  gridStyle?: StyleProp<ViewStyle>;
+  rowStyle?: StyleProp<ViewStyle>;
+  tileStyle?: StyleProp<ViewStyle>;
+  tileSelectedStyle?: StyleProp<ViewStyle>;
+  tilePressedStyle?: StyleProp<ViewStyle>;
+  labelStyle?: StyleProp<TextStyle>;
+  labelSelectedStyle?: StyleProp<TextStyle>;
+  subtitleStyle?: StyleProp<TextStyle>;
+  subtitleSelectedStyle?: StyleProp<TextStyle>;
 }
 
 export function IconGridField({
@@ -55,6 +77,16 @@ export function IconGridField({
   iconMutedColor = "#9CA3AF",
   badgeGradient = ["#0F172A", "#334155"],
   badgeIcon = "pill",
+  renderItemContent,
+  gridStyle,
+  rowStyle,
+  tileStyle,
+  tileSelectedStyle,
+  tilePressedStyle,
+  labelStyle,
+  labelSelectedStyle,
+  subtitleStyle,
+  subtitleSelectedStyle,
 }: IconGridFieldProps) {
   const gridRows = rows ?? [
     items.slice(0, 2),
@@ -97,33 +129,62 @@ export function IconGridField({
         </View>
       ) : null}
 
-      <View style={styles.grid}>
+      <View style={[styles.grid, gridStyle]}>
         {gridRows.map((row) => (
-          <View key={row.map((item) => item.id).join("-")} style={styles.row}>
+          <View key={row.map((item) => item.id).join("-")} style={[styles.row, rowStyle]}>
             {row.map((item) => {
               const isSelected = selectedIds.includes(item.id);
               return (
                 <Pressable
                   key={item.id}
                   onPress={() => onToggle(item.id)}
-                  style={[styles.tile, isSelected && { backgroundColor: accentSoftColor }]}
+                  style={({ pressed }) => [
+                    styles.tile,
+                    isSelected && { backgroundColor: accentSoftColor },
+                    tileStyle,
+                    isSelected && tileSelectedStyle,
+                    pressed && styles.tilePressed,
+                    pressed && tilePressedStyle,
+                  ]}
                   disabled={disabled}
                 >
-                  <Icon
-                    name={item.icon}
-                    size={32}
-                    color={isSelected ? accentColor : iconMutedColor}
-                  />
-                  <Text
-                    selectable
-                    style={[
-                      styles.label,
-                      { color: textMutedColor },
-                      isSelected && { color: accentColor },
-                    ]}
-                  >
-                    {item.label}
-                  </Text>
+                  {renderItemContent ? (
+                    renderItemContent({ item, isSelected })
+                  ) : (
+                    <>
+                      <Icon
+                        name={item.icon}
+                        size={32}
+                        color={isSelected ? accentColor : iconMutedColor}
+                      />
+                      <Text
+                        selectable
+                        style={[
+                          styles.label,
+                          { color: textMutedColor },
+                          labelStyle,
+                          isSelected && { color: accentColor },
+                          isSelected && labelSelectedStyle,
+                        ]}
+                      >
+                        {item.label}
+                      </Text>
+                      {item.subtitle ? (
+                        <Text
+                          selectable
+                          style={[
+                            styles.itemSubtitle,
+                            { color: textSecondaryColor },
+                            subtitleStyle,
+                            isSelected && { color: accentColor },
+                            isSelected && subtitleSelectedStyle,
+                          ]}
+                        >
+                          {item.subtitle}
+                        </Text>
+                      ) : null}
+                    </>
+                  )}
                 </Pressable>
               );
             })}
@@ -131,7 +192,7 @@ export function IconGridField({
         ))}
 
         {noneOption ? (
-          <View style={styles.row}>
+          <View style={[styles.row, rowStyle]}>
             <Pressable
               onPress={noneOption.onPress}
               style={[
@@ -209,11 +270,22 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: 8,
   },
+  tilePressed: {
+    opacity: 0.95,
+    transform: [{ scale: 0.99 }],
+  },
   label: {
     fontFamily: isIOS ? "SF Pro Text" : "sans-serif",
     fontSize: 14,
     fontWeight: "600",
     textAlign: "center",
+  },
+  itemSubtitle: {
+    fontFamily: isIOS ? "SF Pro Text" : "sans-serif",
+    fontSize: 11,
+    fontWeight: "500",
+    textAlign: "center",
+    lineHeight: 14,
   },
   noneTile: {
     flex: 1,

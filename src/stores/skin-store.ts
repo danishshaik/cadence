@@ -7,7 +7,6 @@ import {
   SkinTriggerId,
   RoutineStepId,
   TreatmentActiveId,
-  SpotTreatmentId,
   RoutineTime,
   getSeverityLabel,
 } from "@/types/skin";
@@ -65,6 +64,7 @@ function generateSampleData(): SkinLog[] {
         .slice(0, 2) as BreakoutTypeId[],
       severity,
       severityLabel: getSeverityLabel(severity),
+      morningLightness: Math.random() > 0.5,
       triggers: triggerOptions
         .filter(() => Math.random() > 0.7)
         .slice(0, 2) as SkinTriggerId[],

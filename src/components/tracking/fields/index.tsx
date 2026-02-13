@@ -1,6 +1,7 @@
 export { AxisGridField } from "./axis-grid-field";
 export { AnatomyHotspotField } from "./anatomy-hotspot-field";
 export type { AxisGridValue } from "./axis-grid-field";
+export { CameraCaptureField } from "./camera-capture-field";
 export { CategorizedChipField } from "./categorized-chip-field";
 export { BubbleChoiceField } from "./bubble-choice-field";
 export { ChoiceField } from "./choice-field";

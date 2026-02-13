@@ -29,6 +29,12 @@ export type VisualizationKey =
   | "mood.triggers"
   | "mood.selfcare"
   | "migraine.severity"
+  | "skin.photo"
+  | "skin.breakout"
+  | "skin.severity"
+  | "skin.morning-lightness"
+  | "skin.triggers"
+  | "skin.routine"
   | "migraine.map"
   | "migraine.bubbles"
   | "migraine.day-part"
@@ -71,6 +77,12 @@ const visualizationRegistry: Record<VisualizationKey, VisualizationConfig> = {
   "mood.triggers": {},
   "mood.selfcare": {},
   "migraine.severity": {},
+  "skin.photo": {},
+  "skin.breakout": {},
+  "skin.severity": {},
+  "skin.morning-lightness": {},
+  "skin.triggers": {},
+  "skin.routine": {},
   "migraine.map": {},
   "migraine.bubbles": {},
   "migraine.day-part": {},

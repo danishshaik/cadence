@@ -156,6 +156,7 @@ export interface RadialDurationPreset {
 
 export type TrackerFieldType =
   | "axis_grid"
+  | "camera_capture"
   | "stiffness"
   | "linear_scale"
   | "toggle"
