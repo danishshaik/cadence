@@ -1,5 +1,5 @@
 import React from "react";
-import { LayoutChangeEvent, Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import Svg, { Defs, G, LinearGradient, Path, Stop } from "react-native-svg";
 import * as Haptics from "expo-haptics";
 import { FieldProps } from "../types";
@@ -59,19 +59,6 @@ export function RegionMapField({
 }: RegionMapFieldProps) {
   const [view, setView] = React.useState<MapView>("front");
   const selectedLocations = value ?? [];
-  const layoutLogRef = React.useRef<Record<string, string>>({});
-
-  const logLayout = React.useCallback(
-    (label: string) => (event: LayoutChangeEvent) => {
-      if (!__DEV__) return;
-      const { width, height } = event.nativeEvent.layout;
-      const sizeKey = `${Math.round(width)}x${Math.round(height)}`;
-      if (layoutLogRef.current[label] === sizeKey) return;
-      layoutLogRef.current[label] = sizeKey;
-      console.log(`[MigraineLocation][refactor] ${label}: ${sizeKey}`);
-    },
-    []
-  );
 
   const allRegions = React.useMemo(() => [...regions.front, ...regions.back], [regions]);
   const getLabel = React.useCallback(
@@ -101,7 +88,7 @@ export function RegionMapField({
   );
 
   return (
-    <View style={styles.container} onLayout={logLayout("container")}>
+    <View style={styles.container}>
       {(label || description) && (
         <View style={styles.titleArea}>
           {label ? (
@@ -130,7 +117,6 @@ export function RegionMapField({
           textPrimaryColor="#FFFFFF"
           textSecondaryColor={textSecondaryColor}
           style={[styles.toggleContainer, { maxWidth: MAP_CARD_MAX_WIDTH }]}
-          onLayout={logLayout("toggle")}
         />
       ) : null}
 
@@ -139,7 +125,6 @@ export function RegionMapField({
           styles.mapCard,
           { backgroundColor: cardColor, maxWidth: MAP_CARD_MAX_WIDTH },
         ]}
-        onLayout={logLayout("mapCard")}
       >
         <Svg width="100%" height="100%" viewBox="0 0 300 400">
           <Defs>
