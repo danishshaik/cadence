@@ -87,7 +87,7 @@ function LogOrthostaticFlowContent({ onClose, closing }: LogOrthostaticFlowConte
   );
 }
 
-export function LogOrthostaticFlowRefactor() {
+export function LogOrthostaticFlow() {
   const router = useRouter();
   const addLog = useOrthostaticStore((state) => state.addLog);
   const [closing, setClosing] = React.useState(false);

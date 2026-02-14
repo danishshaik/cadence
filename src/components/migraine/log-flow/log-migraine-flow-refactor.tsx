@@ -34,14 +34,6 @@ function LogMigraineFlowContent({ onClose, closing }: LogMigraineFlowContentProp
     isFirstStep,
     save,
   } = useTrackerFlow<MigraineFormData>();
-  const loggedRef = React.useRef(false);
-
-  React.useEffect(() => {
-    if (!__DEV__ || loggedRef.current) return;
-    loggedRef.current = true;
-    console.log("[MigraineFlow] refactor mounted");
-  }, []);
-
   const step = migraineFlowConfig.steps[currentStep - 1];
   const isSeverityStep = step?.id === "severity";
 

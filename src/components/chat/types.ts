@@ -31,11 +31,11 @@ export interface CheckinSummaryMessage extends BaseMessage {
 export interface InsightMessage extends BaseMessage {
   type: "insight";
   role: "assistant";
-  insights: Array<{
+  insights: {
     title: string;
     observation: string;
     confidence: "low" | "medium" | "high";
-  }>;
+  }[];
 }
 
 export interface QuickReplyMessage extends BaseMessage {
@@ -43,10 +43,10 @@ export interface QuickReplyMessage extends BaseMessage {
   role: "assistant";
   content: string;
   answerType: "yes_no" | "single_select";
-  options: Array<{
+  options: {
     id: string;
     label: string;
-  }>;
+  }[];
 }
 
 export type ChatMessage =

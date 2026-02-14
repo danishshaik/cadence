@@ -9,15 +9,13 @@ This document breaks the refactor into commit-sized steps. Each step includes ve
 - Identify all current tracker flows and their route/entry points.
 - Capture screenshots or short recordings for each flow (1 full run per tracker).
 - List all existing step components and where they live.
-- Create a feature flag toggle to switch old/new per tracker (if not already present).
 
 **QA (must be verifiable)**
 - Run `npm run lint` with no new errors.
 - Start dev server (`npm run start`), open each tracker flow, and confirm current behavior matches your recordings.
-- Verify feature flag default keeps old flows active.
 
 **Commit suggestion**
-- `chore: baseline tracker behavior + flag`.
+- `chore: baseline tracker behavior`.
 
 ## Step 1: Field Contract + Adapter Layer
 **Goal:** Define the shared field interface and a wrapper that normalizes flow state.
@@ -126,12 +124,10 @@ This document breaks the refactor into commit-sized steps. Each step includes ve
 
 **Work**
 - Batch migrations in groups of 1-2 trackers per commit.
-- Keep a feature flag to fall back to legacy per tracker until parity confirmed.
 
 **QA (must be verifiable)**
 - Run `npm run lint`.
 - For each migrated tracker, complete a full run and compare outputs to baseline.
-- Confirm feature flag toggles old/new correctly.
 
 **Commit suggestion**
 - `feat: migrate <tracker> to primitives`.
@@ -140,7 +136,7 @@ This document breaks the refactor into commit-sized steps. Each step includes ve
 **Goal:** Remove legacy components after parity is confirmed.
 
 **Work**
-- Delete legacy tracker components/providers once flags are removed.
+- Delete legacy tracker components/providers now that all active trackers use the shared architecture.
 - Remove unused assets and helpers.
 - Update any docs to reflect new architecture.
 
@@ -170,7 +166,6 @@ This document breaks the refactor into commit-sized steps. Each step includes ve
 
 ## Notes
 - Use short commits; avoid mixing multiple trackers in a single commit.
-- Keep feature flags until each tracker matches baseline behavior and payloads.
 - Update this plan as the refactor progresses.
 
 ## Future Considerations (Post-MVP)

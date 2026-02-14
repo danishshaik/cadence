@@ -100,8 +100,6 @@ export function MultiSelectCardField<T extends string = string>({
   badgeTextStyle,
 }: MultiSelectCardFieldProps<T>) {
   const badgeVisible = badge?.enabled ?? Boolean(badge?.text);
-  const selectedCount = selectedIds.length;
-
   const handlePress = (id: T) => {
     if (disabled) return;
     if (hapticsEnabled) {

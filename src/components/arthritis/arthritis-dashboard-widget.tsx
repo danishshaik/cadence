@@ -32,7 +32,6 @@ export function ArthritisDashboardWidget() {
   const graphHeight = 30;
   const maxStiffness = 10;
 
-  const validPoints = dailyData.filter((d) => d.stiffness !== null);
   const points = dailyData.map((d, i) => {
     const x = (i / (dailyData.length - 1)) * graphWidth;
     const y = d.stiffness !== null
@@ -49,8 +48,6 @@ export function ArthritisDashboardWidget() {
   // Get latest status for the dot color
   const latestLog = logs.length > 0 ? logs[0] : null;
   const latestStiffness = latestLog?.stiffness ?? 3;
-  const dotColor = latestStiffness <= 3 ? colors.arthritis : colors.arthritisAlert;
-
   // Insight text based on data
   const insightText = hasWeatherCorrelation
     ? "Pressure Drop"

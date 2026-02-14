@@ -16,9 +16,9 @@ import type {
 export class ApiError extends Error {
   status: number;
   code?: string;
-  details?: Array<{ path: string; message: string }>;
+  details?: { path: string; message: string }[];
 
-  constructor(message: string, status: number, code?: string, details?: Array<{ path: string; message: string }>) {
+  constructor(message: string, status: number, code?: string, details?: { path: string; message: string }[]) {
     super(message);
     this.name = "ApiError";
     this.status = status;

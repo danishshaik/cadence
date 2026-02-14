@@ -37,10 +37,10 @@ export interface MessageRequest {
 export interface MessageResponse {
   threadId: string;
   phase: SessionPhase;
-  messages: Array<{
+  messages: {
     role: "assistant";
     content: string;
-  }>;
+  }[];
   clarificationQuestions?: ClarificationQuestion[];
   checkinScreen?: CheckinScreen;
   nudgePlan?: NudgePlan;
@@ -148,5 +148,5 @@ export interface InsightsResponse {
 export interface APIError {
   error: string;
   code: string;
-  details?: Array<{ path: string; message: string }>;
+  details?: { path: string; message: string }[];
 }

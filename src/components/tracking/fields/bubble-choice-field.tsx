@@ -311,7 +311,7 @@ export function BubbleChoiceField({
   bubblePadding = DEFAULT_BUBBLE_PADDING,
   layoutPreset,
 }: BubbleChoiceFieldProps) {
-  const selectedItems = value ?? [];
+  const selectedItems = React.useMemo(() => value ?? [], [value]);
   const { width: windowWidth } = useWindowDimensions();
   const [containerWidth, setContainerWidth] = React.useState<number | null>(null);
   const canvasWidth = Math.max(

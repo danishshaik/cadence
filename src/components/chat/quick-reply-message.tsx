@@ -5,7 +5,7 @@ import { colors, spacing, typography } from "@theme";
 
 interface QuickReplyMessageProps {
   prompt: string;
-  options: Array<{ id: string; label: string }>;
+  options: { id: string; label: string }[];
   onSelect: (option: { id: string; label: string }) => void;
   disabled?: boolean;
 }

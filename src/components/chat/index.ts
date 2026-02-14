@@ -4,4 +4,13 @@ export { UserMessage } from "./user-message";
 export { ChatInput } from "./chat-input";
 export { TypingIndicator } from "./typing-indicator";
 export { QuickReplyMessage } from "./quick-reply-message";
-export * from "./types";
+export type {
+  BaseMessage,
+  ChatMessage,
+  CheckinSummaryMessage,
+  CheckinWidgetMessage,
+  InsightMessage,
+  MessageRole,
+  QuickReplyMessage as QuickReplyMessageData,
+  TextMessage,
+} from "./types";

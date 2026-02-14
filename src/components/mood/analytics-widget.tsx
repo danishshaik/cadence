@@ -117,14 +117,13 @@ function RiverFlowChart({ data, width, height }: {
 
 export function MoodAnalyticsWidget() {
   const router = useRouter();
-  const logs = useMoodStore((state) => state.logs);
   const getLatestLog = useMoodStore((state) => state.getLatestLog);
   const getCurrentVibe = useMoodStore((state) => state.getCurrentVibe);
   const getWeeklyTrend = useMoodStore((state) => state.getWeeklyTrend);
 
-  const latestLog = useMemo(() => getLatestLog(), [logs]);
-  const currentVibe = useMemo(() => getCurrentVibe(), [logs]);
-  const weeklyTrend = useMemo(() => getWeeklyTrend(), [logs]);
+  const latestLog = useMemo(() => getLatestLog(), [getLatestLog]);
+  const currentVibe = useMemo(() => getCurrentVibe(), [getCurrentVibe]);
+  const weeklyTrend = useMemo(() => getWeeklyTrend(), [getWeeklyTrend]);
 
   const handleLogMood = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);

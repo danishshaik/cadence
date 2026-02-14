@@ -70,7 +70,7 @@ const PinnedWidgetCard: React.FC<PinnedWidgetCardProps> = ({
       stiffness: 150,
       useNativeDriver: false,
     }).start();
-  }, [isExpanded]);
+  }, [expandAnim, isExpanded]);
 
   const handleToggle = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);

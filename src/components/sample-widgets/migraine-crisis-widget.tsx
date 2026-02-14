@@ -276,7 +276,7 @@ const PainThermometer: React.FC<PainThermometerProps> = ({ value, onChange, heig
       stiffness: 150,
       useNativeDriver: false,
     }).start();
-  }, [fillHeight]);
+  }, [animatedFill, fillHeight]);
 
   const panResponder = useRef(
     PanResponder.create({
@@ -643,7 +643,7 @@ const FunctionalSlider: React.FC<FunctionalSliderProps> = ({ value, onChange }) 
       stiffness: 200,
       useNativeDriver: true,
     }).start();
-  }, [selectedIndex]);
+  }, [indicatorAnim, selectedIndex]);
 
   const handleSelect = (level: typeof FUNCTIONAL_LEVELS[number]) => {
     triggerHaptic("medium");
@@ -788,7 +788,7 @@ export const MigraineCrisisWidget: React.FC<MigraineCrisisWidgetProps> = ({
       stiffness: 150,
       useNativeDriver: true,
     }).start();
-  }, [currentPage]);
+  }, [currentPage, pageAnim]);
 
   // Emit metrics on change (debounced)
   const emitMetrics = useCallback(() => {
