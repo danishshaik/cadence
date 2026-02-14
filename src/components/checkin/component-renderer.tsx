@@ -56,7 +56,7 @@ export function ComponentRenderer({
           value={value as string | undefined}
           previousValue={previousValue as string | undefined}
           onChange={(next) => onChange(next)}
-          options={component.options as Array<{ value: string; label: string; icon?: string; description?: string }>}
+          options={component.options as { value: string; label: string; icon?: string; description?: string }[]}
           display={component.display as "buttons" | "chips" | "list" | "cards" | undefined}
         />
       );
@@ -69,7 +69,7 @@ export function ComponentRenderer({
           value={value as string[] | undefined}
           previousValue={previousValue as string[] | undefined}
           onChange={(next) => onChange(next)}
-          options={component.options as Array<{ value: string; label: string; icon?: string }>}
+          options={component.options as { value: string; label: string; icon?: string }[]}
           min_selections={component.min_selections as number | undefined}
           max_selections={component.max_selections as number | undefined}
           display={component.display as "chips" | "checkboxes" | "grid" | undefined}
@@ -100,7 +100,7 @@ export function ComponentRenderer({
           }}
         >
           <Text selectable style={{ ...typography.caption, color: colors.textSecondary }}>
-            Component type "{component.type}" not implemented yet.
+            {`Component type ${component.type} not implemented yet.`}
           </Text>
         </View>
       );

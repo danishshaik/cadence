@@ -9,7 +9,6 @@ import { MIGRAINE_TRIGGERS } from "@/types/migraine";
 
 export function MigraineAnalyticsWidget() {
   const router = useRouter();
-  const logs = useMigraineStore((state) => state.logs);
   const getLogsForWeek = useMigraineStore((state) => state.getLogsForWeek);
   const getAverageSeverity = useMigraineStore((state) => state.getAverageSeverity);
   const getTopTrigger = useMigraineStore((state) => state.getTopTrigger);

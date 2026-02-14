@@ -11,7 +11,7 @@ import Animated, {
   withSequence,
   withTiming,
 } from "react-native-reanimated";
-import { colors, shadows } from "@theme";
+import { colors } from "@theme";
 import { ExpoSlider } from "@/components/ui";
 import { FieldProps } from "../types";
 import { FieldWrapper } from "./field-wrapper";
@@ -62,7 +62,7 @@ export function StiffnessField({
       -1,
       true
     );
-  }, []);
+  }, [pulseScale, tremor]);
 
   useEffect(() => {
     normalizedValue.value = (value - min) / (max - min);

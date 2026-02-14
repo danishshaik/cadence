@@ -49,7 +49,7 @@ export function CategorizedChipField({
   chipSelectedTextColor = mentalWeatherColors.accent,
   summaryTextColor = mentalWeatherColors.accent,
 }: CategorizedChipFieldProps) {
-  const selected = value ?? [];
+  const selected = React.useMemo(() => value ?? [], [value]);
   const selectedCount = selected.length;
 
   const handleToggle = React.useCallback(

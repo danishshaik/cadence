@@ -89,7 +89,6 @@ export function SkinAnalyticsWidget() {
   const logs = useSkinStore((state) => state.logs);
   const streak = useSkinStore((state) => state.getConsistencyStreak());
   const trend = useSkinStore((state) => state.getWeeklyTrend());
-  const avgSeverity = useSkinStore((state) => state.getAverageSeverity());
 
   const recentLogs = useMemo(() => {
     return [...logs].slice(0, 14).reverse().map((log) => ({ severity: log.severity }));

@@ -41,9 +41,9 @@ function LogArthritisFlowContent() {
     save,
   } = useTrackerFlow<ArthritisFormData>();
 
-  const handleCancel = () => {
+  const handleCancel = React.useCallback(() => {
     router.back();
-  };
+  }, [router]);
 
   const handleHeaderBack = React.useCallback(() => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);

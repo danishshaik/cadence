@@ -10,8 +10,6 @@ interface ChatInputProps {
   placeholder?: string;
 }
 
-const isIOS = process.env.EXPO_OS === "ios";
-
 // Claude-style colors
 const CLAUDE_INPUT_BG = "rgba(235, 230, 223, 0.86)";
 const CLAUDE_ICON_COLOR = "#7C7C7C";

@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { MoodLog, getMoodLabel } from "@/types/mood";
+import { MoodLog } from "@/types/mood";
 
 interface MoodStore {
   logs: MoodLog[];

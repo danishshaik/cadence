@@ -1,4 +1,3 @@
-export { FlowSwitcher } from "./flow-switcher";
 export { FlowFooter } from "./flow-footer";
 export { FlowHeader } from "./flow-header";
 export { FlowScaffold } from "./flow-scaffold";

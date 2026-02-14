@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { View, Text, Pressable, StyleSheet, Platform } from "react-native";
+import { View, Text, Pressable, StyleSheet } from "react-native";
 import { Icon } from "@components/ui";
 import { useRouter } from "expo-router";
 import * as Haptics from "expo-haptics";

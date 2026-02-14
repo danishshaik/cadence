@@ -1,5 +1,5 @@
-import { LogOrthostaticFlowRefactor } from "@components/orthostatic";
+import { LogOrthostaticFlow } from "@components/orthostatic";
 
 export default function LogOrthostaticModal() {
-  return <LogOrthostaticFlowRefactor />;
+  return <LogOrthostaticFlow />;
 }

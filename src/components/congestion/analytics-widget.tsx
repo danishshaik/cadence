@@ -43,15 +43,14 @@ function MoonPhase({ phase }: { phase: "full" | "crescent" | "eclipse" }) {
 
 export function CongestionAnalyticsWidget() {
   const router = useRouter();
-  const logs = useCongestionStore((state) => state.logs);
   const getLatestLog = useCongestionStore((state) => state.getLatestLog);
   const getWetDryTrend = useCongestionStore((state) => state.getWetDryTrend);
   const getRestQualityLabel = useCongestionStore((state) => state.getRestQualityLabel);
 
-  const latestLog = useMemo(() => getLatestLog(), [logs]);
+  const latestLog = useMemo(() => getLatestLog(), [getLatestLog]);
   const phase = useMemo(() => getMoonPhase(latestLog), [latestLog]);
-  const restLabel = useMemo(() => getRestQualityLabel(), [logs]);
-  const trend = useMemo(() => getWetDryTrend(5), [logs]);
+  const restLabel = useMemo(() => getRestQualityLabel(), [getRestQualityLabel]);
+  const trend = useMemo(() => getWetDryTrend(5), [getWetDryTrend]);
 
   const handleLog = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);

@@ -55,10 +55,10 @@ export function AxisGrid({
   const insetRatio = blobRadius / innerSize;
   const minBound = Math.min(0.5, Math.max(0, insetRatio));
   const maxBound = Math.min(1, Math.max(0.5, 1 - insetRatio));
-  const clampToBounds = (value: number) => {
+  const clampToBounds = React.useCallback((nextValue: number) => {
     "worklet";
-    return clamp(value, minBound, maxBound);
-  };
+    return clamp(nextValue, minBound, maxBound);
+  }, [maxBound, minBound]);
   const initialX = Math.min(maxBound, Math.max(minBound, (value.positivity + 1) / 2));
   const initialY = Math.min(maxBound, Math.max(minBound, 1 - (value.energy + 1) / 2));
 
@@ -71,7 +71,7 @@ export function AxisGrid({
   React.useEffect(() => {
     normalizedX.value = withTiming(clampToBounds((value.positivity + 1) / 2), SMOOTH_CONFIG);
     normalizedY.value = withTiming(clampToBounds(1 - (value.energy + 1) / 2), SMOOTH_CONFIG);
-  }, [value.positivity, value.energy, normalizedX, normalizedY]);
+  }, [value.positivity, value.energy, normalizedX, normalizedY, clampToBounds]);
 
   const triggerHaptic = React.useCallback(() => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);

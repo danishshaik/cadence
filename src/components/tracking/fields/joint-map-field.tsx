@@ -107,7 +107,7 @@ function JointDot({
     } else {
       pulseScale.value = withTiming(1, { duration: 200 });
     }
-  }, [selected]);
+  }, [selected, pulseScale]);
 
   const pulseStyle = useAnimatedStyle(() => ({
     transform: [{ scale: pulseScale.value }],
