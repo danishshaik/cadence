@@ -1,4 +1,4 @@
-export { LogMigraineFlow } from "./log-migraine-flow-refactor";
+export { LogMigraineFlow } from "./log-migraine-flow";
 export {
   migraineFlowConfig,
   migraineInitialFormData,

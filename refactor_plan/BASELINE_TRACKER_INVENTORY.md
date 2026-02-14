@@ -7,11 +7,11 @@ Generated as part of Step 0: Baseline + Safety Nets.
 
 | Tracker | Steps | Route | Flow Component | Config | Store |
 |---------|-------|-------|----------------|--------|-------|
-| Migraine | 5 | `/log-migraine` | `log-migraine-flow-refactor.tsx` | `migraine-flow-config.ts` | `migraine-store.ts` |
+| Migraine | 5 | `/log-migraine` | `log-migraine-flow.tsx` | `migraine-flow-config.ts` | `migraine-store.ts` |
 | Mood | 4 | `/log-mood` | `log-mood-flow.tsx` | `mood-flow-config.ts` | `mood-store.ts` |
 | Congestion | 5 | `/log-congestion` | `log-congestion-flow.tsx` | `congestion-flow-config.ts` | `congestion-store.ts` |
 | Arthritis | 5 | `/log-arthritis` | `log-arthritis-flow.tsx` | `arthritis-flow-config.ts` | `arthritis-store.ts` |
-| Orthostatic | 5 | `/log-orthostatic` | `log-orthostatic-flow-refactor.tsx` | `orthostatic-flow-config.ts` | `orthostatic-store.ts` |
+| Orthostatic | 5 | `/log-orthostatic` | `log-orthostatic-flow.tsx` | `orthostatic-flow-config.ts` | `orthostatic-store.ts` |
 | Skin | 5 | `/log-skin` | `log-skin-flow.tsx` | `skin-flow-config.ts` | `skin-store.ts` |
 
 ## Current Architecture Baseline
